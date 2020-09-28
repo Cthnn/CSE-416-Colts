@@ -10,10 +10,14 @@ class HomeScreen extends Component {
     render() {
         const containerStyle = {
             border: '1px solid',
+            
+        }
+        const flexStyle ={
+            flex-direction: 'row'
         }
 
         return (
-            <div className = "HomeComponentComponents">
+            <div className = "HomeComponentComponents" style = {flexStyle}>
                 <div className="row white" onKeyDown={this.handleKeyDown}>
                     <div className="col s6 m3 user_input" style={containerStyle}>
                         <label>Select State</label>
