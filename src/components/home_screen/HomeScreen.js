@@ -9,15 +9,11 @@ import MapComponent from './MapComponent.js'
 class HomeScreen extends Component {
     render() {
         const containerStyle = {
-            border: '1px solid',
-        }
-
-        const flexStyle = {
-            flexDirection: 'row'
+            height: 'calc(100vh - 64px)',
         }
 
         return (
-            <div className = "HomeComponentComponents" style = {flexStyle}>
+            <div className = "HomeComponentComponents">
                 <div className="row white" onKeyDown={this.handleKeyDown}>
                     <div className="col s6 m3 user_input" style={containerStyle}>
                         <label>Select State</label>
@@ -59,9 +55,10 @@ class HomeScreen extends Component {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div className="col s3 input-field">
-                                            <button type="submit" className="btn blue lighten-2 z-depth-0">Generate</button>
-                                        </div>
+                                        <br></br>
+                                        <br></br>
+                                        <button type="submit" className="btn blue lighten-2 z-depth-0 col s12">Generate</button>
+
                                     </form>
                                 </div>
                             </TabPanel>
@@ -88,7 +85,7 @@ class HomeScreen extends Component {
                             </TabPanel>
                         </Tabs>
                     </div>
-                    <MapComponent></MapComponent>
+                    <MapComponent className="col s6 m9 offset-s6 offset-m3"></MapComponent>
                 </div>
             </div>
         )
