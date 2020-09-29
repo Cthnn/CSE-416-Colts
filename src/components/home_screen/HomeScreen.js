@@ -4,16 +4,16 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
 import { Modal, Button } from 'react-materialize';
+import MapComponent from './MapComponent.js'
 
 class HomeScreen extends Component {
-
     render() {
         const containerStyle = {
             border: '1px solid',
-            
         }
-        const flexStyle ={
-            flex-direction: 'row'
+
+        const flexStyle = {
+            flexDirection: 'row'
         }
 
         return (
@@ -88,8 +88,8 @@ class HomeScreen extends Component {
                             </TabPanel>
                         </Tabs>
                     </div>
+                    <MapComponent></MapComponent>
                 </div>
-                <MapComponent></MapComponent>
             </div>
         )
     }
