@@ -6,9 +6,9 @@ class Navbar extends React.Component {
 
     render() {
         return (
-            <nav className="nav-wrapper grey darken-3">
-                <div className="container">
-                    <Link to="/" className="brand-logo">Redistrictor</Link>
+            <nav>
+                <div className="nav-wrapper grey darken-3 row">
+                    <Link to="/" className="col s6 m3 brand-logo center-align">Redistrictor</Link>
                     <Links></Links>
                 </div>
             </nav>
