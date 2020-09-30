@@ -34,7 +34,7 @@ class BatchCard extends React.Component {
                     <div className="" style={divStyle}><h5 style={propertyStyle}>Plans:</h5> {batch.plans}</div>
                     <div className="" style={divStyle}><h5 style={propertyStyle}>Group:</h5> {batch.group}</div>
                     <div className="" style={divStyle}><h5 style={propertyStyle}>Compactness:</h5> {batch.compactness}</div>
-                    <div className="" style={divStyle}><h5 style={propertyStyle}>Population equality threshold:</h5> {batch.population}</div>
+                    <div className="" style={divStyle}><h5 style={propertyStyle}>Population deviation:</h5> {batch.population}</div>
 
 
                 </div>

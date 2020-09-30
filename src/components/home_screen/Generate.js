@@ -1,7 +1,15 @@
 import React from 'react';
 
 class Generate extends React.Component {
+    inputValidation(e, min, max){
+        if(e.target.value > max)
+            e.target.value = max
+        if(e.target.value < min)
+            e.target.value = min
+    }
+
     render() {
+
         return (
             <div className="container">
                 <form onSubmit={this.handleSubmit}>
@@ -16,11 +24,15 @@ class Generate extends React.Component {
                     </div>
                     <div>
                         <label htmlFor="number_of_plans">Number of Plans</label>
-                        <input className="active" type="number" id='tempWidth' onChange={this.handleChangeDimensions} defaultValue={0} />
+                        <input className="active" type="number" min="100" max="10000" id='tempWidth' onChange={this.handleChangeDimensions}defaultValue={0} />
                     </div>
                     <div>
                         <label htmlFor="compactness">Compactness</label>
-                        <input className="active" type="number" id='tempWidth' onChange={this.handleChangeDimensions} defaultValue={0} />
+                        <input className="active" type="number" min="0" max="100" id='tempWidth' onChange={this.handleChangeDimensions} defaultValue={0} />
+                    </div>
+                    <div>
+                        <label htmlFor="population_deviation">Population Deviation</label>
+                        <input className="active" type="number" step="0.01" min="0" max="1"id='tempWidth' onChange={this.handleChangeDimensions} defaultValue={0} />
                     </div>
                     <div>
                         <label htmlFor="minority_group">Minority Group</label>
