@@ -12,8 +12,8 @@ import BatchCard from './BatchCard';
 
 class HomeScreen extends Component {
     state = {
-        activeBatch: { id: '1', title: 'Batch 1', content: 'blah blah blah' }
-        // activeBatch: null
+        // activeBatch: { id: '1', title: 'Batch 1', content: 'blah blah blah' }
+        activeBatch: null
     }
 
     loadBatch = (batch) => {
