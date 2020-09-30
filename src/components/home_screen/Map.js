@@ -11,7 +11,7 @@ const MapComponent = () => {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         // See style options here: https://docs.mapbox.com/api/maps/#styles
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/mapbox/light-v10',
         center: [-100.04, 38.907],
         zoom: 3
       });
@@ -19,34 +19,89 @@ const MapComponent = () => {
       map.on('load', function () {
         // Add a source for the state polygons.
         map.resize();
-        map.addSource('states', {
+        map.addSource('TX', {
           'type': 'geojson',
           'data':
-          'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson'
+          'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/TX/shape.geojson'
         });
-        
+        map.addSource('AL', {
+          'type': 'geojson',
+          'data':
+          'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/AL/shape.geojson'
+        });
+        map.addSource('FL', {
+          'type': 'geojson',
+          'data':
+          'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/FL/shape.geojson'
+        });
         map.addLayer({
-          'id': 'states-layer',
+          'id': 'AL-layer',
           'type': 'fill',
-          'source': 'states',
+          'source': 'AL',
           'paint': {
             'fill-color': 'rgba(200, 100, 240, 0.4)',
             'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
         
-        map.on('click', 'states-layer', function (e) {
+        map.on('click', 'AL-layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.name)
+            .setHTML("Alabama")
             .addTo(map);
         });
-        
-        map.on('mouseenter', 'states-layer', function () {
+        map.on('mouseenter', 'AL-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
         });
         
-        map.on('mouseleave', 'states-layer', function () {
+        map.on('mouseleave', 'AL-layer', function () {
+          map.getCanvas().style.cursor = '';
+        });
+        
+        map.addLayer({
+          'id': 'FL-layer',
+          'type': 'fill',
+          'source': 'FL',
+          'paint': {
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
+          }
+        });
+        
+        map.on('click', 'FL-layer', function (e) {
+          new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML("Florida")
+            .addTo(map);
+        });
+        map.on('mouseenter', 'FL-layer', function () {
+        map.getCanvas().style.cursor = 'pointer';
+        });
+        
+        map.on('mouseleave', 'FL-layer', function () {
+          map.getCanvas().style.cursor = '';
+        });
+        map.addLayer({
+          'id': 'TX-layer',
+          'type': 'fill',
+          'source': 'TX',
+          'paint': {
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
+          }
+        });
+        
+        map.on('click', 'TX-layer', function (e) {
+          new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML("Texas")
+            .addTo(map);
+        });
+        map.on('mouseenter', 'TX-layer', function () {
+        map.getCanvas().style.cursor = 'pointer';
+        });
+        
+        map.on('mouseleave', 'TX-layer', function () {
           map.getCanvas().style.cursor = '';
         });
       });
