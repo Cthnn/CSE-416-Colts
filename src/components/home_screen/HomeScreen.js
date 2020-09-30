@@ -8,6 +8,7 @@ import Generate from './Generate';
 import BatchLinks from './BatchLinks';
 import Map from './Map';
 import Summary from './Summary'
+import BatchCard from './BatchCard';
 
 class HomeScreen extends Component {
     state = {
@@ -26,12 +27,13 @@ class HomeScreen extends Component {
     render() {
         const containerStyle = {
             height: 'calc(100vh - 64px)',
+            overflow: 'auto',
         }
 
         const batches = [
-            { id: '1', title: 'Batch 1', content: 'blah blah blah' },
-            { id: '2', title: 'Batch 2', content: 'blah blah blah' },
-            { id: '3', title: 'Batch 3', content: 'blah blah blah' }
+            BatchCard.createBatch(1, 'Texas', 2000, 10, 20, 'Asian', 'Complete', 2000),
+            BatchCard.createBatch(2, 'Alabama', 5000, 80, 10, 'Black', 'InProgress', 2400),
+            BatchCard.createBatch(3, 'Florida', 400, 30, 100, 'Hispanic', 'Aborted', 0),
         ]
 
         return (
