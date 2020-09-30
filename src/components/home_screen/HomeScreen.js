@@ -4,7 +4,9 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
 import { Modal, Button } from 'react-materialize';
-import MapComponent from './MapComponent.js'
+import Generate from './Generate';
+import BatchLinks from './BatchLinks';
+import Map from './Map.js';
 
 class HomeScreen extends Component {
     render() {
@@ -12,58 +14,29 @@ class HomeScreen extends Component {
             height: 'calc(100vh - 64px)',
         }
 
+        const batches = [
+            {id: '1', title: 'Batch 1', content: 'blah blah blah'},
+            {id: '2', title: 'Batch 2', content: 'blah blah blah'},
+            {id: '3', title: 'Batch 3', content: 'blah blah blah'}
+        ]
+
         return (
-            <div className = "HomeComponentComponents">
+            <div className="HomeComponentComponents">
                 <div className="row white" onKeyDown={this.handleKeyDown}>
-                    <div className="col s6 m3 user_input" style={containerStyle}>
-                        <label>Select State</label>
-                        <div class="input-field col s12">
-                            <select className="browser-default">
-                                <option value="" disabled selected>None</option>
-                                <option value="1">Alabama</option>
-                                <option value="2">Florida</option>
-                                <option value="3">Texas</option>
-                            </select>
-                        </div>
+                    <div className="col s6 m3 white user_input" style={containerStyle}>
 
                         <Tabs>
                             <TabList>
-                                <Tab>Plans</Tab>
-                                <Tab>Summaries</Tab>
+                                <Tab>Generate</Tab>
+                                <Tab>Results</Tab>
                                 <Tab>View</Tab>
                             </TabList>
 
                             <TabPanel>
-                                <div className="container">
-                                    <form onSubmit={this.handleSubmit}>
-                                        <div>
-                                            <label htmlFor="number_of_plans">Number of Plans</label>
-                                            <input className="active" type="number" id='tempWidth' onChange={this.handleChangeDimensions} defaultValue={0} />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="compactness">Compactness</label>
-                                            <input className="active" type="number" id='tempWidth' onChange={this.handleChangeDimensions} defaultValue={0} />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="minority_group">Minority Group</label>
-                                            <div class="input-field">
-                                                <select className="browser-default">
-                                                    <option value="" disabled selected>None</option>
-                                                    <option value="1">Black</option>
-                                                    <option value="2">Hispanic</option>
-                                                    <option value="3">Asian</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <br></br>
-                                        <br></br>
-                                        <button type="submit" className="btn blue lighten-2 z-depth-0 col s12">Generate</button>
-
-                                    </form>
-                                </div>
+                                <Generate/>
                             </TabPanel>
                             <TabPanel>
-                                <h2>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolore velit, omnis beatae tempora fugit autem aspernatur modi repellendus minus, tenetur placeat, provident doloribus repudiandae excepturi aperiam neque fugiat sint non.</h2>
+                                <BatchLinks batches={batches} />
                             </TabPanel>
                             <TabPanel>
                                 <RadioGroup onChange={this.onChange} vertical>
@@ -85,7 +58,7 @@ class HomeScreen extends Component {
                             </TabPanel>
                         </Tabs>
                     </div>
-                    <MapComponent className="col s6 m9 offset-s6 offset-m3"></MapComponent>
+                    <Map className="col s6 m9 offset-s6 offset-m3"></Map>
                 </div>
             </div>
         )
