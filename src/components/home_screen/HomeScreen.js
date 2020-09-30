@@ -31,9 +31,9 @@ class HomeScreen extends Component {
         }
 
         const batches = [
-            BatchCard.createBatch(1, 'Texas', 2000, 10, 20, 'Asian', 'Complete'),
-            BatchCard.createBatch(2, 'Alabama', 5000, 80, 10, 'Black', 'InProgress'),
-            BatchCard.createBatch(3, 'Florida', 400, 30, 100, 'Hispanic', 'Aborted'),
+            BatchCard.createBatch(1, 'Texas', 2000, 10, 20, 'Asian', 'Complete', 2000),
+            BatchCard.createBatch(2, 'Alabama', 5000, 80, 10, 'Black', 'InProgress', 2400),
+            BatchCard.createBatch(3, 'Florida', 400, 30, 100, 'Hispanic', 'Aborted', 0),
         ]
 
         return (
