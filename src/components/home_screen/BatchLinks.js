@@ -10,7 +10,7 @@ class BatchLinks extends React.Component {
                     {batches && batches.map(batch => {
                         return (
                             <div key={batch.id}>
-                                 <BatchCard batch={batch}/>
+                                 <BatchCard loadBatch={this.props.loadBatch} batch={batch}/>
                             </div>
                         )
                     })}
