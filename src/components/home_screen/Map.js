@@ -11,7 +11,7 @@ const MapComponent = () => {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         // See style options here: https://docs.mapbox.com/api/maps/#styles
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/mapbox/light-v10',
         center: [-100.04, 38.907],
         zoom: 3
       });
@@ -40,6 +40,25 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML(e.features[0].properties.name)
             .addTo(map);
+
+          // console.log(e.features)
+          // var coordinates = e.features[0].geometry.coordinates;
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+          // coordinates.forEach(function(coord){
+          //   console.log(coord)
+          //   bounds.extend(coord);
+          // });
+          features.forEach(function(feature){
+            console.log(feature.geometry);
+            feature.geometry.coordinates.forEach(function(coord){
+              bounds.extend(coord)
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         
         map.on('mouseenter', 'states-layer', function () {
