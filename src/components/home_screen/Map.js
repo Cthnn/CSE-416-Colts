@@ -53,6 +53,22 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML("Alabama")
             .addTo(map);
+          
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          features.forEach(function(feature){
+            console.log(feature);
+            feature.geometry.coordinates.forEach(function(coord){
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         map.on('mouseenter', 'AL-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -82,17 +98,16 @@ const MapComponent = () => {
           var bounds = new mapboxgl.LngLatBounds();
 
           features.forEach(function(feature){
-            console.log(feature.geometry);
+            console.log(feature);
             feature.geometry.coordinates.forEach(function(coord){
               coord.forEach(function(coordinate_pair){
                 bounds.extend(coordinate_pair)
               })
-              
             })
           })
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 4
+            zoom: 5
           })
         });
         map.on('mouseenter', 'FL-layer', function () {
@@ -117,6 +132,21 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML("Texas")
             .addTo(map);
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          features.forEach(function(feature){
+            console.log(feature);
+            feature.geometry.coordinates.forEach(function(coord){
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         map.on('mouseenter', 'TX-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
