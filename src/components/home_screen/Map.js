@@ -17,6 +17,28 @@ const MapComponent = () => {
         zoom: 3
       });
 
+      const TXDemographic = `
+        <div>District 2 Demographics</div>
+        <table style="font-size:10px; padding: 0px !important;">
+        <tr>
+          <th>White</th>
+          <th>Black</th>
+          <th>Hispanic</th>
+          <th>Asian</th>
+          <th>Pacific Islander</th>
+          <th>American Indians</th>
+        </tr>
+        <tr>
+          <th>73%</th>
+          <th>12%</th>
+          <th>1%</th>
+          <th>5%</th>
+          <th>1%</th>
+          <th>6%</th>
+        </tr>
+        </table>
+      `
+
       var toolbar = new Toolbar();
       map.addControl(toolbar, 'top-left');
 
@@ -128,7 +150,7 @@ const MapComponent = () => {
         map.on('click', 'TX-layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
-            .setHTML("Texas")
+            .setHTML(TXDemographic)
             .addTo(map);
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
