@@ -107,11 +107,11 @@ const MapComponent = () => {
       });
 
       map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
+      
       return () => map.remove();
     }, []); 
 
-    return <div className="map" ref={mapContainerRef} />;
+    return<div className="map" ref={mapContainerRef} />;
 };
 
 export default MapComponent;

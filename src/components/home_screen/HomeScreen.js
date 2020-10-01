@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import './HomeScreen.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
@@ -21,8 +21,11 @@ class HomeScreen extends Component {
 
     unloadBatch = () => {
         this.setState({activeBatch: null});
+        document.getElementById("summaryToggle").style.visibility = "hidden";
     }
-
+    displaySummaryButton = () =>{
+        document.getElementById("summaryToggle").style.visibility = "visible";
+    }
     render() {
         const containerStyle = {
             height: 'calc(100vh - 64px)',
@@ -42,7 +45,7 @@ class HomeScreen extends Component {
                         <Tabs>
                             <TabList>
                                 <Tab onClick={this.unloadBatch}>Generate</Tab>
-                                <Tab>Results</Tab>
+                                <Tab onClick={this.displaySummaryButton}>Results</Tab>
                                 <Tab onClick={this.unloadBatch}>View</Tab>
                             </TabList>
 
@@ -81,8 +84,14 @@ class HomeScreen extends Component {
                         {!this.state.activeBatch &&
                             <Map className="col s6 m9 offset-s6 offset-m3"></Map>
                         }
+                        <div id="summaryToggle">
+                            <a className="blue lighten-2 waves-effect waves-light btn modal-trigger" href="#modal1" onClick = {this.loadBatch}>
+                                <i className="material-icons">insert_chart</i>
+                            </a>
+                        </div>
                     </div>
                 </div>
+                
             </div>
         )
     }
