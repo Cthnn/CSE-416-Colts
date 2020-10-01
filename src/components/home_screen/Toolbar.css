@@ -7,11 +7,15 @@
     /* cursor: default !important; */
     /* pointer-events:auto; */
 }
+.text{
+    display:inline-block;
+}
 .view-button{
     opacity:1 !important;
     padding: 8px;
     margin: 4px;
     pointer-events:auto !important;
-    position:relative;
-    float:left;
+    position:relative !important;
+    
+    /* float:left; */
 }
