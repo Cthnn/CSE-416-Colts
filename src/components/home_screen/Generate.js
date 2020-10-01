@@ -9,6 +9,11 @@ class Generate extends React.Component {
     }
 
     render() {
+        const minMax = {
+            plans: [100,10000],
+            comp: [0,100],
+            pop: [0,1]
+        }
 
         return (
             <div className="container">
@@ -24,15 +29,15 @@ class Generate extends React.Component {
                     </div>
                     <div>
                         <label htmlFor="number_of_plans">Number of Plans</label>
-                        <input className="active" type="number" min="100" max="10000" id='tempWidth' onChange={this.handleChangeDimensions}defaultValue={0} />
+                        <input className="active" type="number" min={minMax['plans'][0]} max={minMax['plans'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, minMax['plans'][0], minMax['plans'][1])}} onChange={this.handleChangeDimensions} defaultValue={minMax['plans'][0]} />
                     </div>
                     <div>
                         <label htmlFor="compactness">Compactness</label>
-                        <input className="active" type="number" min="0" max="100" id='tempWidth' onChange={this.handleChangeDimensions} defaultValue={0} />
+                        <input className="active" type="number" min={minMax['comp'][0]} max={minMax['comp'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, minMax['comp'][0], minMax['comp'][1])}} onChange={this.handleChangeDimensions} defaultValue={minMax['comp'][0]} />
                     </div>
                     <div>
                         <label htmlFor="population_deviation">Population Deviation</label>
-                        <input className="active" type="number" step="0.01" min="0" max="1"id='tempWidth' onChange={this.handleChangeDimensions} defaultValue={0} />
+                        <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, minMax['pop'][0], minMax['pop'][1])}} onChange={this.handleChangeDimensions} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
                     </div>
                     <div>
                         <label htmlFor="minority_group">Minority Group</label>
