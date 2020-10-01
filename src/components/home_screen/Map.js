@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
+import Toolbar from './Toolbar.js';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -15,6 +16,9 @@ const MapComponent = () => {
         center: [-100.04, 38.907],
         zoom: 3
       });
+
+      var toolbar = new Toolbar();
+      map.addControl(toolbar, 'top-left');
 
       map.on('load', function () {
         // Add a source for the state polygons.
@@ -73,6 +77,19 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML("Florida")
             .addTo(map);
+
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          features.forEach(function(feature){
+            feature.geometry.coordinates.forEach(function(coord){
+              bounds.extend(coord)
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         map.on('mouseenter', 'FL-layer', function () {
         map.getCanvas().style.cursor = 'pointer';

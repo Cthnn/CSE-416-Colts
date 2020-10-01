@@ -1,0 +1,17 @@
+.toolbar{
+    color: white;
+    background: #000;
+    padding: 4px;
+    border-radius: 4px;
+    margin: 8px;
+    /* cursor: default !important; */
+    /* pointer-events:auto; */
+}
+.view-button{
+    opacity:1 !important;
+    padding: 8px;
+    margin: 4px;
+    pointer-events:auto !important;
+    position:relative;
+    float:left;
+}
