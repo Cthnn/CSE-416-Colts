@@ -53,6 +53,21 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML("Alabama")
             .addTo(map);
+          
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          features.forEach(function(feature){
+            feature.geometry.coordinates.forEach(function(coord){
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         map.on('mouseenter', 'AL-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -83,7 +98,9 @@ const MapComponent = () => {
 
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
-              bounds.extend(coord)
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
             })
           })
           map.flyTo({
@@ -113,6 +130,20 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML("Texas")
             .addTo(map);
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          features.forEach(function(feature){
+            feature.geometry.coordinates.forEach(function(coord){
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         map.on('mouseenter', 'TX-layer', function () {
         map.getCanvas().style.cursor = 'pointer';

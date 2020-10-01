@@ -1,17 +1,23 @@
 .toolbar{
     color: white;
-    background: #000;
+    background: #64B5F6;
     padding: 4px;
     border-radius: 4px;
     margin: 8px;
-    /* cursor: default !important; */
-    /* pointer-events:auto; */
+    cursor: default !important;
+    pointer-events:auto;
+}
+.text{
+    padding-left: 5px;
+    display:inline-block;
+    margin:0px;
 }
 .view-button{
     opacity:1 !important;
     padding: 8px;
     margin: 4px;
     pointer-events:auto !important;
-    position:relative;
-    float:left;
+    position:relative !important;
+    
+    /* float:left; */
 }
