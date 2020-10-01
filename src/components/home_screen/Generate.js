@@ -3,6 +3,9 @@ import React from 'react';
 class Generate extends React.Component {
     constructor(props){
         super(props)
+        this.compactnessTip = "<div>Explain what compactness is.</div><div> Valid inputs [0,100]</div>"
+        this.populationTip = "<div>Explain what population deviation is.</div><div> Valid inputs [0,1].</div>"
+
         this.minMax = {
             plans: [100,10000],
             comp: [0,100],
@@ -64,10 +67,12 @@ class Generate extends React.Component {
                     </div>
                     <div>
                         <label htmlFor="compactness">Compactness</label>
+                        <i className="tooltipped tiny material-icons" data-position="top" data-html="true" data-tooltip={this.compactnessTip}>info_outline</i>
                         <input className="active" type="number" min={minMax['comp'][0]} max={minMax['comp'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, 'comp')}} onChange={this.handleChangeDimensions} defaultValue={minMax['comp'][0]} />
                     </div>
                     <div>
                         <label htmlFor="population_deviation">Population Deviation</label>
+                        <i className="tooltipped tiny material-icons" data-position="top" data-html="true" data-tooltip={this.populationTip}>info_outline</i>
                         <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, 'pop')}} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
                     </div>
                     <div>
