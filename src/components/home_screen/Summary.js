@@ -1,16 +1,26 @@
 import React from 'react';
+import { Row } from 'react-materialize';
 
+import Plot from './Plot'
 class Summary extends React.Component {
     render() {
         const {batch} = this.props;
-        const backStyle = {
-            marginRight: '20px',
+        const containerStyle = {
+            display:'flex',
+            justifyContent: 'center'
         }
-
+        const contentStyle = {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+        }
         return (
-            <div className="summary_container">
-                <div className="summary_content">
-                    <h1 className="card_title black-text center">{batch.title}</h1>
+
+            <div className="summary_container" style={containerStyle}>
+                <div className="summary_content" style={contentStyle}>
+                    <h1 className="center">{batch.title}</h1>
+                    <div style={{display:'block', width:'1000px',height:'1000px'}}><Plot></Plot></div>
+
                 </div>
             </div>
         );

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
+import Toolbar from './Toolbar.js';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -38,6 +39,9 @@ const MapComponent = () => {
         </table>
       `
 
+      var toolbar = new Toolbar();
+      map.addControl(toolbar, 'top-left');
+
       map.on('load', function () {
         // Add a source for the state polygons.
         map.resize();
@@ -71,6 +75,21 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML("Alabama")
             .addTo(map);
+          
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          features.forEach(function(feature){
+            feature.geometry.coordinates.forEach(function(coord){
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         map.on('mouseenter', 'AL-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -95,6 +114,21 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML("Florida")
             .addTo(map);
+
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          features.forEach(function(feature){
+            feature.geometry.coordinates.forEach(function(coord){
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         map.on('mouseenter', 'FL-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -118,6 +152,20 @@ const MapComponent = () => {
             .setLngLat(e.lngLat)
             .setHTML(TXDemographic)
             .addTo(map);
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          features.forEach(function(feature){
+            feature.geometry.coordinates.forEach(function(coord){
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+            })
+          })
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 5
+          })
         });
         map.on('mouseenter', 'TX-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -129,11 +177,11 @@ const MapComponent = () => {
       });
 
       map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
+      
       return () => map.remove();
     }, []); 
 
-    return <div className="map" ref={mapContainerRef} />;
+    return<div className="map" ref={mapContainerRef} />;
 };
 
 export default MapComponent;
