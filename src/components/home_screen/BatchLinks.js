@@ -2,12 +2,10 @@ import React from 'react';
 import BatchCard from './BatchCard';
 
 class BatchLinks extends React.Component {
-    constructor(props){
-        super(props)
-        this.state = {active: 0}
-    }
 
-    setActive(id){
+    state = {active: 0}
+
+    setActive = (id) => {
         this.setState({active: id})
     }
 
