@@ -35,6 +35,10 @@ class Toolbar{
         this.middle.name = 'view-choice';
         this.right.name = 'view-choice';
 
+        this.left.id = 'state-radio';
+        this.middle.id = 'district-radio';
+        this.right.id = 'precinct-radio';
+
         this.heat_text = document.createElement('p');
         this.heat = document.createElement('input');
 
@@ -42,13 +46,21 @@ class Toolbar{
         this.heat_text.className = 'text';
         this.heat.type = 'checkbox';
         this.heat.className = 'view-button';
+
+        this.heat.id = 'heat-checkbox';
         
         this.left_text.addEventListener('click', function(){
-            this.left.checked = !this.left.checked;
+            document.getElementById('state-radio').checked = true;
         })
-        // this.left_text.onclick = function(){
-        //     this.left.checked = !this.left.checked;
-        // }
+        this.middle_text.addEventListener('click', function(){
+            document.getElementById('district-radio').checked = true;
+        })
+        this.right_text.addEventListener('click', function(){
+            document.getElementById('precinct-radio').checked = true;
+        })
+        this.heat_text.addEventListener('click', function(){
+            document.getElementById('heat-checkbox').checked = !document.getElementById('heat-checkbox').checked;
+        })
 
         this.sub_container.appendChild(this.left_text);
         this.sub_container.appendChild(this.left);
