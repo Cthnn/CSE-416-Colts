@@ -1,0 +1,8 @@
+#summaryToggle{
+    visibility: hidden;
+    background-color: transparent;
+    position: absolute;
+    top:10%;
+    right:2%;
+    z-index: 10;
+}

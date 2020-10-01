@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import './HomeScreen.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
@@ -13,15 +13,31 @@ import BatchCard from './BatchCard';
 class HomeScreen extends Component {
     state = {
         // activeBatch: { id: '1', title: 'Batch 1', content: 'blah blah blah' }
-        activeBatch: null
+        activeBatch: null,
+        showMap: true
     }
 
     loadBatch = (batch) => {
         this.setState({activeBatch: batch});
+        this.displaySummaryButton();
+        this.unshowMap();
     }
 
     unloadBatch = () => {
         this.setState({activeBatch: null});
+        document.getElementById("summaryToggle").style.visibility = "hidden";
+    }
+
+    displaySummaryButton = () =>{
+        document.getElementById("summaryToggle").style.visibility = "visible";
+    }
+
+    toggleShowMap = () => {
+        this.setState({showMap: !this.state.showMap})
+    }
+
+    unshowMap = () => {
+        this.setState({showMap: false})
     }
 
     render() {
@@ -75,16 +91,22 @@ class HomeScreen extends Component {
                         </Tabs>
                     </div>
                     <div>
-                        {this.state.activeBatch &&
+                        {(this.state.activeBatch && !this.state.showMap)&&
                             <div className="grey lighten-4" style={containerStyle}>
                                 <Summary unloadBatch={this.unloadBatch} batch={this.state.activeBatch}/>
                             </div>  
                         }
-                        {!this.state.activeBatch &&
+                        {(!this.state.activeBatch || this.state.showMap) &&
                             <Map className="col s6 m9 offset-s6 offset-m3"></Map>
                         }
+                        <div id="summaryToggle">
+                            <a className="blue lighten-2 waves-effect waves-light btn modal-trigger" href="#modal1" onClick = {this.toggleShowMap}>
+                                <i className="material-icons">insert_chart</i>
+                            </a>
+                        </div>
                     </div>
                 </div>
+                
             </div>
         )
     }

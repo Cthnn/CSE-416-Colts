@@ -18,12 +18,9 @@ class BatchCard extends React.Component {
             height:'5px',
             width: 100 * batch.progress/batch.plans + '%',
         }
-        console.log(batch.progress/batch.plans )
+
         return (
-            <div
-                className="card z-depth-1 todo-list-link white"
-                onClick={this.props.loadBatch.bind(this, batch)}
-            >
+            <div className="card z-depth-1 todo-list-link white" onClick={this.props.loadBatch.bind(this, batch)}>
                 <div className="card-content black-text">
                     <span className="blue-text">
                         <h3 style={{display:'inline-block'}}>{batch.title}</h3> 
