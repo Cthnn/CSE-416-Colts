@@ -58,7 +58,6 @@ const MapComponent = () => {
           var bounds = new mapboxgl.LngLatBounds();
 
           features.forEach(function(feature){
-            console.log(feature);
             feature.geometry.coordinates.forEach(function(coord){
               coord.forEach(function(coordinate_pair){
                 bounds.extend(coordinate_pair)
@@ -98,7 +97,6 @@ const MapComponent = () => {
           var bounds = new mapboxgl.LngLatBounds();
 
           features.forEach(function(feature){
-            console.log(feature);
             feature.geometry.coordinates.forEach(function(coord){
               coord.forEach(function(coordinate_pair){
                 bounds.extend(coordinate_pair)
@@ -136,7 +134,6 @@ const MapComponent = () => {
           var bounds = new mapboxgl.LngLatBounds();
 
           features.forEach(function(feature){
-            console.log(feature);
             feature.geometry.coordinates.forEach(function(coord){
               coord.forEach(function(coordinate_pair){
                 bounds.extend(coordinate_pair)
