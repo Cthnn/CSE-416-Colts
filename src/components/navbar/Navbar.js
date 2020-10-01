@@ -5,12 +5,14 @@ import Links from './Links';
 class Navbar extends React.Component {
 
     render() {
+        const navStyle = {
+            margin: "0px",
+        }
+
         return (
-            <nav className="nav-wrapper grey darken-3">
-                <div className="container">
-                    <Link to="/" className="brand-logo">Redistrictor</Link>
+            <nav style={navStyle} className="nav-wrapper grey darken-3 row">
+                    <Link to="/" className="brand-logo col m3 center-align">Redistrictor</Link>
                     <Links/>
-                </div>
             </nav>
         );
     };

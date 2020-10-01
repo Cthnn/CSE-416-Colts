@@ -1,4 +1,5 @@
 import React from 'react';
+import M from 'materialize-css';
 
 class Generate extends React.Component {
     constructor(props){
@@ -19,6 +20,10 @@ class Generate extends React.Component {
             pop: this.minMax['pop'][0],
             group: "0"
         }
+    }
+
+    loadToolTip = (e) => {
+       M.Tooltip.init(e.target, {});
     }
 
     inputValidation(e, name){
@@ -43,7 +48,6 @@ class Generate extends React.Component {
     }
 
     enableGeneration(){
-        console.log(this.state)
         return this.state.state != 0 && this.state.group != 0;
     }
 
@@ -62,27 +66,29 @@ class Generate extends React.Component {
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="number_of_plans">Number of Plans</label>
+                        <label className="black-text" htmlFor="number_of_plans">Number of Plans</label>
                         <input className="active" type="number" min={minMax['plans'][0]} max={minMax['plans'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, 'plans')}} onChange={this.handleChangeDimensions} defaultValue={minMax['plans'][0]} />
                     </div>
                     <div>
-                        <label htmlFor="compactness">Compactness</label>
-                        <i className="tooltipped tiny material-icons" data-position="top" data-html="true" data-tooltip={this.compactnessTip}>info_outline</i>
+                        <label className="black-text" htmlFor="compactness">Compactness</label>
+                        <i className="tooltipped tiny material-icons grey-text" data-position="top" data-html="true" data-tooltip={this.compactnessTip} onMouseOver={this.loadToolTip}>info_outline</i>
                         <input className="active" type="number" min={minMax['comp'][0]} max={minMax['comp'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, 'comp')}} onChange={this.handleChangeDimensions} defaultValue={minMax['comp'][0]} />
                     </div>
                     <div>
-                        <label htmlFor="population_deviation">Population Deviation</label>
-                        <i className="tooltipped tiny material-icons" data-position="top" data-html="true" data-tooltip={this.populationTip}>info_outline</i>
+                        <label className="black-text" htmlFor="population_deviation">Population Deviation</label>
+                        <i className="tooltipped tiny material-icons grey-text" data-position="top" data-html="true" data-tooltip={this.populationTip} onMouseOver={this.loadToolTip}>info_outline</i>
                         <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, 'pop')}} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
                     </div>
                     <div>
-                        <label htmlFor="minority_group">Minority Group</label>
+                        <label className="black-text"  htmlFor="minority_group">Racial Group</label>
                         <div className="input-field">
                             <select className="browser-default" onChange={e => {this.updateSelection(e, "group")}}>
                                 <option value="0">None</option>
                                 <option value="1">Black</option>
                                 <option value="2">Hispanic</option>
                                 <option value="3">Asian</option>
+                                <option value="3">Pacific Islander</option>
+                                <option value="3">American Indians</option>
                             </select>
                         </div>
                     </div>
