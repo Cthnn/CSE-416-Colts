@@ -82,13 +82,17 @@ const MapComponent = () => {
           var bounds = new mapboxgl.LngLatBounds();
 
           features.forEach(function(feature){
+            console.log(feature.geometry);
             feature.geometry.coordinates.forEach(function(coord){
-              bounds.extend(coord)
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+              
             })
           })
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 5
+            zoom: 4
           })
         });
         map.on('mouseenter', 'FL-layer', function () {
