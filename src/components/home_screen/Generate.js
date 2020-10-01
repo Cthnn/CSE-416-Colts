@@ -19,9 +19,9 @@ class Generate extends React.Component {
             <div className="container">
                 <form onSubmit={this.handleSubmit}>
                     <label>State</label>
-                    <div class="input-field">
+                    <div className="input-field">
                         <select className="browser-default">
-                            <option value="" >None</option>
+                            <option value="0" >None</option>
                             <option value="1">Alabama</option>
                             <option value="2">Florida</option>
                             <option value="3">Texas</option>
@@ -37,13 +37,13 @@ class Generate extends React.Component {
                     </div>
                     <div>
                         <label htmlFor="population_deviation">Population Deviation</label>
-                        <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, minMax['pop'][0], minMax['pop'][1])}} onChange={this.handleChangeDimensions} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
+                        <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, minMax['pop'][0], minMax['pop'][1])}} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
                     </div>
                     <div>
                         <label htmlFor="minority_group">Minority Group</label>
-                        <div class="input-field">
+                        <div className="input-field">
                             <select className="browser-default">
-                                <option value="" disabled selected>None</option>
+                                <option value="0">None</option>
                                 <option value="1">Black</option>
                                 <option value="2">Hispanic</option>
                                 <option value="3">Asian</option>
