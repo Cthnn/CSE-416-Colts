@@ -45,7 +45,6 @@ class HomeScreen extends Component {
                             <TabList>
                                 <Tab onClick={this.unloadBatch}>Generate</Tab>
                                 <Tab>Results</Tab>
-                                <Tab onClick={this.unloadBatch}>View</Tab>
                             </TabList>
 
                             <TabPanel>
@@ -53,24 +52,6 @@ class HomeScreen extends Component {
                             </TabPanel>
                             <TabPanel>
                                 <BatchLinks loadBatch={this.loadBatch.bind(this)} batches={batches} />
-                            </TabPanel>
-                            <TabPanel>
-                                <RadioGroup onChange={this.onChange} vertical>
-                                    <RadioButton value="congressional disctricts" rootColor="gray" pointColor="blue">
-                                        Congressional Districts
-                                    </RadioButton>
-                                    <RadioButton value="precincts" rootColor="gray" pointColor="blue">
-                                        Precincts
-                                    </RadioButton>
-                                </RadioGroup>
-                                <a className="blue lighten-2 waves-effect waves-light btn modal-trigger" href="#modal1">
-                                    <i className="material-icons">insert_chart</i>
-                                </a>
-                                <Modal id="modal1" className="modal">
-                                    <div className="modal-content">
-                                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nam modi exercitationem eos dolore voluptas cupiditate quia mollitia. Quia officia vel quos tempora dicta, corporis ut, alias consectetur laboriosam odio aliquid?</p>
-                                    </div>
-                                </Modal>
                             </TabPanel>
                         </Tabs>
                     </div>
