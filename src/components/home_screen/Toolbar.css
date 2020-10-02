@@ -21,3 +21,8 @@
     
     /* float:left; */
 }
+.heatmap-select{
+    display: inline-block;
+    width: 100px;
+    height:30px;
+}

@@ -11,6 +11,10 @@ import Summary from './Summary'
 import BatchCard from './BatchCard';
 
 class HomeScreen extends Component {
+    constructor(props){
+        super(props);
+        this.stateSelectElement = React.createRef();
+    }
     state = {
         // activeBatch: { id: '1', title: 'Batch 1', content: 'blah blah blah' }
         activeBatch: null
@@ -26,6 +30,9 @@ class HomeScreen extends Component {
     }
     displaySummaryButton = () =>{
         document.getElementById("summaryToggle").style.visibility = "visible";
+    }
+    stateSelectHandler = (data) => {
+        console.log(data);
     }
     render() {
         const containerStyle = {
@@ -52,7 +59,7 @@ class HomeScreen extends Component {
                             </TabList>
 
                             <TabPanel>
-                                <Generate />
+                                <Generate action = {this.stateSelectHandler}/>
                             </TabPanel>
                             <TabPanel>
                                 <BatchLinks loadBatch={this.loadBatch.bind(this)} batches={batches} />
