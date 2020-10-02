@@ -49,10 +49,19 @@ class Toolbar{
         this.heat.type = 'checkbox';
         this.heat.className = 'view-button';
 
-        this.temp = document.createElement('option');
-        this.temp.value = 'Alabama';
-        this.temp.textContent = 'Alabama';
-        this.heat_dropdown.appendChild(this.temp);
+        this.option1 = document.createElement('option');
+        this.option2 = document.createElement('option');
+        this.option3 = document.createElement('option');
+
+        this.option1.value = 'Alabama';
+        this.option1.textContent = 'Alabama';
+        this.option2.value = 'Florida';
+        this.option2.textContent = 'Florida';
+        this.option3.value = 'Texas';
+        this.option3.textContent = 'Texas';
+        this.heat_dropdown.appendChild(this.option1);
+        this.heat_dropdown.appendChild(this.option2);
+        this.heat_dropdown.appendChild(this.option3);
 
         this.heat.id = 'heat-checkbox';
 
