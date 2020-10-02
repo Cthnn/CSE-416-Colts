@@ -88,11 +88,11 @@ class Generate extends React.Component {
                         <div className="input-field">
                             <select className="browser-default" onChange={e => {this.updateSelection(e, "group")}}>
                                 <option value="0">None</option>
-                                <option value="Black">Black</option>
+                                <option value="Black">Black or African American</option>
                                 <option value="Asian">Asian</option>
                                 <option value="Hispanic">Hispanic or Latino</option>
-                                <option value="Pacific Islander">Native Hawaiian or Pacific Islander</option>
-                                <option value="American Indians">American Indian and Alaska Native</option>
+                                <option value="Pacific Islander">Native Hawaiian and Other Pacific Islander</option>
+                                <option value="American Indians">Native American and Alaska Native</option>
                             </select>
                         </div>
                     </div>
@@ -109,4 +109,5 @@ class Generate extends React.Component {
         );
     }
 }
+
 export default Generate;
