@@ -38,7 +38,6 @@ class Generate extends React.Component {
     updateSelection(e, name){
         let input = {}
         input[name] = e.target.value
-        this.props.action(input);
         this.setState(input)
     }
 
