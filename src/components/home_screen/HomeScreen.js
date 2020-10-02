@@ -14,16 +14,18 @@ class HomeScreen extends Component {
         activeBatch: null,
         showMap: true,
         batches: [
-            BatchCard.createBatch(1, 'Texas', 2000, 10, 20, 'Asian', 'Complete'),
-            BatchCard.createBatch(2, 'Alabama', 5000, 80, 10, 'Black', 'InProgress'),
-            BatchCard.createBatch(3, 'Florida', 400, 30, 100, 'Hispanic', 'Aborted'),
+            BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
+            BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
+            BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
+            BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
+            BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
         ]
     }
 
     loadBatch = (batch) => {
         this.setState({activeBatch: batch});
         this.displaySummaryButton();
-        this.unshowMap();
+        //this.unshowMap();
     }
 
     unloadBatch = () => {
@@ -62,11 +64,11 @@ class HomeScreen extends Component {
                                 <Tab>Results</Tab>
                             </TabList>
 
-                            <TabPanel>
+                            <TabPanel forceRender>
                                 <Generate batches={batches}/>
                             </TabPanel>
                             <TabPanel>
-                                <BatchLinks loadBatch={this.loadBatch.bind(this)} batches={batches} />
+                                <BatchLinks loadBatch={this.loadBatch.bind(this)} unloadBatch={this.unloadBatch} batches={batches} />
                             </TabPanel>
                         </Tabs>
                     </div>
@@ -80,7 +82,7 @@ class HomeScreen extends Component {
                             <Map className="col s6 m9 offset-s6 offset-m3"></Map>
                         }
                         <div id="summaryToggle">
-                            <a className="blue lighten-2 waves-effect waves-light btn modal-trigger" href="#modal1" onClick = {this.toggleShowMap}>
+                            <a className="blue lighten-2 waves-effect waves-light btn"  onClick = {this.toggleShowMap}>
                                 <i className="material-icons">insert_chart</i>
                             </a>
                         </div>
