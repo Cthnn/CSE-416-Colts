@@ -10,7 +10,7 @@ class Plot extends React.Component {
       const boxplotData = {
         labels: ['District 1', 'District 2', 'District 3', 'District 4', 'District 5', 'District 6', 'District 7','District 8','District 9','District 10'],
         datasets: [{
-          label: 'Disctricts',
+          label: 'Districts',
           backgroundColor: 'rgba(255,0,0,0.5)',
           borderColor: 'red',
           borderWidth: 1,

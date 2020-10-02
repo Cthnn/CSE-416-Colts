@@ -18,7 +18,7 @@ class Summary extends React.Component {
 
             <div className="summary_container" style={containerStyle}>
                 <div className="summary_content" style={contentStyle}>
-                    <h1 className="center">{batch.title}</h1>
+                    <h1 className="center">{batch.title} Summary</h1>
                     <div style={{display:'block', width:'1000px',height:'1000px'}}><Plot></Plot></div>
 
                 </div>

@@ -177,7 +177,7 @@ const MapComponent = ({props}) => {
           console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 6
+            zoom: 5
           })
           makeVisible('TX', map); 
         });
