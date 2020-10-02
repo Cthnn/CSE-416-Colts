@@ -67,6 +67,7 @@ const MapComponent = ({props}) => {
               })
             })
           })
+          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
             zoom: 6
@@ -109,6 +110,7 @@ const MapComponent = ({props}) => {
               })
             })
           })
+          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
             zoom: 6
@@ -150,6 +152,7 @@ const MapComponent = ({props}) => {
               })
             })
           })
+          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
             zoom: 6

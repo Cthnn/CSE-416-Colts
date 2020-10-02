@@ -11,18 +11,22 @@ class Toolbar{
         this.left = document.createElement('select');
         this.left.className = 'state-select';
 
+        this.state_option0 = document.createElement('option');
         this.state_option1 = document.createElement('option');
         this.state_option2 = document.createElement('option');
         this.state_option3 = document.createElement('option');
 
+        this.state_option0.value = 'None';
         this.state_option1.value = 'AL';
         this.state_option2.value = 'FL';
         this.state_option3.value = 'TX';
 
+        this.state_option1.textContent = 'None';
         this.state_option1.textContent = 'Alabama';
         this.state_option2.textContent = 'Florida';
         this.state_option3.textContent = 'Texas';
 
+        this.left.appendChild(this.state_option0);
         this.left.appendChild(this.state_option1);
         this.left.appendChild(this.state_option2);
         this.left.appendChild(this.state_option3);
@@ -88,12 +92,34 @@ class Toolbar{
         this.heat_dropdown.appendChild(this.option5);
 
         this.heat.id = 'heat-checkbox';
-
-        
-        
-        // this.left_text.addEventListener('click', function(){
-        //     document.getElementById('state-checkbox').checked = !document.getElementById('state-checkbox').checked;
-        // })
+        this.left.addEventListener('change', function(){
+            var state = document.getElementById('state-selection').value;
+            if(state == 'AL'){
+                map.flyTo({
+                    center: [-86.6793823, 32.5763150],
+                    zoom: 6
+                })
+            }
+            if(state == 'FL'){
+                map.flyTo({
+                    center: [-82.8784561, 28.4002285],
+                    zoom: 6
+                })
+            }
+            if(state == 'TX'){
+                map.flyTo({
+                    center: [-100.0717163, 31.170127359],
+                    zoom: 6
+                })
+            }
+            if(state == 'None'){
+                map.flyTo({
+                    center: [-100.04, 38.907],
+                    zoom: 3
+                })
+            }
+            
+        })
         this.middle_text.addEventListener('click', function(){
             document.getElementById('district-checkbox').checked = !document.getElementById('district-checkbox').checked;
         })
