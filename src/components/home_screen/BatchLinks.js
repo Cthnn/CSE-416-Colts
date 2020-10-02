@@ -25,7 +25,7 @@ class BatchLinks extends React.Component {
                     {batches && batches.map(batch => {
                         return (
                             <div style={this.state.active === batch.id? cardStyleOn : cardStyleOff} key={batch.id} onClick={() => {this.setActive(batch.id)}}>
-                                 <BatchCard loadBatch={this.props.loadBatch} batch={batch}/>
+                                 <BatchCard loadBatch={this.props.loadBatch} unloadBatch={this.props.unloadBatch} batch={batch} active={this.state.active === batch.id}/>
                             </div>
                         )
                     })}

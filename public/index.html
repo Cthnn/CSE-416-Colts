@@ -31,12 +31,22 @@
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
-  <!-- Compiled and minified JavaScript -->
+  <!-- Compiled and minified JavaScript
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+   -->
+   
   <!--Import mui-->
   <link href="//cdn.muicss.com/mui-0.10.3/css/mui.min.css" rel="stylesheet" type="text/css" />
   <script src="//cdn.muicss.com/mui-0.10.3/js/mui.min.js"></script>
+
   <!--Initialize tooltips-->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.tooltipped');
+      var instances = M.Tooltip.init(elems, {});
+    });
+  </script>
+
   <title>Redistrictor</title>
 </head>
 
