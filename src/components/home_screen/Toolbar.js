@@ -8,12 +8,27 @@ class Toolbar{
         this.container.className = 'toolbar';
 
         this.left_text = document.createElement('p');
-        this.left = document.createElement('input');
+        this.left = document.createElement('select');
+        this.left.className = 'state-select';
+
+        this.state_option1 = document.createElement('option');
+        this.state_option2 = document.createElement('option');
+        this.state_option3 = document.createElement('option');
+
+        this.state_option1.value = 'AL';
+        this.state_option2.value = 'FL';
+        this.state_option3.value = 'TX';
+
+        this.state_option1.textContent = 'Alabama';
+        this.state_option2.textContent = 'Florida';
+        this.state_option3.textContent = 'Texas';
+
+        this.left.appendChild(this.state_option1);
+        this.left.appendChild(this.state_option2);
+        this.left.appendChild(this.state_option3);
 
         this.left_text.textContent = 'State';
         this.left_text.className = 'text';
-        this.left.type = 'checkbox';
-        this.left.className = 'view-button';
         
         this.middle_text = document.createElement('p');
         this.middle = document.createElement('input');
@@ -35,7 +50,7 @@ class Toolbar{
         this.middle.name = 'view-choice';
         this.right.name = 'view-choice';
 
-        this.left.id = 'state-checkbox';
+        this.left.id = 'state-selection';
         this.middle.id = 'district-checkbox';
         this.right.id = 'precinct-checkbox';
 
@@ -52,24 +67,33 @@ class Toolbar{
         this.option1 = document.createElement('option');
         this.option2 = document.createElement('option');
         this.option3 = document.createElement('option');
+        this.option4 = document.createElement('option');
+        this.option5 = document.createElement('option');
 
-        this.option1.value = 'Alabama';
-        this.option1.textContent = 'Alabama';
-        this.option2.value = 'Florida';
-        this.option2.textContent = 'Florida';
-        this.option3.value = 'Texas';
-        this.option3.textContent = 'Texas';
+        this.option1.value = 'white';
+        this.option1.textContent = 'White American';
+        this.option2.value = 'black';
+        this.option2.textContent = 'Black or African American';
+        this.option3.value = 'native';
+        this.option3.textContent = 'Native American and Alaska Native';
+        this.option4.value = 'asian';
+        this.option4.textContent = 'Asian American';
+        this.option5.value = 'pacific';
+        this.option5.textContent = 'Native Hawaiian and Other Pacific Islander';
+
         this.heat_dropdown.appendChild(this.option1);
         this.heat_dropdown.appendChild(this.option2);
         this.heat_dropdown.appendChild(this.option3);
+        this.heat_dropdown.appendChild(this.option4);
+        this.heat_dropdown.appendChild(this.option5);
 
         this.heat.id = 'heat-checkbox';
 
         
         
-        this.left_text.addEventListener('click', function(){
-            document.getElementById('state-checkbox').checked = !document.getElementById('state-checkbox').checked;
-        })
+        // this.left_text.addEventListener('click', function(){
+        //     document.getElementById('state-checkbox').checked = !document.getElementById('state-checkbox').checked;
+        // })
         this.middle_text.addEventListener('click', function(){
             document.getElementById('district-checkbox').checked = !document.getElementById('district-checkbox').checked;
         })

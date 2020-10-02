@@ -54,8 +54,11 @@ const MapComponent = ({props}) => {
             .setHTML("Alabama")
             .addTo(map);
           
+          
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
+
+          document.getElementById('state-selection').value = 'AL';
 
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
@@ -97,6 +100,8 @@ const MapComponent = ({props}) => {
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
 
+          document.getElementById('state-selection').value = 'FL';
+
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
               coord.forEach(function(coordinate_pair){
@@ -134,6 +139,9 @@ const MapComponent = ({props}) => {
             .addTo(map);
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
+
+          document.getElementById('state-selection').value = 'TX';
+          console.log(document.getElementById('state-selection').value);
 
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
