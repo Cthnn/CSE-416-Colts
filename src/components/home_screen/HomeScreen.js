@@ -94,7 +94,7 @@ class HomeScreen extends Component {
                         }
                         <div id="summaryToggle" style={{top: "100px"}}>
                             <a className="blue lighten-2 waves-effect waves-light btn"  onClick = {this.toggleShowMap}>
-                                <i className="material-icons">insert_chart</i>
+                            <i className="material-icons">{this.state.showMap? "insert_chart": "map"}</i>
                             </a>
                         </div>
                     </div>

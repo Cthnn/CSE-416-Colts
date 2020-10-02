@@ -16,21 +16,18 @@ class BatchCard extends React.Component {
 
     render() {
         const { batch } = this.props
-        const propertyStyle = {
-            display: 'inline-block',
-        }
 
-        const divStyle = {
-            height: '20px',
+        const statusStyles = {
+            Complete: "badge green-text",
+            Aborted: "badge red-text",
         }
-
 
         return (
             <div className="card z-depth-1 todo-list-link white" onClick={batch.status === "Complete" ? this.props.loadBatch.bind(this, batch) : () => { this.props.unloadBatch() }}>
                 <div style={{ padding: "20px" }} className="card-content black-text">
                     <span className="blue-text">
                         <h4 style={{ display: 'inline-block', margin: "0px" }}>{batch.title}</h4>
-                        <span className="badge">{batch.status}</span>
+                        <span className={statusStyles[batch.status]? statusStyles[batch.status]: "badge"}>{batch.status}</span>
                     </span>
                     {batch.id != 0 &&
                         <div onClick={this.handleDeleteClick} style={{ position: "absolute", top: '0px', right: '0px', color: '#f44336', cursor: 'pointer' }}>
