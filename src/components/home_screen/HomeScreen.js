@@ -11,9 +11,6 @@ import Summary from './Summary'
 import BatchCard from './BatchCard';
 
 class HomeScreen extends Component {
-    constructor(props){
-        super(props);
-    }
     state = {
         // activeBatch: { id: '1', title: 'Batch 1', content: 'blah blah blah' }
         activeBatch: null,
