@@ -92,7 +92,7 @@ class HomeScreen extends Component {
                         {(!this.state.activeBatch || this.state.showMap) &&
                             <Map className="col s6 m9 offset-s6 offset-m3"></Map>
                         }
-                        <div id="summaryToggle">
+                        <div id="summaryToggle" style={{top: "100px"}}>
                             <a className="blue lighten-2 waves-effect waves-light btn"  onClick = {this.toggleShowMap}>
                                 <i className="material-icons">insert_chart</i>
                             </a>
