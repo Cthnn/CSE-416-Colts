@@ -51,7 +51,8 @@ class Generate extends React.Component {
     generatePlans(e){
         e.preventDefault();
         //send request to server
-        this.props.batches.push(BatchCard.createBatch(this.props.batches.length + 1, this.state.state, this.state.plans, this.state.comp, this.state.pop, this.state.group, 'Queued'));
+        this.props.incrementBatchNumber()
+        this.props.batches.push(BatchCard.createBatch(this.props.batchNumber, this.state.state, this.state.plans, this.state.comp, this.state.pop, this.state.group, 'Queued'));
     }
 
     render() {
@@ -101,7 +102,7 @@ class Generate extends React.Component {
                 <Modal id="modal1" className="modal">
                     <div className="modal-content center-align">
                     <h4>Request Recieved</h4>
-                    <p>The requested batch number is: {this.props.batches.length+1}</p>
+                    <p>The requested batch number is: {this.props.batchNumber}</p>
                     </div>
                 </Modal>
             </div>

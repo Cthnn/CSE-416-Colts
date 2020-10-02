@@ -11,7 +11,7 @@ class Navbar extends React.Component {
 
         return (
             <nav style={navStyle} className="nav-wrapper grey darken-3 row">
-                    <Link to="/" className="brand-logo col m3 center-align">Redistrictor</Link>
+                    <Link to="/" className="brand-logo">Redistrictor</Link>
                     <Links/>
             </nav>
         );
