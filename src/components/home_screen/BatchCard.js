@@ -32,9 +32,11 @@ class BatchCard extends React.Component {
                         <h4 style={{ display: 'inline-block', margin: "0px" }}>{batch.title}</h4>
                         <span className="badge">{batch.status}</span>
                     </span>
-                    <a onClick={this.handleDeleteClick} style={{ position: "absolute", top: '0px', right: '0px', color: '#f44336', cursor: 'pointer' }}>
-                        <i className="material-icons">delete</i>
-                    </a>
+                    {batch.id != 0 &&
+                        <div onClick={this.handleDeleteClick} style={{ position: "absolute", top: '0px', right: '0px', color: '#f44336', cursor: 'pointer' }}>
+                            <i className="material-icons">delete</i>
+                        </div>
+                    }
 
 
                     <div style={this.props.active && batch.id !== 0 ? { display: "block" } : { display: "none" }}>
