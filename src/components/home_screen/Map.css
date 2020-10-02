@@ -9,4 +9,9 @@
 .mapboxgl-popup th {
     width: 50px;
     padding: 5px 5px;
+    text-align: center;
+}
+
+.mapboxgl-popup tr{
+    border-bottom: 1px solid grey;
 }
