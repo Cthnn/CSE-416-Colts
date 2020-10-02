@@ -11,6 +11,9 @@ import Summary from './Summary'
 import BatchCard from './BatchCard';
 
 class HomeScreen extends Component {
+    constructor(props){
+        super(props);
+    }
     state = {
         // activeBatch: { id: '1', title: 'Batch 1', content: 'blah blah blah' }
         activeBatch: null,
@@ -64,7 +67,7 @@ class HomeScreen extends Component {
                             </TabList>
 
                             <TabPanel>
-                                <Generate />
+                                <Generate/>
                             </TabPanel>
                             <TabPanel>
                                 <BatchLinks loadBatch={this.loadBatch.bind(this)} batches={batches} />

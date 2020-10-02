@@ -43,7 +43,6 @@ class Generate extends React.Component {
     updateSelection(e, name){
         let input = {}
         input[name] = e.target.value
-
         this.setState(input)
     }
 
@@ -59,7 +58,7 @@ class Generate extends React.Component {
                     <label>State</label>
                     <div className="input-field">
                         <select className="browser-default" onChange={e => {this.updateSelection(e, "state")}}>
-                            <option value="0" >None</option>
+                            <option value="0">None</option>
                             <option value="1">Alabama</option>
                             <option value="2">Florida</option>
                             <option value="3">Texas</option>
