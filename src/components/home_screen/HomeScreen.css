@@ -6,3 +6,16 @@
     right:2%;
     z-index: 10;
 }
+
+.card{
+    margin: .5rem 0px .5rem 0px;
+}
+
+.modal{
+    width: 400px;
+    padding: 20px 0px 20px 0px;
+}
+
+.tr {
+    border: none;
+}

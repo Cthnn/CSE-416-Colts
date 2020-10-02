@@ -1,5 +1,7 @@
 import React from 'react';
 import M from 'materialize-css';
+import BatchCard from './BatchCard';
+import { Modal } from 'react-materialize';
 
 class Generate extends React.Component {
     constructor(props){
@@ -51,6 +53,12 @@ class Generate extends React.Component {
         return this.state.state != 0 && this.state.group != 0;
     }
 
+    generatePlans(e){
+        e.preventDefault();
+        //send request to server
+        this.props.batches.push(BatchCard.createBatch(this.props.batches.length + 1, this.state.state, this.state.plans, this.state.comp, this.state.pop, this.state.group, 'Queued'));
+    }
+
     render() {
         const minMax = this.minMax
         return (
@@ -84,17 +92,23 @@ class Generate extends React.Component {
                         <div className="input-field">
                             <select className="browser-default" onChange={e => {this.updateSelection(e, "group")}}>
                                 <option value="0">None</option>
-                                <option value="1">Black</option>
-                                <option value="2">Hispanic</option>
-                                <option value="3">Asian</option>
-                                <option value="3">Pacific Islander</option>
-                                <option value="3">American Indians</option>
+                                <option value="Black">Black</option>
+                                <option value="Hispanic">Hispanic</option>
+                                <option value="Asian">Asian</option>
+                                <option value="Pacific Islander">Pacific Islander</option>
+                                <option value="American Indians">American Indians</option>
                             </select>
                         </div>
                     </div>
                     <br/>
-                    <button type="submit" className="btn blue lighten-2 waves-effect waves-light col s12" disabled={!this.enableGeneration()}>Generate Plans</button>
+                    <a type="submit" href="#modal1" onClick={e => {this.generatePlans(e)}}className="btn blue lighten-2 waves-effect waves-light col s12 modal-trigger" disabled={!this.enableGeneration()}>Generate Plans</a>
                 </form>
+                <Modal id="modal1" className="modal">
+                    <div className="modal-content center-align">
+                    <h4>Request Recieved</h4>
+                    <p>The requested batch number is: {this.props.batches.length+1}</p>
+                    </div>
+                </Modal>
             </div>
         );
     }
