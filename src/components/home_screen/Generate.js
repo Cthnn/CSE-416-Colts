@@ -27,11 +27,16 @@ class Generate extends React.Component {
     inputValidation(e, name){
         let min = this.minMax[name][0]
         let max = this.minMax[name][1]
-
-        if(e.target.value > max)
-            e.target.value = max
-        if(e.target.value < min)
-            e.target.value = min
+        
+        if(e.target.value > max){
+            document.getElementById(name).value = max;
+            e.target.value = max;
+        }
+            
+        if(e.target.value < min) {
+            document.getElementById(name).value = min;
+            e.target.value = min;
+        }
 
         let input = {}
         input[name] = e.target.value
@@ -51,7 +56,8 @@ class Generate extends React.Component {
     generatePlans(e){
         e.preventDefault();
         //send request to server
-        this.props.batches.push(BatchCard.createBatch(this.props.batches.length + 1, this.state.state, this.state.plans, this.state.comp, this.state.pop, this.state.group, 'Queued'));
+        this.props.incrementBatchNumber()
+        this.props.batches.push(BatchCard.createBatch(this.props.batchNumber, this.state.state, this.state.plans, this.state.comp, this.state.pop, this.state.group, 'Queued'));
     }
 
     render() {
@@ -70,17 +76,17 @@ class Generate extends React.Component {
                     </div>
                     <div>
                         <label className="black-text" htmlFor="number_of_plans">Number of Plans</label>
-                        <input className="active" type="number" min={minMax['plans'][0]} max={minMax['plans'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, 'plans')}} onChange={this.handleChangeDimensions} defaultValue={minMax['plans'][0]} />
+                        <input className="active" type="number" min={minMax['plans'][0]} max={minMax['plans'][1]} id='plans' onBlur={e => {this.inputValidation(e, 'plans')}} onChange={this.handleChangeDimensions} defaultValue={minMax['plans'][0]} />
                     </div>
                     <div>
                         <label className="black-text" htmlFor="compactness">Compactness</label>
                         <i className="tooltipped tiny material-icons grey-text" data-position="top" data-html="true" data-tooltip={this.compactnessTip}>info_outline</i>
-                        <input className="active" type="number" min={minMax['comp'][0]} max={minMax['comp'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, 'comp')}} onChange={this.handleChangeDimensions} defaultValue={minMax['comp'][0]} />
+                        <input className="active" type="number" min={minMax['comp'][0]} max={minMax['comp'][1]} id='comp' onBlur={e => {this.inputValidation(e, 'comp')}} onChange={this.handleChangeDimensions} defaultValue={minMax['comp'][0]} />
                     </div>
                     <div>
                         <label className="black-text" htmlFor="population_deviation">Population Deviation</label>
                         <i className="tooltipped tiny material-icons grey-text" data-position="top" data-html="true" data-tooltip={this.populationTip}>info_outline</i>
-                        <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='tempWidth' onBlur={e => {this.inputValidation(e, 'pop')}} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
+                        <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='pop' onBlur={e => {this.inputValidation(e, 'pop')}} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
                     </div>
                     <div>
                         <label className="black-text"  htmlFor="minority_group">Racial/Ethnic Group</label>
@@ -101,7 +107,7 @@ class Generate extends React.Component {
                 <Modal id="modal1" className="modal">
                     <div className="modal-content center-align">
                     <h4>Request Recieved</h4>
-                    <p>The requested batch number is: {this.props.batches.length+1}</p>
+                    <p>The requested batch number is: {this.props.batchNumber-1}</p>
                     </div>
                 </Modal>
             </div>
