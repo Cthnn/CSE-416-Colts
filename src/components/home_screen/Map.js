@@ -66,7 +66,7 @@ const MapComponent = ({props}) => {
           })
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 5
+            zoom: 6
           })
           makeVisible('AL', map);
         });
@@ -106,7 +106,7 @@ const MapComponent = ({props}) => {
           })
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 5
+            zoom: 6
           })
           makeVisible('FL', map);
         });
@@ -144,7 +144,7 @@ const MapComponent = ({props}) => {
           })
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 5
+            zoom: 6
           })
           makeVisible('TX', map); 
         });
