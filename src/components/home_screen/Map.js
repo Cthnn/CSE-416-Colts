@@ -5,7 +5,7 @@ import Toolbar from './Toolbar.js';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const MapComponent = () => {
+const MapComponent = ({props}) => {
     const mapContainerRef = useRef(null);
     
     useEffect(() => {
@@ -76,8 +76,11 @@ const MapComponent = () => {
             .setHTML("Alabama")
             .addTo(map);
           
+          
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
+
+          document.getElementById('state-selection').value = 'AL';
 
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
@@ -86,10 +89,12 @@ const MapComponent = () => {
               })
             })
           })
+          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 5
+            zoom: 6
           })
+          makeVisible('AL', map);
         });
         map.on('mouseenter', 'AL-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -118,6 +123,8 @@ const MapComponent = () => {
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
 
+          document.getElementById('state-selection').value = 'FL';
+
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
               coord.forEach(function(coordinate_pair){
@@ -125,10 +132,12 @@ const MapComponent = () => {
               })
             })
           })
+          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 5
+            zoom: 6
           })
+          makeVisible('FL', map);
         });
         map.on('mouseenter', 'FL-layer', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -155,6 +164,9 @@ const MapComponent = () => {
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
 
+          document.getElementById('state-selection').value = 'TX';
+          console.log(document.getElementById('state-selection').value);
+
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
               coord.forEach(function(coordinate_pair){
@@ -162,13 +174,15 @@ const MapComponent = () => {
               })
             })
           })
+          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
-            zoom: 5
+            zoom: 6
           })
+          makeVisible('TX', map); 
         });
         map.on('mouseenter', 'TX-layer', function () {
-        map.getCanvas().style.cursor = 'pointer';
+          map.getCanvas().style.cursor = 'pointer';
         });
         
         map.on('mouseleave', 'TX-layer', function () {
@@ -180,8 +194,32 @@ const MapComponent = () => {
       
       return () => map.remove();
     }, []); 
-
     return<div className="map" ref={mapContainerRef} />;
 };
+
+
+function makeVisible(state, map){
+  var enable = false;
+  if(enable){
+    var layers = ['AL-layer','FL-layer','TX-layer'];
+    var layer_id = -1;
+    for(var i = 0; i < layers.length; i++){
+      if(layers[i].substring(0,2) == state){
+        layer_id = i;
+        break;
+      }
+    }
+    if(layer_id != -1){
+      for(var i = 0; i < layers.length; i++){
+        if(i == layer_id){
+          map.setLayoutProperty(layers[layer_id], 'visibility', 'visible');
+        }
+        else{
+          map.setLayoutProperty(layers[i], 'visibility', 'none');
+        }
+      }
+    }
+  }
+}
 
 export default MapComponent;

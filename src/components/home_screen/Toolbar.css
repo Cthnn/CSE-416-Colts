@@ -21,3 +21,14 @@
     
     /* float:left; */
 }
+.state-select{
+    display: inline-block;
+    width: 90px;
+    height:30px;
+    margin-left:4px;
+}
+.heatmap-select{
+    display: inline-block;
+    width: 270px;
+    height:30px;
+}
