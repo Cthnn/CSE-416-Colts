@@ -60,6 +60,116 @@ const MapComponent = ({props}) => {
           'data':
           'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/FL/shape.geojson'
         });
+
+        map.addSource('AL-Congressional', {
+          'type': 'geojson',
+          'data':
+          'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Alabama_108_to_112.geojson'
+        });
+        map.addSource('FL-Congressional', {
+          'type': 'geojson',
+          'data':
+          'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Florida_108_to_112.geojson'
+        });
+        map.addSource('TX-Congressional', {
+          'type': 'geojson',
+          'data':
+          'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Texas_110_to_112.geojson'
+        });
+        map.addSource('AL-Precinct', {
+          'type': 'geojson',
+          'data':
+          './alabama-precincts.geojson'
+        });
+        map.addSource('FL-Precinct', {
+          'type': 'geojson',
+          'data':
+          './florida-precincts.geojson'
+        });
+        map.addSource('TX-Precinct', {
+          'type': 'geojson',
+          'data':
+          'texas-precincts.geojson'
+        });
+
+        map.addLayer({
+          'id': 'TX-Precincts',
+          'type': 'line',
+          'source': 'TX-Precinct', 
+          'layout':{
+            'visibility':'none'
+          },
+          'paint': {
+            'line-color': '#888',
+            'line-width': 1
+          }
+        });
+
+        map.addLayer({
+          'id': 'AL-Precincts',
+          'type': 'line',
+          'source': 'AL-Precinct',
+          'layout':{
+            'visibility':'none'
+          },
+          'paint': {
+            'line-color': '#888',
+            'line-width': 1
+          }
+        });
+
+        map.addLayer({
+          'id': 'FL-Precincts',
+          'type': 'line',
+          'source': 'FL-Precinct',
+          'layout':{
+            'visibility':'none'
+          },
+          'paint': {
+            'line-color': '#888',
+            'line-width': 1
+          }
+        });
+
+
+        map.addLayer({
+          'id': 'AL-Districts',
+          'type': 'line',
+          'source': 'AL-Congressional',
+          'layout':{
+            'visibility':'none'
+          },
+          'paint': {
+            'line-color': '#888',
+            'line-width': 2
+          }
+        });
+
+        map.addLayer({
+          'id': 'FL-Districts',
+          'type': 'line',
+          'source': 'FL-Congressional',
+          'layout':{
+            'visibility':'none'
+          },
+          'paint': {
+            'line-color': '#888',
+            'line-width': 2
+          }
+        });
+        map.addLayer({
+          'id': 'TX-Districts',
+          'type': 'line',
+          'source': 'TX-Congressional',
+          'layout':{
+            'visibility':'none'
+          },
+          'paint': {
+            'line-color': '#888',
+            'line-width': 2
+          }
+        });
+
         map.addLayer({
           'id': 'AL-layer',
           'type': 'fill',
@@ -70,6 +180,7 @@ const MapComponent = ({props}) => {
           }
         });
         
+
         map.on('click', 'AL-layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)

@@ -1,6 +1,9 @@
 import './Toolbar.css'
 
 class Toolbar{
+    constructor(){
+        this.changeDistrictLayer = this.changeDistrictLayer.bind(this);
+    }
     onAdd(map){
         this.map = map;
         this.container = document.createElement('div');
@@ -92,7 +95,9 @@ class Toolbar{
         this.heat_dropdown.appendChild(this.option5);
 
         this.heat.id = 'heat-checkbox';
-        this.left.addEventListener('change', function(){
+        this.left.addEventListener('change', (e) =>{
+            e.preventDefault();
+            e.stopPropagation();
             var state = document.getElementById('state-selection').value;
             if(state == 'AL'){
                 map.flyTo({
@@ -109,7 +114,7 @@ class Toolbar{
             if(state == 'TX'){
                 map.flyTo({
                     center: [-100.0717163, 31.170127359],
-                    zoom: 6
+                    zoom: 5
                 })
             }
             if(state == 'None'){
@@ -118,16 +123,35 @@ class Toolbar{
                     zoom: 3
                 })
             }
+            this.changeDistrictLayer(map);
+            this.changePrecinctLayer(map);
             
         })
-        this.middle_text.addEventListener('click', function(){
-            document.getElementById('district-checkbox').checked = !document.getElementById('district-checkbox').checked;
+        this.middle_text.addEventListener('click', (e) =>{
+            // e.preventDefault();
+            // e.stopPropagation();
+            var button = document.getElementById('district-checkbox');
+            button.checked = !button.checked;
+            this.changeDistrictLayer(map);
+
         })
-        this.right_text.addEventListener('click', function(){
-            document.getElementById('precinct-checkbox').checked = !document.getElementById('precinct-checkbox').checked;
+        this.middle.addEventListener('click', () => {
+            this.changeDistrictLayer(map);
         })
-        this.heat_text.addEventListener('click', function(){
-            document.getElementById('heat-checkbox').checked = !document.getElementById('heat-checkbox').checked;
+
+        this.right_text.addEventListener('click', () =>{
+            var button = document.getElementById('precinct-checkbox');
+            button.checked = !button.checked;
+            this.changePrecinctLayer(map);
+        })
+        this.right.addEventListener('click', () => {
+            this.changePrecinctLayer(map);
+        })
+
+        this.heat_text.addEventListener('click', () =>{
+            var button = document.getElementById('heat-checkbox');
+            button.checked = !button.checked;
+
         })
 
         this.sub_container.appendChild(this.left_text);
@@ -148,6 +172,48 @@ class Toolbar{
     onRemove(){
         this.container.parentNode.removeChild(this.container);
         this.map = undefined;
+    }
+    changeDistrictLayer = (map) =>{
+        var selected_state = document.getElementById('state-selection').value;
+        var district_button_value = document.getElementById('district-checkbox').checked;
+        var states = ['AL', 'FL', 'TX'];
+        for(var i = 0; i < states.length; i++){
+            var temp = states[i] + '-Districts';
+            if(district_button_value){ //If user wants to see districts
+                if(selected_state == states[i]){
+                    // console.log('Matched with: ' + states[i]);
+                    map.setLayoutProperty(temp, 'visibility', 'visible'); // Then set visibility to visible
+                }
+                else{
+                    // console.log('No Match: ' + selected_state + ' != ' + states[i]);
+                    map.setLayoutProperty(temp, 'visibility', 'none');
+                }
+            }
+            else{
+                map.setLayoutProperty(temp, 'visibility', 'none');
+            }
+        }
+        
+    }
+    changePrecinctLayer = (map) => {
+        var selected_state = document.getElementById('state-selection').value;
+        var precinct_button_value = document.getElementById('precinct-checkbox').checked;
+        var states = ['AL', 'FL', 'TX'];
+        for(var i = 0; i < states.length; i++){
+            var temp = states[i] + '-Precincts';
+            if(precinct_button_value){ //If user wants to see precincts
+                if(selected_state == states[i]){
+                    // console.log('Matched with: ' + states[i]);
+                    map.setLayoutProperty(temp, 'visibility', 'visible'); // Then set visibility to visible
+                }
+                else{
+                    map.setLayoutProperty(temp, 'visibility', 'none');
+                }
+            }
+            else{
+                map.setLayoutProperty(temp, 'visibility', 'none');
+            }
+        }
     }
 }
 
