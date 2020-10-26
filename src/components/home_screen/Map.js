@@ -41,6 +41,7 @@ const MapComponent = ({props}) => {
 
       var toolbar = new Toolbar();
       map.addControl(toolbar, 'top-left');
+      
 
       map.on('load', function () {
         // Add a source for the state polygons.
@@ -94,84 +95,81 @@ const MapComponent = ({props}) => {
 
         map.addLayer({
           'id': 'TX-Precincts',
-          'type': 'line',
+          'type': 'fill',
           'source': 'TX-Precinct', 
           'layout':{
             'visibility':'none'
           },
           'paint': {
-            'line-color': '#888',
-            'line-width': 1
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
 
         map.addLayer({
           'id': 'AL-Precincts',
-          'type': 'line',
+          'type': 'fill',
           'source': 'AL-Precinct',
           'layout':{
             'visibility':'none'
           },
           'paint': {
-            'line-color': '#888',
-            'line-width': 1
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
 
         map.addLayer({
           'id': 'FL-Precincts',
-          'type': 'line',
+          'type': 'fill',
           'source': 'FL-Precinct',
           'layout':{
             'visibility':'none'
           },
           'paint': {
-            'line-color': '#888',
-            'line-width': 1
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
 
-
         map.addLayer({
           'id': 'AL-Districts',
-          'type': 'line',
+          'type': 'fill',
           'source': 'AL-Congressional',
           'layout':{
             'visibility':'none'
           },
           'paint': {
-            'line-color': '#888',
-            'line-width': 2
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
-
         map.addLayer({
           'id': 'FL-Districts',
-          'type': 'line',
+          'type': 'fill',
           'source': 'FL-Congressional',
           'layout':{
             'visibility':'none'
           },
           'paint': {
-            'line-color': '#888',
-            'line-width': 2
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
         map.addLayer({
           'id': 'TX-Districts',
-          'type': 'line',
+          'type': 'fill',
           'source': 'TX-Congressional',
           'layout':{
             'visibility':'none'
           },
           'paint': {
-            'line-color': '#888',
-            'line-width': 2
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(240, 240, 40, 1)'
           }
         });
-
         map.addLayer({
-          'id': 'AL-layer',
+          'id': 'AL-Layer',
           'type': 'fill',
           'source': 'AL',
           'paint': {
@@ -181,7 +179,7 @@ const MapComponent = ({props}) => {
         });
         
 
-        map.on('click', 'AL-layer', function (e) {
+        map.on('click', 'AL-Layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
             .setHTML("Alabama")
@@ -205,18 +203,53 @@ const MapComponent = ({props}) => {
             center: bounds.getCenter(),
             zoom: 6
           })
-          makeVisible('AL', map);
+          toolbar.changeLayer(map);
         });
-        map.on('mouseenter', 'AL-layer', function () {
-        map.getCanvas().style.cursor = 'pointer';
+        map.on('mouseenter', 'AL-Layer', function () {
+          map.getCanvas().style.cursor = 'pointer';
         });
         
-        map.on('mouseleave', 'AL-layer', function () {
+        map.on('mouseleave', 'AL-Layer', function () {
           map.getCanvas().style.cursor = '';
         });
-        
+        map.on('click', function (e){
+          var district_button_value = document.getElementById('district-checkbox').checked;
+          var precinct_button_value = document.getElementById('precinct-checkbox').checked;
+          var features = null;
+          if(precinct_button_value){
+            features = map.queryRenderedFeatures(e.point, {layers: ['AL-Precincts','FL-Precincts','TX-Precincts']});
+          }
+          else{
+            if(district_button_value){
+              console.log("TESTTES");
+              features = map.queryRenderedFeatures(e.point, {layers: ['AL-Districts','FL-Districts','TX-Districts']});
+            }
+          }
+          console.log(features);
+          if(features === null || !features.length){
+            return;
+          }
+          if (typeof map.getLayer('selectedFeature') !== "undefined" ){         
+            map.removeLayer('selectedFeature');
+            map.removeSource('selectedFeature');   
+          }
+          var feature = features[0];
+          map.addSource('selectedFeature', {
+            "type": "geojson",
+            "data": feature.toJSON()
+          });
+          map.addLayer({
+            'id': 'selectedFeature',
+            'type': 'fill',
+            'source': 'selectedFeature',
+            'paint': {
+              'fill-color': 'rgba(50, 50, 210, 0.4)',
+              'fill-outline-color': 'rgba(50, 50, 210, 1)'
+            }
+          });
+        })
         map.addLayer({
-          'id': 'FL-layer',
+          'id': 'FL-Layer',
           'type': 'fill',
           'source': 'FL',
           'paint': {
@@ -224,8 +257,7 @@ const MapComponent = ({props}) => {
             'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
-        
-        map.on('click', 'FL-layer', function (e) {
+        map.on('click', 'FL-Layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
             .setHTML("Florida")
@@ -243,22 +275,22 @@ const MapComponent = ({props}) => {
               })
             })
           })
-          console.log(bounds.getCenter());
+          // console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
             zoom: 6
           })
-          makeVisible('FL', map);
+          toolbar.changeLayer(map);
         });
-        map.on('mouseenter', 'FL-layer', function () {
+        map.on('mouseenter', 'FL-Layer', function () {
         map.getCanvas().style.cursor = 'pointer';
         });
         
-        map.on('mouseleave', 'FL-layer', function () {
+        map.on('mouseleave', 'FL-Layer', function () {
           map.getCanvas().style.cursor = '';
         });
         map.addLayer({
-          'id': 'TX-layer',
+          'id': 'TX-Layer',
           'type': 'fill',
           'source': 'TX',
           'paint': {
@@ -267,11 +299,12 @@ const MapComponent = ({props}) => {
           }
         });
         
-        map.on('click', 'TX-layer', function (e) {
+        map.on('click', 'TX-Layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
             .setHTML(TXDemographic)
             .addTo(map);
+      
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
 
@@ -290,47 +323,24 @@ const MapComponent = ({props}) => {
             center: bounds.getCenter(),
             zoom: 5
           })
-          makeVisible('TX', map); 
+          toolbar.changeLayer(map);
         });
-        map.on('mouseenter', 'TX-layer', function () {
+        map.on('mouseenter', 'TX-Layer', function () {
           map.getCanvas().style.cursor = 'pointer';
         });
         
-        map.on('mouseleave', 'TX-layer', function () {
+        map.on('mouseleave', 'TX-Layer', function () {
           map.getCanvas().style.cursor = '';
         });
       });
-
       map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-      
+
       return () => map.remove();
     }, []); 
     return<div className="map" ref={mapContainerRef} />;
 };
 
 
-function makeVisible(state, map){
-  var enable = false;
-  if(enable){
-    var layers = ['AL-layer','FL-layer','TX-layer'];
-    var layer_id = -1;
-    for(var i = 0; i < layers.length; i++){
-      if(layers[i].substring(0,2) == state){
-        layer_id = i;
-        break;
-      }
-    }
-    if(layer_id != -1){
-      for(var i = 0; i < layers.length; i++){
-        if(i == layer_id){
-          map.setLayoutProperty(layers[layer_id], 'visibility', 'visible');
-        }
-        else{
-          map.setLayoutProperty(layers[i], 'visibility', 'none');
-        }
-      }
-    }
-  }
-}
+
 
 export default MapComponent;

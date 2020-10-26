@@ -1,9 +1,6 @@
 import './Toolbar.css'
 
 class Toolbar{
-    constructor(){
-        this.changeDistrictLayer = this.changeDistrictLayer.bind(this);
-    }
     onAdd(map){
         this.map = map;
         this.container = document.createElement('div');
@@ -96,8 +93,8 @@ class Toolbar{
 
         this.heat.id = 'heat-checkbox';
         this.left.addEventListener('change', (e) =>{
-            e.preventDefault();
-            e.stopPropagation();
+            // e.preventDefault();
+            // e.stopPropagation();
             var state = document.getElementById('state-selection').value;
             if(state == 'AL'){
                 map.flyTo({
@@ -123,29 +120,25 @@ class Toolbar{
                     zoom: 3
                 })
             }
-            this.changeDistrictLayer(map);
-            this.changePrecinctLayer(map);
-            
+            this.changeLayer(map);
         })
         this.middle_text.addEventListener('click', (e) =>{
-            // e.preventDefault();
-            // e.stopPropagation();
             var button = document.getElementById('district-checkbox');
             button.checked = !button.checked;
-            this.changeDistrictLayer(map);
+            this.changeLayer(map);
 
         })
         this.middle.addEventListener('click', () => {
-            this.changeDistrictLayer(map);
+            this.changeLayer(map);
         })
 
         this.right_text.addEventListener('click', () =>{
             var button = document.getElementById('precinct-checkbox');
             button.checked = !button.checked;
-            this.changePrecinctLayer(map);
+            this.changeLayer(map);
         })
         this.right.addEventListener('click', () => {
-            this.changePrecinctLayer(map);
+            this.changeLayer(map);
         })
 
         this.heat_text.addEventListener('click', () =>{
@@ -173,46 +166,60 @@ class Toolbar{
         this.container.parentNode.removeChild(this.container);
         this.map = undefined;
     }
-    changeDistrictLayer = (map) =>{
+    
+    changeLayer = (map) => {
         var selected_state = document.getElementById('state-selection').value;
         var district_button_value = document.getElementById('district-checkbox').checked;
-        var states = ['AL', 'FL', 'TX'];
-        for(var i = 0; i < states.length; i++){
-            var temp = states[i] + '-Districts';
-            if(district_button_value){ //If user wants to see districts
-                if(selected_state == states[i]){
-                    // console.log('Matched with: ' + states[i]);
-                    map.setLayoutProperty(temp, 'visibility', 'visible'); // Then set visibility to visible
-                }
-                else{
-                    // console.log('No Match: ' + selected_state + ' != ' + states[i]);
-                    map.setLayoutProperty(temp, 'visibility', 'none');
-                }
-            }
-            else{
-                map.setLayoutProperty(temp, 'visibility', 'none');
-            }
-        }
-        
-    }
-    changePrecinctLayer = (map) => {
-        var selected_state = document.getElementById('state-selection').value;
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
         var states = ['AL', 'FL', 'TX'];
         for(var i = 0; i < states.length; i++){
-            var temp = states[i] + '-Precincts';
-            if(precinct_button_value){ //If user wants to see precincts
-                if(selected_state == states[i]){
-                    // console.log('Matched with: ' + states[i]);
-                    map.setLayoutProperty(temp, 'visibility', 'visible'); // Then set visibility to visible
+            var district_layer_name = states[i] + '-Districts';
+            var precinct_layer_name = states[i] + '-Precincts';
+            var state_layer_name = states[i] +'-Layer';
+            if(!district_button_value && !precinct_button_value){ //Just let state layer visible and all other invisible
+                map.setLayoutProperty(district_layer_name, 'visibility', 'none');
+                map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+                // console.log('Selected State: ' + selected_state);
+                if(selected_state != 'None'){
+                    if(states[i] == selected_state){
+                        map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+                    }
+                    else{
+                        map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                    }
                 }
-                else{
-                    map.setLayoutProperty(temp, 'visibility', 'none');
+                else{ //Set all state layers to be visible since nothing is selected
+                    map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
                 }
+                
             }
             else{
-                map.setLayoutProperty(temp, 'visibility', 'none');
+                if(precinct_button_value){
+                    if(selected_state == states[i]){
+                        map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
+                    }
+                    else{
+                        map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+                    }
+                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                }
+                else{
+                    map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+                }
+                if(district_button_value){
+                    if(selected_state == states[i]){
+                        map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
+                    }
+                    else{
+                        map.setLayoutProperty(district_layer_name, 'visibility', 'none');
+                    }
+                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                }
+                else{
+                    map.setLayoutProperty(district_layer_name, 'visibility', 'none');
+                }
             }
+
         }
     }
 }
