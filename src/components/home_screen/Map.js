@@ -17,7 +17,7 @@ const MapComponent = ({props}) => {
         zoom: 3
       });
 
-      const TXDemographic = `
+      const VADemographic = `
         <div>District 2 Demographics</div>
         <table style="font-size:10px; padding: 0px !important;">
         <tr>
@@ -46,10 +46,10 @@ const MapComponent = ({props}) => {
       map.on('load', function () {
         // Add a source for the state polygons.
         map.resize();
-        map.addSource('TX', {
+        map.addSource('VA', {
           'type': 'geojson',
           'data':
-          'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/TX/shape.geojson'
+          'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/VA/shape.geojson'
         });
         map.addSource('AL', {
           'type': 'geojson',
@@ -72,10 +72,10 @@ const MapComponent = ({props}) => {
           'data':
           'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Florida_108_to_112.geojson'
         });
-        map.addSource('TX-Congressional', {
+        map.addSource('VA-Congressional', {
           'type': 'geojson',
           'data':
-          'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Texas_110_to_112.geojson'
+          'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Virginia_108_to_112.geojson'
         });
         map.addSource('AL-Precinct', {
           'type': 'geojson',
@@ -87,16 +87,16 @@ const MapComponent = ({props}) => {
           'data':
           './florida-precincts.geojson'
         });
-        map.addSource('TX-Precinct', {
+        map.addSource('VA-Precinct', {
           'type': 'geojson',
           'data':
-          'texas-precincts.geojson'
+          'virginia-precincts.geojson'
         });
 
         map.addLayer({
-          'id': 'TX-Precincts',
+          'id': 'VA-Precincts',
           'type': 'fill',
-          'source': 'TX-Precinct', 
+          'source': 'VA-Precinct', 
           'layout':{
             'visibility':'none'
           },
@@ -157,9 +157,9 @@ const MapComponent = ({props}) => {
           }
         });
         map.addLayer({
-          'id': 'TX-Districts',
+          'id': 'VA-Districts',
           'type': 'fill',
-          'source': 'TX-Congressional',
+          'source': 'VA-Congressional',
           'layout':{
             'visibility':'none'
           },
@@ -217,12 +217,12 @@ const MapComponent = ({props}) => {
           var precinct_button_value = document.getElementById('precinct-checkbox').checked;
           var features = null;
           if(precinct_button_value){
-            features = map.queryRenderedFeatures(e.point, {layers: ['AL-Precincts','FL-Precincts','TX-Precincts']});
+            features = map.queryRenderedFeatures(e.point, {layers: ['AL-Precincts','FL-Precincts','VA-Precincts']});
           }
           else{
             if(district_button_value){
               console.log("TESTTES");
-              features = map.queryRenderedFeatures(e.point, {layers: ['AL-Districts','FL-Districts','TX-Districts']});
+              features = map.queryRenderedFeatures(e.point, {layers: ['AL-Districts','FL-Districts','VA-Districts']});
             }
           }
           console.log(features);
@@ -290,25 +290,25 @@ const MapComponent = ({props}) => {
           map.getCanvas().style.cursor = '';
         });
         map.addLayer({
-          'id': 'TX-Layer',
+          'id': 'VA-Layer',
           'type': 'fill',
-          'source': 'TX',
+          'source': 'VA',
           'paint': {
             'fill-color': 'rgba(200, 100, 240, 0.4)',
             'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
         
-        map.on('click', 'TX-Layer', function (e) {
+        map.on('click', 'VA-Layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
-            .setHTML(TXDemographic)
+            .setHTML(VADemographic)
             .addTo(map);
       
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
 
-          document.getElementById('state-selection').value = 'TX';
+          document.getElementById('state-selection').value = 'VA';
           console.log(document.getElementById('state-selection').value);
 
           features.forEach(function(feature){
@@ -325,11 +325,11 @@ const MapComponent = ({props}) => {
           })
           toolbar.changeLayer(map);
         });
-        map.on('mouseenter', 'TX-Layer', function () {
+        map.on('mouseenter', 'VA-Layer', function () {
           map.getCanvas().style.cursor = 'pointer';
         });
         
-        map.on('mouseleave', 'TX-Layer', function () {
+        map.on('mouseleave', 'VA-Layer', function () {
           map.getCanvas().style.cursor = '';
         });
       });

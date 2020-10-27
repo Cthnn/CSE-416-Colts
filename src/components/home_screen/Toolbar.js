@@ -19,12 +19,12 @@ class Toolbar{
         this.state_option0.value = 'None';
         this.state_option1.value = 'AL';
         this.state_option2.value = 'FL';
-        this.state_option3.value = 'TX';
+        this.state_option3.value = 'VA';
 
         this.state_option1.textContent = 'None';
         this.state_option1.textContent = 'Alabama';
         this.state_option2.textContent = 'Florida';
-        this.state_option3.textContent = 'Texas';
+        this.state_option3.textContent = 'Virginia';
 
         this.left.appendChild(this.state_option0);
         this.left.appendChild(this.state_option1);
@@ -108,9 +108,9 @@ class Toolbar{
                     zoom: 6
                 })
             }
-            if(state == 'TX'){
+            if(state == 'VA'){
                 map.flyTo({
-                    center: [-100.0717163, 31.170127359],
+                    center: [-100.0717163, 31.170127359], //NEED TO UPDATE NEW CENTER
                     zoom: 5
                 })
             }
@@ -171,7 +171,7 @@ class Toolbar{
         var selected_state = document.getElementById('state-selection').value;
         var district_button_value = document.getElementById('district-checkbox').checked;
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
-        var states = ['AL', 'FL', 'TX'];
+        var states = ['AL', 'FL', 'VA'];
         for(var i = 0; i < states.length; i++){
             var district_layer_name = states[i] + '-Districts';
             var precinct_layer_name = states[i] + '-Precincts';
