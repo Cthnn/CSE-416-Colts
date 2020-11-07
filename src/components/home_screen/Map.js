@@ -273,7 +273,7 @@ const MapComponent = ({props}) => {
               })
             })
           })
-          // console.log(bounds.getCenter());
+          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
             zoom: 6
@@ -337,29 +337,4 @@ const MapComponent = ({props}) => {
     }, []); 
     return<div className="map" ref={mapContainerRef} />;
 };
-function makeVisible(state, map) {
-  var enable = false;
-  if (enable) {
-    var layers = ['AL-layer', 'FL-layer', 'TX-layer'];
-    var layer_id = -1;
-    for (var i = 0; i < layers.length; i++) {
-      if (layers[i].substring(0, 2) == state) {
-        layer_id = i;
-        break;
-      }
-    }
-    if (layer_id != -1) {
-      for (var i = 0; i < layers.length; i++) {
-        if (i == layer_id) {
-          map.setLayoutProperty(layers[layer_id], 'visibility', 'visible');
-        }
-        else {
-          map.setLayoutProperty(layers[i], 'visibility', 'none');
-        }
-      }
-    }
-  }
-}
-
-
 export default MapComponent;
