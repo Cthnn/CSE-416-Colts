@@ -5,6 +5,7 @@ import Toolbar from './Toolbar.js';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
+
 const MapComponent = ({props}) => {
     const mapContainerRef = useRef(null);
     
@@ -38,7 +39,6 @@ const MapComponent = ({props}) => {
         </tr>
         </table>
       `
-
       var toolbar = new Toolbar();
       map.addControl(toolbar, 'top-left');
       
@@ -53,15 +53,13 @@ const MapComponent = ({props}) => {
         });
         map.addSource('AL', {
           'type': 'geojson',
-          'data':
-          'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/AL/shape.geojson'
-        });
-        map.addSource('FL', {
-          'type': 'geojson',
-          'data':
+          'data': 'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/AL/shape.geojson'
+      });
+      map.addSource('FL', {
+        'type': 'geojson',
+        'data':
           'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/FL/shape.geojson'
         });
-
         map.addSource('AL-Congressional', {
           'type': 'geojson',
           'data':
@@ -339,8 +337,29 @@ const MapComponent = ({props}) => {
     }, []); 
     return<div className="map" ref={mapContainerRef} />;
 };
-
-
+function makeVisible(state, map) {
+  var enable = false;
+  if (enable) {
+    var layers = ['AL-layer', 'FL-layer', 'TX-layer'];
+    var layer_id = -1;
+    for (var i = 0; i < layers.length; i++) {
+      if (layers[i].substring(0, 2) == state) {
+        layer_id = i;
+        break;
+      }
+    }
+    if (layer_id != -1) {
+      for (var i = 0; i < layers.length; i++) {
+        if (i == layer_id) {
+          map.setLayoutProperty(layers[layer_id], 'visibility', 'visible');
+        }
+        else {
+          map.setLayoutProperty(layers[i], 'visibility', 'none');
+        }
+      }
+    }
+  }
+}
 
 
 export default MapComponent;
