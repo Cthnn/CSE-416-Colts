@@ -202,6 +202,10 @@ const MapComponent = ({props}) => {
             zoom: 6
           })
           toolbar.changeLayer(map);
+          var params = JSON.stringify({
+            'name': 'Alabama'
+          })
+          fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         map.on('mouseenter', 'AL-Layer', function () {
           map.getCanvas().style.cursor = 'pointer';
@@ -223,7 +227,7 @@ const MapComponent = ({props}) => {
               features = map.queryRenderedFeatures(e.point, {layers: ['AL-Districts','FL-Districts','VA-Districts']});
             }
           }
-          console.log(features);
+          // console.log(features);
           if(features === null || !features.length){
             return;
           }
@@ -255,6 +259,7 @@ const MapComponent = ({props}) => {
             'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
+        
         map.on('click', 'FL-Layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
@@ -279,6 +284,10 @@ const MapComponent = ({props}) => {
             zoom: 6
           })
           toolbar.changeLayer(map);
+          var params = JSON.stringify({
+            'name': 'Florida'
+          })
+          fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         map.on('mouseenter', 'FL-Layer', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -322,6 +331,10 @@ const MapComponent = ({props}) => {
             zoom: 5
           })
           toolbar.changeLayer(map);
+          var params = JSON.stringify({
+            'name': 'Virginia'
+          })
+          fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         map.on('mouseenter', 'VA-Layer', function () {
           map.getCanvas().style.cursor = 'pointer';
@@ -337,4 +350,30 @@ const MapComponent = ({props}) => {
     }, []); 
     return<div className="map" ref={mapContainerRef} />;
 };
+
+function makeVisible(state, map) {
+  var enable = false;
+  if (enable) {
+    var layers = ['AL-layer', 'FL-layer', 'TX-layer'];
+    var layer_id = -1;
+    for (var i = 0; i < layers.length; i++) {
+      if (layers[i].substring(0, 2) === state) {
+        layer_id = i;
+        break;
+      }
+    }
+    if (layer_id !== -1) {
+      for (var i = 0; i < layers.length; i++) {
+        if (i === layer_id) {
+          map.setLayoutProperty(layers[layer_id], 'visibility', 'visible');
+        }
+        else {
+          map.setLayoutProperty(layers[i], 'visibility', 'none');
+        }
+      }
+    }
+  }
+}
+
+
 export default MapComponent;

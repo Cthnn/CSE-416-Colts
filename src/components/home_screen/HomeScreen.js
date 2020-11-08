@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './HomeScreen.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import Generate from './Generate';
+import Generator from './Generator';
 import BatchLinks from './BatchLinks';
 import Map from './Map';
 import Summary from './Summary'
@@ -14,45 +14,52 @@ class HomeScreen extends Component {
         activeBatch: null,
         showMap: true,
         batches: [
-            BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
-            BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
-            BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
-            BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
-            BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
+            // BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
+            // BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
+            // BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
+            // BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
+            // BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
         ],
-        batchNumber: 5
-    }
-
-    incrementBatchNumber = () => {
-        this.setState({batchNumber: this.state.batchNumber+1})
     }
 
     loadBatch = (batch) => {
-        this.setState({activeBatch: batch});
+        this.setState({ activeBatch: batch });
         this.displaySummaryButton();
-        //this.unshowMap();
+        var params = JSON.stringify({
+            'jobId': batch.id,
+            'DistrictingType': 'AVERAGE'
+          })
+          fetch('http://localhost:8080/jobGeo', {headers:{"Content-Type":"application/json"},method: 'POST', body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
     }
 
     unloadBatch = () => {
-        this.setState({activeBatch: null});
+        this.setState({ activeBatch: null });
         document.getElementById("summaryToggle").style.visibility = "hidden";
     }
 
     deleteBatch = (batch) => {
         const id = batch.id;
-        this.setState({ batches: [...this.state.batches.filter(batch => batch.id != id)]})
+        this.setState({ batches: [...this.state.batches.filter(batch => batch.id != id)] })
+        var params = JSON.stringify({
+            'id': id
+          })
+        fetch('http://localhost:8080/delete', {headers:{"Content-Type":"application/json"},method: 'POST', body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
     }
 
-    displaySummaryButton = () =>{
+    getHistory = () => {
+        fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET'}).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+    }
+
+    displaySummaryButton = () => {
         document.getElementById("summaryToggle").style.visibility = "visible";
     }
 
     toggleShowMap = () => {
-        this.setState({showMap: !this.state.showMap})
+        this.setState({ showMap: !this.state.showMap })
     }
 
     unshowMap = () => {
-        this.setState({showMap: false})
+        this.setState({ showMap: false })
     }
 
     render() {
@@ -62,7 +69,6 @@ class HomeScreen extends Component {
         }
 
         const batches = this.state.batches;
-        const batchNumber = this.state.batchNumber;
 
         return (
             <div className="HomeComponentComponents">
@@ -72,11 +78,11 @@ class HomeScreen extends Component {
                         <Tabs>
                             <TabList>
                                 <Tab onClick={this.unloadBatch}>Generate</Tab>
-                                <Tab>Results</Tab>
+                                <Tab onClick={this.getHistory}>Results</Tab>
                             </TabList>
 
                             <TabPanel forceRender>
-                                <Generate batchNumber={batchNumber} incrementBatchNumber={this.incrementBatchNumber} batches={batches}/>
+                                <Generator batches={batches} />
                             </TabPanel>
                             <TabPanel>
                                 <BatchLinks loadBatch={this.loadBatch.bind(this)} unloadBatch={this.unloadBatch} deleteBatch={this.deleteBatch} batches={batches} />
@@ -84,17 +90,17 @@ class HomeScreen extends Component {
                         </Tabs>
                     </div>
                     <div>
-                        {(this.state.activeBatch && !this.state.showMap)&&
+                        {(this.state.activeBatch && !this.state.showMap) &&
                             <div className="grey lighten-4" style={containerStyle}>
-                                <Summary unloadBatch={this.unloadBatch} batch={this.state.activeBatch}/>
-                            </div>  
+                                <Summary unloadBatch={this.unloadBatch} batch={this.state.activeBatch} />
+                            </div>
                         }
                         {(!this.state.activeBatch || this.state.showMap) &&
                             <Map className="col s6 m9 offset-s6 offset-m3"></Map>
                         }
-                        <div id="summaryToggle" style={{top: "100px"}}>
-                            <a className="blue lighten-2 waves-effect waves-light btn"  onClick = {this.toggleShowMap}>
-                            <i className="material-icons">{this.state.showMap? "insert_chart": "map"}</i>
+                        <div id="summaryToggle" style={{ top: "100px" }}>
+                            <a className="blue lighten-2 waves-effect waves-light btn" onClick={this.toggleShowMap}>
+                                <i className="material-icons">{this.state.showMap ? "insert_chart" : "map"}</i>
                             </a>
                         </div>
                     </div>
