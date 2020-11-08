@@ -181,7 +181,7 @@ class Toolbar{
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                 if(selected_state != 'None'){
                     if(states[i] == selected_state){
-                        map.setLayoutProperty(state_layer_name, 'visibility', 'visible'); //TODO: Change color to highlight
+                        map.setLayoutProperty(state_layer_name, 'visibility', 'visible'); 
                         map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
                     }
                     else{
@@ -202,7 +202,7 @@ class Toolbar{
                     else{
                         map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                     }
-                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
                 }
                 else{
                     map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
@@ -214,7 +214,7 @@ class Toolbar{
                     else{
                         map.setLayoutProperty(district_layer_name, 'visibility', 'none');
                     }
-                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
                 }
                 else{
                     map.setLayoutProperty(district_layer_name, 'visibility', 'none');
