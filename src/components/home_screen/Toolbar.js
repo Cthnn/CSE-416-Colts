@@ -99,19 +99,19 @@ class Toolbar {
             var state = document.getElementById('state-selection').value;
             if (state === 'AL') {
                 map.flyTo({
-                    center: [-86.6793823, 32.5763150],
+                    center: [-86.68075561523438, 32.57631501316452],
                     zoom: 6
                 })
             }
             if (state === 'FL') {
                 map.flyTo({
-                    center: [-82.8784561, 28.4002285],
+                    center: [-82.87845611572266, 28.40022856730028],
                     zoom: 6
                 })
             }
             if (state === 'VA') {
                 map.flyTo({
-                    center: [-100.0717163, 31.170127359], //NEED TO UPDATE NEW CENTER
+                    center: [-79.42291259765625, 38.00321033702472], //NEED TO UPDATE NEW CENTER
                     zoom: 5
                 })
             }
@@ -200,17 +200,18 @@ class Toolbar {
         for (var i = 0; i < states.length; i++) {
             var district_layer_name = states[i] + '-Districts';
             var precinct_layer_name = states[i] + '-Precincts';
-            var state_layer_name = states[i] + '-Layer';
-            if (!district_button_value && !precinct_button_value) { //Just let state layer visible and all other invisible
+            var state_layer_name = states[i] +'-Layer';
+            if(!district_button_value && !precinct_button_value){ 
                 map.setLayoutProperty(district_layer_name, 'visibility', 'none');
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
-                // console.log('Selected State: ' + selected_state);
-                if (selected_state !== 'None') {
-                    if (states[i] === selected_state) {
-                        map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+                if(selected_state != 'None'){
+                    if(states[i] == selected_state){
+                        map.setLayoutProperty(state_layer_name, 'visibility', 'visible'); //TODO: Change color to highlight
+                        map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
                     }
-                    else {
-                        map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                    else{
+                        //TODO: Change color when selected
+                        map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
                     }
                 }
                 else { //Set all state layers to be visible since nothing is selected
