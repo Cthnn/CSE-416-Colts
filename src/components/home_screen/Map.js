@@ -282,9 +282,7 @@ const MapComponent = ({props}) => {
             zoom: 6
           })
           toolbar.changeLayer(map);
-          var params = JSON.stringify({
-            'name': 'Florida'
-          })
+          var params = JSON.stringify('FLORIDA');
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         map.on('mouseenter', 'FL-Layer', function () {
@@ -329,9 +327,7 @@ const MapComponent = ({props}) => {
             zoom: 5
           })
           toolbar.changeLayer(map);
-          var params = JSON.stringify({
-            'name': 'Virginia'
-          })
+          var params = JSON.stringify('VIRGINIA');
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         map.on('mouseenter', 'VA-Layer', function () {
