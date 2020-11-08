@@ -14,8 +14,8 @@ class HomeScreen extends Component {
         activeBatch: null,
         showMap: true,
         batches: [
-            // BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
-            // BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
+            BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
+            BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
             // BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
             // BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
             // BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
@@ -40,10 +40,8 @@ class HomeScreen extends Component {
     deleteBatch = (batch) => {
         const id = batch.id;
         this.setState({ batches: [...this.state.batches.filter(batch => batch.id != id)] })
-        var params = JSON.stringify({
-            'id': id
-          })
-        fetch('http://localhost:8080/delete', {headers:{"Content-Type":"application/json"},method: 'POST', body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+        var params = JSON.stringify(id)
+        fetch('http://localhost:8080/cancel', {headers:{"Content-Type":"application/json"},method: 'POST', body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
     }
 
     getHistory = () => {
