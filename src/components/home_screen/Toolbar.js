@@ -1,7 +1,7 @@
 import './Toolbar.css'
 
-class Toolbar{
-    onAdd(map){
+class Toolbar {
+    onAdd(map) {
         this.map = map;
         this.container = document.createElement('div');
         this.sub_container = document.createElement('form');
@@ -33,7 +33,7 @@ class Toolbar{
 
         this.left_text.textContent = 'State';
         this.left_text.className = 'text';
-        
+
         this.middle_text = document.createElement('p');
         this.middle = document.createElement('input');
 
@@ -65,6 +65,7 @@ class Toolbar{
         this.heat_text.textContent = 'Heatmap View'
         this.heat_text.className = 'text';
         this.heat_dropdown.className = 'heatmap-select';
+        this.heat_dropdown.id = 'heatmap-select';
         this.heat.type = 'checkbox';
         this.heat.className = 'view-button';
 
@@ -92,37 +93,41 @@ class Toolbar{
         this.heat_dropdown.appendChild(this.option5);
 
         this.heat.id = 'heat-checkbox';
-        this.left.addEventListener('change', (e) =>{
+        this.left.addEventListener('change', (e) => {
             // e.preventDefault();
             // e.stopPropagation();
             var state = document.getElementById('state-selection').value;
-            if(state == 'AL'){
+            if (state === 'AL') {
                 map.flyTo({
                     center: [-86.68075561523438, 32.57631501316452],
                     zoom: 6
                 })
             }
-            if(state == 'FL'){
+            if (state === 'FL') {
                 map.flyTo({
                     center: [-82.87845611572266, 28.40022856730028],
                     zoom: 6
                 })
             }
-            if(state == 'VA'){
+            if (state === 'VA') {
                 map.flyTo({
                     center: [-79.42291259765625, 38.00321033702472], //NEED TO UPDATE NEW CENTER
                     zoom: 5
                 })
             }
-            if(state == 'None'){
+            if (state === 'None') {
                 map.flyTo({
                     center: [-100.04, 38.907],
                     zoom: 3
                 })
             }
             this.changeLayer(map);
+            var params = JSON.stringify({
+                'name': state
+              })
+              fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         })
-        this.middle_text.addEventListener('click', (e) =>{
+        this.middle_text.addEventListener('click', (e) => {
             var button = document.getElementById('district-checkbox');
             button.checked = !button.checked;
             this.changeLayer(map);
@@ -132,7 +137,7 @@ class Toolbar{
             this.changeLayer(map);
         })
 
-        this.right_text.addEventListener('click', () =>{
+        this.right_text.addEventListener('click', () => {
             var button = document.getElementById('precinct-checkbox');
             button.checked = !button.checked;
             this.changeLayer(map);
@@ -141,10 +146,30 @@ class Toolbar{
             this.changeLayer(map);
         })
 
-        this.heat_text.addEventListener('click', () =>{
+        this.heat_text.addEventListener('click', () => {
             var button = document.getElementById('heat-checkbox');
             button.checked = !button.checked;
+            var state = document.getElementById('state-selection').value;
+            var ethnicGroup = document.getElementById('heatmap-select').value
+            var params = JSON.stringify({
+                's': {
+                    'name': state
+                },
+                'eg': ethnicGroup
+            })
+            fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+        })
 
+        this.heat.addEventListener('click', () => {
+            var state = document.getElementById('state-selection').value;
+            var ethnicGroup = document.getElementById('heatmap-select').value
+            var params = JSON.stringify({
+                's': {
+                    'name': state
+                },
+                'eg': ethnicGroup
+            })
+            fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
         })
 
         this.sub_container.appendChild(this.left_text);
@@ -162,17 +187,17 @@ class Toolbar{
 
         return this.container;
     }
-    onRemove(){
+    onRemove() {
         this.container.parentNode.removeChild(this.container);
         this.map = undefined;
     }
-    
+
     changeLayer = (map) => {
         var selected_state = document.getElementById('state-selection').value;
         var district_button_value = document.getElementById('district-checkbox').checked;
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
         var states = ['AL', 'FL', 'VA'];
-        for(var i = 0; i < states.length; i++){
+        for (var i = 0; i < states.length; i++) {
             var district_layer_name = states[i] + '-Districts';
             var precinct_layer_name = states[i] + '-Precincts';
             var state_layer_name = states[i] +'-Layer';
@@ -189,34 +214,34 @@ class Toolbar{
                         map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
                     }
                 }
-                else{ //Set all state layers to be visible since nothing is selected
+                else { //Set all state layers to be visible since nothing is selected
                     map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
                 }
-                
+
             }
-            else{
-                if(precinct_button_value){
-                    if(selected_state == states[i]){
+            else {
+                if (precinct_button_value) {
+                    if (selected_state === states[i]) {
                         map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
                     }
-                    else{
+                    else {
                         map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                     }
                     map.setLayoutProperty(state_layer_name, 'visibility', 'none');
                 }
-                else{
+                else {
                     map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                 }
-                if(district_button_value){
-                    if(selected_state == states[i]){
+                if (district_button_value) {
+                    if (selected_state === states[i]) {
                         map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
                     }
-                    else{
+                    else {
                         map.setLayoutProperty(district_layer_name, 'visibility', 'none');
                     }
                     map.setLayoutProperty(state_layer_name, 'visibility', 'none');
                 }
-                else{
+                else {
                     map.setLayoutProperty(district_layer_name, 'visibility', 'none');
                 }
             }
