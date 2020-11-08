@@ -210,7 +210,6 @@ class Toolbar {
                         map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
                     }
                     else{
-                        //TODO: Change color when selected
                         map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
                     }
                 }
@@ -227,7 +226,7 @@ class Toolbar {
                     else {
                         map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                     }
-                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
+                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
                 }
                 else {
                     map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
@@ -239,7 +238,7 @@ class Toolbar {
                     else {
                         map.setLayoutProperty(district_layer_name, 'visibility', 'none');
                     }
-                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
+                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
                 }
                 else {
                     map.setLayoutProperty(district_layer_name, 'visibility', 'none');
