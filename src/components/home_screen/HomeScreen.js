@@ -12,6 +12,7 @@ class HomeScreen extends Component {
     state = {
         // activeBatch: { id: '1', title: 'Batch 1', content: 'blah blah blah' }
         activeBatch: null,
+        summary: [],
         showMap: true,
         batches: [
             BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
@@ -28,8 +29,20 @@ class HomeScreen extends Component {
         var params = JSON.stringify({
             'jobId': batch.id,
             'DistrictingType': 'AVERAGE'
-          })
-          fetch('http://localhost:8080/jobGeo', {headers:{"Content-Type":"application/json"},method: 'POST', body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+        })
+        fetch('http://localhost:8080/jobGeo', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
+        .then(result => { 
+            console.log('Success:', result); 
+        }).catch(error => { console.error('Error:', error); });
+
+        var params = JSON.stringify({
+            'jobId': batch.id,
+        })
+        fetch('http://localhost:8080/genSummary', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
+        .then(result => { 
+            console.log('Success:', result);
+            this.setState({'Summary' : result}); 
+        }).catch(error => { console.error('Error:', error); });
     }
 
     unloadBatch = () => {
@@ -41,11 +54,15 @@ class HomeScreen extends Component {
         const id = batch.id;
         this.setState({ batches: [...this.state.batches.filter(batch => batch.id != id)] })
         var params = JSON.stringify(id)
-        fetch('http://localhost:8080/cancel', {headers:{"Content-Type":"application/json"},method: 'POST', body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+        fetch('http://localhost:8080/cancel', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
     }
 
     getHistory = () => {
-        fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET'}).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+        fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET' }).then(response => response.text())
+            .then(result => {
+                console.log('Success:', result);
+                // this.setState({batches: result});
+            }).catch(error => { console.error('Error:', error); });
     }
 
     displaySummaryButton = () => {
