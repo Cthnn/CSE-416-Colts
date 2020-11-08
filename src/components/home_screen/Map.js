@@ -202,9 +202,7 @@ const MapComponent = ({props}) => {
             zoom: 6
           })
           toolbar.changeLayer(map);
-          var params = JSON.stringify({
-            'name': 'Alabama'
-          })
+          var params = JSON.stringify('ALABAMA')
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         map.on('mouseenter', 'AL-Layer', function () {
