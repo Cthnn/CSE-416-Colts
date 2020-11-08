@@ -97,25 +97,25 @@ class Toolbar {
             // e.preventDefault();
             // e.stopPropagation();
             var state = document.getElementById('state-selection').value;
-            if (state == 'AL') {
+            if (state === 'AL') {
                 map.flyTo({
                     center: [-86.6793823, 32.5763150],
                     zoom: 6
                 })
             }
-            if (state == 'FL') {
+            if (state === 'FL') {
                 map.flyTo({
                     center: [-82.8784561, 28.4002285],
                     zoom: 6
                 })
             }
-            if (state == 'VA') {
+            if (state === 'VA') {
                 map.flyTo({
                     center: [-100.0717163, 31.170127359], //NEED TO UPDATE NEW CENTER
                     zoom: 5
                 })
             }
-            if (state == 'None') {
+            if (state === 'None') {
                 map.flyTo({
                     center: [-100.04, 38.907],
                     zoom: 3
@@ -205,8 +205,8 @@ class Toolbar {
                 map.setLayoutProperty(district_layer_name, 'visibility', 'none');
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                 // console.log('Selected State: ' + selected_state);
-                if (selected_state != 'None') {
-                    if (states[i] == selected_state) {
+                if (selected_state !== 'None') {
+                    if (states[i] === selected_state) {
                         map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
                     }
                     else {
@@ -220,7 +220,7 @@ class Toolbar {
             }
             else {
                 if (precinct_button_value) {
-                    if (selected_state == states[i]) {
+                    if (selected_state === states[i]) {
                         map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
                     }
                     else {
@@ -232,7 +232,7 @@ class Toolbar {
                     map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                 }
                 if (district_button_value) {
-                    if (selected_state == states[i]) {
+                    if (selected_state === states[i]) {
                         map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
                     }
                     else {

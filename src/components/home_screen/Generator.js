@@ -8,7 +8,6 @@ class Generate extends React.Component {
         super(props)
         this.compactnessTip = "<div>Explain what compactness is.</div><div> Valid inputs [0,100]</div>"
         this.populationTip = "<div>Explain what population deviation is.</div><div> Valid inputs [0,1].</div>"
-
         this.minMax = {
             plans: [100, 10000],
             comp: [0, 100],
@@ -20,7 +19,8 @@ class Generate extends React.Component {
             plans: this.minMax['plans'][0],
             comp: this.minMax['comp'][0],
             pop: this.minMax['pop'][0],
-            group: "0"
+            group: "0",
+            batchNumber: 0
         }
     }
 
@@ -43,7 +43,7 @@ class Generate extends React.Component {
         }
 
         let input = {}
-        input[name] = e.target.value
+        input[name] = Number(e.target.value)
         this.setState(input)
     }
 
@@ -54,16 +54,19 @@ class Generate extends React.Component {
     }
 
     enableGeneration() {
-        return this.state.state != 0 && this.state.group != 0;
+        return this.state.state !== 0 && this.state.group !== 0;
     }
 
     generatePlans(e) {
         e.preventDefault();
         //send request to server
         var params = JSON.stringify(this.state)
-        fetch('http://localhost:8080/createJob', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
-        this.props.incrementBatchNumber()
-        this.props.batches.push(BatchCard.createBatch(this.props.batchNumber, this.state.state, this.state.plans, this.state.comp, this.state.pop, this.state.group, 'Queued'));
+        fetch('http://localhost:8080/createJob', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { 
+            console.log('Success:', result); 
+            this.setState({batchNumber: result});
+            M.Modal.getInstance(document.getElementById("modal1")).open();
+            this.props.batches.push(BatchCard.createBatch(result, this.state.state, this.state.plans, this.state.comp, this.state.pop, this.state.group, 'Queued'));
+        }).catch(error => { console.error('Error:', error); });
     }
 
     render() {
@@ -75,9 +78,9 @@ class Generate extends React.Component {
                     <div className="input-field">
                         <select className="browser-default" onChange={e => { this.updateSelection(e, "state") }}>
                             <option value="0">None</option>
-                            <option value="1">Alabama</option>
-                            <option value="2">Florida</option>
-                            <option value="3">Texas</option>
+                            <option value="Alabama">Alabama</option>
+                            <option value="Florida">Florida</option>
+                            <option value="Virginia">Virginia</option>
                         </select>
                     </div>
                     <div>
@@ -99,21 +102,21 @@ class Generate extends React.Component {
                         <div className="input-field">
                             <select className="browser-default" onChange={e => { this.updateSelection(e, "group") }}>
                                 <option value="0">None</option>
-                                <option value="Black">Black or African American</option>
-                                <option value="Asian">Asian</option>
-                                <option value="Hispanic">Hispanic or Latino</option>
-                                <option value="Pacific Islander">Native Hawaiian and Other Pacific Islander</option>
-                                <option value="American Indians">Native American and Alaska Native</option>
+                                <option value="BLACK">Black or African American</option>
+                                <option value="ASIAN">Asian</option>
+                                <option value="HISPANIC">Hispanic or Latino</option>
+                                <option value="PACIFIC_ISLANDER">Native Hawaiian and Other Pacific Islander</option>
+                                <option value="NATIVE_AMERICAN">Native American and Alaska Native</option>
                             </select>
                         </div>
                     </div>
                     <br />
-                    <a type="submit" href="#modal1" onClick={e => { this.generatePlans(e) }} className="btn blue lighten-2 waves-effect waves-light col s12 modal-trigger" disabled={!this.enableGeneration()}>Generate Plans</a>
+                    <a type="submit" onClick={e => { this.generatePlans(e) }} className="btn blue lighten-2 waves-effect waves-light col s12 modal-trigger" disabled={!this.enableGeneration()}>Generate Plans</a>
                 </form>
                 <Modal id="modal1" className="modal">
                     <div className="modal-content center-align">
                         <h4>Request Recieved</h4>
-                        <p>The requested batch number is: {this.props.batchNumber - 1}</p>
+                        <p>The requested batch number is: {this.state.batchNumber}</p>
                     </div>
                 </Modal>
             </div>

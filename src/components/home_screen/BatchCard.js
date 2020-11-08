@@ -1,10 +1,9 @@
 import React from 'react';
 import './BatchCard.css';
-import { Modal } from 'react-materialize';
 
 class BatchCard extends React.Component {
     static createBatch(id, state, plans, compactness, population, group, status) {
-        if (id == 0)
+        if (id === 0)
             return { id, title: 'Enacted Districtings', state, plans, compactness, population, group, status }
         return { id, title: 'Batch ' + id, state, plans, compactness, population, group, status }
     }
@@ -29,7 +28,7 @@ class BatchCard extends React.Component {
                         <h4 style={{ display: 'inline-block', margin: "0px" }}>{batch.title}</h4>
                         <span className={statusStyles[batch.status]? statusStyles[batch.status]: "badge"}>{batch.status}</span>
                     </span>
-                    {batch.id != 0 &&
+                    {batch.id !== 0 &&
                         <div onClick={this.handleDeleteClick} style={{ position: "absolute", top: '0px', right: '0px', color: '#f44336', cursor: 'pointer' }}>
                             <i className="material-icons">delete</i>
                         </div>

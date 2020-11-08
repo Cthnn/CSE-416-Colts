@@ -14,17 +14,12 @@ class HomeScreen extends Component {
         activeBatch: null,
         showMap: true,
         batches: [
-            BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
-            BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
-            BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
-            BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
-            BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
+            // BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
+            // BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
+            // BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
+            // BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
+            // BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
         ],
-        batchNumber: 5
-    }
-
-    incrementBatchNumber = () => {
-        this.setState({ batchNumber: this.state.batchNumber + 1 })
     }
 
     loadBatch = (batch) => {
@@ -74,7 +69,6 @@ class HomeScreen extends Component {
         }
 
         const batches = this.state.batches;
-        const batchNumber = this.state.batchNumber;
 
         return (
             <div className="HomeComponentComponents">
@@ -88,7 +82,7 @@ class HomeScreen extends Component {
                             </TabList>
 
                             <TabPanel forceRender>
-                                <Generator batchNumber={batchNumber} incrementBatchNumber={this.incrementBatchNumber} batches={batches} />
+                                <Generator batches={batches} />
                             </TabPanel>
                             <TabPanel>
                                 <BatchLinks loadBatch={this.loadBatch.bind(this)} unloadBatch={this.unloadBatch} deleteBatch={this.deleteBatch} batches={batches} />
