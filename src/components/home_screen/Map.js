@@ -278,7 +278,7 @@ const MapComponent = ({props}) => {
               })
             })
           })
-          // console.log(bounds.getCenter());
+          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
             zoom: 6
@@ -350,6 +350,7 @@ const MapComponent = ({props}) => {
     }, []); 
     return<div className="map" ref={mapContainerRef} />;
 };
+
 function makeVisible(state, map) {
   var enable = false;
   if (enable) {
