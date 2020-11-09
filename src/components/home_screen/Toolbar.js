@@ -236,6 +236,7 @@ class Toolbar {
                 if (precinct_button_value) {
                     if (selected_state === states[i]) {
                         map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
+                        map.setLayoutProperty(state_layer_name, 'visibility', 'none'); 
                     }
                     else {
                         map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
@@ -248,6 +249,7 @@ class Toolbar {
                 if (district_button_value) {
                     if (selected_state === states[i]) {
                         map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
+                        map.setLayoutProperty(state_layer_name, 'visibility', 'none'); 
                     }
                     else {
                         map.setLayoutProperty(district_layer_name, 'visibility', 'none');
