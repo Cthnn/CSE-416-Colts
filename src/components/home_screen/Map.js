@@ -166,15 +166,6 @@ const MapComponent = ({props}) => {
             'fill-outline-color': 'rgba(240, 240, 40, 1)'
           }
         });
-        map.addLayer({
-          'id': 'AL-Layer',
-          'type': 'fill',
-          'source': 'AL',
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
         
 
         map.on('click', 'AL-Layer', function (e) {
@@ -209,13 +200,7 @@ const MapComponent = ({props}) => {
           })
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
-        map.on('mouseenter', 'AL-Layer', function () {
-          map.getCanvas().style.cursor = 'pointer';
-        });
         
-        map.on('mouseleave', 'AL-Layer', function () {
-          map.getCanvas().style.cursor = '';
-        });
         map.on('click', function (e){
           var district_button_value = document.getElementById('district-checkbox').checked;
           var precinct_button_value = document.getElementById('precinct-checkbox').checked;
@@ -225,7 +210,6 @@ const MapComponent = ({props}) => {
           }
           else{
             if(district_button_value){
-              console.log("TESTTES");
               features = map.queryRenderedFeatures(e.point, {layers: ['AL-Districts','FL-Districts','VA-Districts']});
             }
           }
@@ -253,15 +237,20 @@ const MapComponent = ({props}) => {
           });
         })
         map.addLayer({
-          'id': 'FL-Layer',
+          'id': 'AL-Layer',
           'type': 'fill',
-          'source': 'FL',
+          'source': 'AL',
           'paint': {
             'fill-color': 'rgba(200, 100, 240, 0.4)',
             'fill-outline-color': 'rgba(200, 100, 240, 1)'
           }
         });
-        
+        map.on('mouseenter', 'AL-Layer', function () {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', 'AL-Layer', function () {
+          map.getCanvas().style.cursor = '';
+        });
         map.on('click', 'FL-Layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
@@ -291,24 +280,7 @@ const MapComponent = ({props}) => {
             'name': 'Florida'
           })
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
-        });
-        map.on('mouseenter', 'FL-Layer', function () {
-        map.getCanvas().style.cursor = 'pointer';
-        });
-        
-        map.on('mouseleave', 'FL-Layer', function () {
-          map.getCanvas().style.cursor = '';
-        });
-        map.addLayer({
-          'id': 'VA-Layer',
-          'type': 'fill',
-          'source': 'VA',
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-        
+        });    
         map.on('click', 'VA-Layer', function (e) {
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
@@ -341,6 +313,30 @@ const MapComponent = ({props}) => {
           })
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
+        map.addLayer({
+          'id': 'FL-Layer',
+          'type': 'fill',
+          'source': 'FL',
+          'paint': {
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
+          }
+        });
+        map.on('mouseenter', 'FL-Layer', function () {
+          map.getCanvas().style.cursor = 'pointer';
+          });
+        map.on('mouseleave', 'FL-Layer', function () {
+          map.getCanvas().style.cursor = '';
+        });
+        map.addLayer({
+          'id': 'VA-Layer',
+          'type': 'fill',
+          'source': 'VA',
+          'paint': {
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
+          }
+        });
         map.on('mouseenter', 'VA-Layer', function () {
           map.getCanvas().style.cursor = 'pointer';
         });
@@ -355,30 +351,6 @@ const MapComponent = ({props}) => {
     }, []); 
     return<div className="map" ref={mapContainerRef} />;
 };
-
-function makeVisible(state, map) {
-  var enable = false;
-  if (enable) {
-    var layers = ['AL-layer', 'FL-layer', 'TX-layer'];
-    var layer_id = -1;
-    for (var i = 0; i < layers.length; i++) {
-      if (layers[i].substring(0, 2) === state) {
-        layer_id = i;
-        break;
-      }
-    }
-    if (layer_id !== -1) {
-      for (var i = 0; i < layers.length; i++) {
-        if (i === layer_id) {
-          map.setLayoutProperty(layers[layer_id], 'visibility', 'visible');
-        }
-        else {
-          map.setLayoutProperty(layers[i], 'visibility', 'none');
-        }
-      }
-    }
-  }
-}
 
 
 export default MapComponent;
