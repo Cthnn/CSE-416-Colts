@@ -6,6 +6,64 @@ import Toolbar from './Toolbar.js';
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 
+const addHeatMapLayer = (map, state) => {
+  map.addLayer({
+    id: state+'-HeatMap',
+    type: 'heatmap',
+    source: state+'-heat',
+    layout:{
+      visibility:'none'
+    },
+    maxzoom: 15,
+    paint: {
+      // increase weight as diameter breast height increases
+      'heatmap-weight': {
+        property: 'T2',
+        type: 'exponential',
+        stops: [
+          [1, 0],
+          [62, 1]
+        ]
+      },
+      // increase intensity as zoom level increases
+      'heatmap-intensity': {
+        stops: [
+          [3, 0.1],
+          [6, 1],
+          [10, 3]
+        ]
+      },
+      // assign color values be applied to points depending on their density
+      'heatmap-color': [
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0,
+        'rgba(33,102,172,0)',
+        0.2,
+        'rgb(103,169,207)',
+        0.4,
+        'rgb(209,229,240)',
+        0.6,
+        'rgb(253,219,199)',
+        0.8,
+        'rgb(239,138,98)',
+        1,
+        'rgb(178,24,43)'
+        ],
+      // increase radius as zoom increases
+      'heatmap-radius': {
+        stops: [
+          [3, 1],
+          [6, 10],
+          [11, 50],
+          [12, 200]
+        ]
+      },
+    }
+  }, 'waterway-label');
+}
+
 const MapComponent = ({props}) => {
     const mapContainerRef = useRef(null);
     
@@ -107,6 +165,16 @@ const MapComponent = ({props}) => {
           'data':
           './alabama_heatmap.geojson'
         });
+        map.addSource('FL-heat', {
+          'type': 'geojson',
+          'data':
+          './florida_heatmap.geojson'
+        });
+        map.addSource('VA-heat', {
+          'type': 'geojson',
+          'data':
+          './virginia_heatmap.geojson'
+        });
 
         map.addLayer({
           'id': 'VA-Precincts',
@@ -184,61 +252,9 @@ const MapComponent = ({props}) => {
           }
         });
 
-        map.addLayer({
-          id: 'AL-HeatMap',
-          type: 'heatmap',
-          source: 'AL-heat',
-          layout:{
-            visibility:'none'
-          },
-          maxzoom: 15,
-          paint: {
-            // increase weight as diameter breast height increases
-            'heatmap-weight': {
-              property: 'WHITE',
-              type: 'exponential',
-              stops: [
-                [1, 0],
-                [62, 1]
-              ]
-            },
-            // increase intensity as zoom level increases
-            'heatmap-intensity': {
-              stops: [
-                [3, 0.1],
-                [6, 1],
-                [10, 3]
-              ]
-            },
-            // assign color values be applied to points depending on their density
-            'heatmap-color': [
-              'interpolate',
-              ['linear'],
-              ['heatmap-density'],
-              0,
-              'rgba(33,102,172,0)',
-              0.2,
-              'rgb(103,169,207)',
-              0.4,
-              'rgb(209,229,240)',
-              0.6,
-              'rgb(253,219,199)',
-              0.8,
-              'rgb(239,138,98)',
-              1,
-              'rgb(178,24,43)'
-              ],
-            // increase radius as zoom increases
-            'heatmap-radius': {
-              stops: [
-                [3, 1],
-                [6, 10],
-                [11, 50],
-                [12, 200]
-              ]
-            },
-          }
-        }, 'waterway-label');
+        addHeatMapLayer(map, 'AL');
+        addHeatMapLayer(map, 'FL');
+        addHeatMapLayer(map, 'VA');
         
         map.on('click', function (e){
           var district_button_value = document.getElementById('district-checkbox').checked;
