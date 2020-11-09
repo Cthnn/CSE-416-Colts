@@ -51,6 +51,20 @@ class Generate extends React.Component {
         let input = {}
         input[name] = e.target.value
         this.setState(input)
+        var element = document.getElementById('state-selection');
+        if(e.target.value === "0"){ //None option
+            element.selectedIndex = "0";
+        }
+        if(e.target.value === "Alabama"){
+            element.selectedIndex = "1";
+        }
+        if(e.target.value === "Florida"){
+            element.selectedIndex = "2";
+        }
+        if(e.target.value === "Virginia"){
+            element.selectedIndex = "3";
+        }
+        element.dispatchEvent(new Event('change'));
     }
 
     enableGeneration() {
@@ -76,7 +90,7 @@ class Generate extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <label className="black-text">State</label>
                     <div className="input-field">
-                        <select className="browser-default" onChange={e => { this.updateSelection(e, "state") }}>
+                        <select id = "select-state-generation" className="browser-default" onChange={e => { this.updateSelection(e, "state") }}>
                             <option value="0">None</option>
                             <option value="Alabama">Alabama</option>
                             <option value="Florida">Florida</option>
