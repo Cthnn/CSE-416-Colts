@@ -79,7 +79,6 @@ class Generate extends React.Component {
             console.log('Success:', result); 
             this.setState({batchNumber: result});
             M.Modal.getInstance(document.getElementById("modal1")).open();
-            this.props.batches.push(BatchCard.createBatch(result, this.state.state, this.state.plans, this.state.comp, this.state.pop, this.state.group, 'Queued'));
         }).catch(error => { console.error('Error:', error); });
     }
 

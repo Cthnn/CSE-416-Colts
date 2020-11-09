@@ -2,10 +2,10 @@ import React from 'react';
 import './BatchCard.css';
 
 class BatchCard extends React.Component {
-    static createBatch(id, state, plans, compactness, population, group, status) {
-        if (id === 0)
-            return { id, title: 'Enacted Districtings', state, plans, compactness, population, group, status }
-        return { id, title: 'Batch ' + id, state, plans, compactness, population, group, status }
+    static createBatch(jobId, state, runs, compactness, populationDeviation, group, status) {
+        if (jobId === 0)
+            return { jobId, title: 'Enacted Districtings', state, runs, compactness, populationDeviation, group, status }
+        return { jobId, title: 'Batch ' + jobId, state, runs, compactness, populationDeviation, group, status }
     }
 
     handleDeleteClick = (e) => {
@@ -18,12 +18,12 @@ class BatchCard extends React.Component {
         // console.log(batch)
 
         const statusStyles = {
-            Complete: "badge green-text",
-            Aborted: "badge red-text",
+            COMPLETED: "badge green-text",
+            ABORTED: "badge red-text",
         }
 
         return (
-            <div className="card z-depth-1 todo-list-link white" onClick={batch.status === "Complete" ? this.props.loadBatch.bind(this, batch) : () => { this.props.unloadBatch() }}>
+            <div className="card z-depth-1 todo-list-link white" onClick={batch.status === "COMPLETED" ? this.props.loadBatch.bind(this, batch) : () => { this.props.unloadBatch() }}>
                 <div style={{ padding: "20px" }} className="card-content black-text">
                     <span className="blue-text">
                         <h4 style={{ display: 'inline-block', margin: "0px" }}>Batch {batch.jobId}</h4>

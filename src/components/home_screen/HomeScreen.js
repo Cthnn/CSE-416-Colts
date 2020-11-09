@@ -21,9 +21,7 @@ class HomeScreen extends Component {
         //     BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
         //     BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
         // ],
-        batches: [{"jobId":1,"status":"COMPLETED","state":"ALABAMA","runs":1000,"populationDeviation":0.5,"compactness":50.0,"ethnicGroup":"ASIAN","precinctGeoJson":null},
-        {"jobId":2,"status":"COMPLETED","state":"ALABAMA","runs":1000,"populationDeviation":0.5,"compactness":50.0,"ethnicGroup":"ASIAN","precinctGeoJson":null},
-        {"jobId":3,"status":"COMPLETED","state":"ALABAMA","runs":1000,"populationDeviation":0.5,"compactness":50.0,"ethnicGroup":"ASIAN","precinctGeoJson":null}]
+        batches: []
     }
 
     loadBatch = (batch) => {
