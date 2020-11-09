@@ -15,6 +15,7 @@ class BatchCard extends React.Component {
 
     render() {
         const { batch } = this.props
+        // console.log(batch)
 
         const statusStyles = {
             Complete: "badge green-text",
@@ -25,17 +26,17 @@ class BatchCard extends React.Component {
             <div className="card z-depth-1 todo-list-link white" onClick={batch.status === "Complete" ? this.props.loadBatch.bind(this, batch) : () => { this.props.unloadBatch() }}>
                 <div style={{ padding: "20px" }} className="card-content black-text">
                     <span className="blue-text">
-                        <h4 style={{ display: 'inline-block', margin: "0px" }}>{batch.title}</h4>
+                        <h4 style={{ display: 'inline-block', margin: "0px" }}>Batch {batch.jobId}</h4>
                         <span className={statusStyles[batch.status]? statusStyles[batch.status]: "badge"}>{batch.status}</span>
                     </span>
-                    {batch.id !== 0 &&
+                    {batch.jobId !== 0 &&
                         <div onClick={this.handleDeleteClick} style={{ position: "absolute", top: '0px', right: '0px', color: '#f44336', cursor: 'pointer' }}>
                             <i className="material-icons">delete</i>
                         </div>
                     }
 
 
-                    <div style={this.props.active && batch.id !== 0 ? { display: "block" } : { display: "none" }}>
+                    <div style={this.props.active && batch.jobId !== 0 ? { display: "block" } : { display: "none" }}>
                         <table><tbody style={{ fontSize: "12px", padding: "0px !important" }}>
                             <tr>
                                 <th>State:</th>
@@ -43,11 +44,11 @@ class BatchCard extends React.Component {
                             </tr>
                             <tr>
                                 <th>Plans:</th>
-                                <td>{batch.plans}</td>
+                                <td>{batch.runs}</td>
                             </tr>
                             <tr>
                                 <th>Racial/Ethnic Group:</th>
-                                <td>{batch.group}</td>
+                                <td>{batch.ethnicGroup}</td>
                             </tr>
                             <tr>
                                 <th>Compactness:</th>
@@ -55,7 +56,7 @@ class BatchCard extends React.Component {
                             </tr>
                             <tr>
                                 <th>Population Deviation:</th>
-                                <td>{batch.population}</td>
+                                <td>{batch.populationDeviation}</td>
                             </tr>
                         </tbody></table>
                     </div>

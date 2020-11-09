@@ -14,13 +14,16 @@ class HomeScreen extends Component {
         activeBatch: null,
         summary: [],
         showMap: true,
-        batches: [
-            BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
-            BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
-            // BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
-            // BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
-            // BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
-        ],
+        // batches: [
+        //     BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
+        //     BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
+        //     BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
+        //     BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
+        //     BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
+        // ],
+        batches: [{"jobId":1,"status":"COMPLETED","state":"ALABAMA","runs":1000,"populationDeviation":0.5,"compactness":50.0,"ethnicGroup":"ASIAN","precinctGeoJson":null},
+        {"jobId":2,"status":"COMPLETED","state":"ALABAMA","runs":1000,"populationDeviation":0.5,"compactness":50.0,"ethnicGroup":"ASIAN","precinctGeoJson":null},
+        {"jobId":3,"status":"COMPLETED","state":"ALABAMA","runs":1000,"populationDeviation":0.5,"compactness":50.0,"ethnicGroup":"ASIAN","precinctGeoJson":null}]
     }
 
     loadBatch = (batch) => {
@@ -60,8 +63,9 @@ class HomeScreen extends Component {
     getHistory = () => {
         fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET' }).then(response => response.text())
             .then(result => {
-                console.log('Success:', result);
-                // this.setState({batches: result});
+                // console.log('Success:', JSON.parse(result));
+                // console.log(this.state.batches);
+                this.setState({batches: JSON.parse(result)})
             }).catch(error => { console.error('Error:', error); });
     }
 
