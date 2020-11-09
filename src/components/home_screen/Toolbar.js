@@ -94,37 +94,51 @@ class Toolbar {
 
         this.heat.id = 'heat-checkbox';
         this.left.addEventListener('change', (e) => {
-            // e.preventDefault();
-            // e.stopPropagation();
-            var state = document.getElementById('state-selection').value;
+            var state = e.target.value;
+            var elem = document.getElementById('select-state-generation');
             if (state === 'AL') {
                 map.flyTo({
                     center: [-86.68075561523438, 32.57631501316452],
                     zoom: 6
                 })
+                elem.selectedIndex = '1';
             }
             if (state === 'FL') {
                 map.flyTo({
                     center: [-82.87845611572266, 28.40022856730028],
                     zoom: 6
                 })
+                elem.selectedIndex = '2';
             }
             if (state === 'VA') {
                 map.flyTo({
                     center: [-79.42291259765625, 38.00321033702472], //NEED TO UPDATE NEW CENTER
                     zoom: 5
                 })
+                elem.selectedIndex = '3';
             }
             if (state === 'None') {
                 map.flyTo({
                     center: [-100.04, 38.907],
                     zoom: 3
                 })
+                elem.selectedIndex = '0';
             }
+            
+
             this.changeLayer(map);
-            var params = JSON.stringify({
-                'name': state
-              })
+            var statename;
+            if (state === "AL"){
+                statename = "ALABAMA"
+            }else if (state === "FL"){
+                statename = "FLORIDA"
+            }else if (state === "VA"){
+                statename = "VIRGINIA"
+            }else{
+                statename = state;
+            }
+            var params = JSON.stringify(statename)
+            console.log(params)
               fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         })
         this.middle_text.addEventListener('click', (e) => {
@@ -206,11 +220,10 @@ class Toolbar {
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                 if(selected_state != 'None'){
                     if(states[i] == selected_state){
-                        map.setLayoutProperty(state_layer_name, 'visibility', 'visible'); //TODO: Change color to highlight
+                        map.setLayoutProperty(state_layer_name, 'visibility', 'visible'); 
                         map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
                     }
                     else{
-                        //TODO: Change color when selected
                         map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
                     }
                 }
@@ -227,7 +240,7 @@ class Toolbar {
                     else {
                         map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
                     }
-                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
                 }
                 else {
                     map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
@@ -239,7 +252,7 @@ class Toolbar {
                     else {
                         map.setLayoutProperty(district_layer_name, 'visibility', 'none');
                     }
-                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
                 }
                 else {
                     map.setLayoutProperty(district_layer_name, 'visibility', 'none');
