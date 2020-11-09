@@ -227,6 +227,7 @@ class Toolbar {
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
         var heatmap_button_value = document.getElementById('heat-checkbox').checked;
         var states = ['AL', 'FL', 'VA'];
+
         for (var i = 0; i < states.length; i++) {
             var district_layer_name = states[i] + '-Districts';
             var precinct_layer_name = states[i] + '-Precincts';
@@ -251,53 +252,24 @@ class Toolbar {
                     map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
             }
             
-
-            if(!district_button_value && !precinct_button_value){ 
-                map.setLayoutProperty(district_layer_name, 'visibility', 'none');
+            map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
+            if(precinct_button_value && selected_state == states[i]){
+                map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
+            }else{
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
-                if(selected_state != 'None'){
-                    if(states[i] == selected_state){
-                        map.setLayoutProperty(state_layer_name, 'visibility', 'visible'); 
-                        map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
-                    }
-                    else{
-                        map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
-                    }
-                }
-                else { //Set all state layers to be visible since nothing is selected
-                    map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-                }
-
             }
-            else {
-                if (precinct_button_value) {
-                    if (selected_state === states[i]) {
-                        map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
-                        map.setLayoutProperty(state_layer_name, 'visibility', 'none'); 
-                    }
-                    else {
-                        map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
-                    }
-                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
-                }
-                else {
-                    map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
-                }
-                if (district_button_value) {
-                    if (selected_state === states[i]) {
-                        map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
-                        map.setLayoutProperty(state_layer_name, 'visibility', 'none'); 
-                    }
-                    else {
-                        map.setLayoutProperty(district_layer_name, 'visibility', 'none');
-                    }
-                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
-                }
-                else {
-                    map.setLayoutProperty(district_layer_name, 'visibility', 'none');
-                }
+            if(district_button_value  && selected_state == states[i]){
+                map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
+            }else{
+                map.setLayoutProperty(district_layer_name, 'visibility', 'none');
             }
-
+            if(!district_button_value && !precinct_button_value){
+                map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+                if(selected_state == states[i])
+                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.4)');
+                else
+                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
+            }
         }
     }
 }
