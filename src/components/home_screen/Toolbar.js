@@ -75,15 +75,15 @@ class Toolbar {
         this.option4 = document.createElement('option');
         this.option5 = document.createElement('option');
 
-        this.option1.value = 'white';
+        this.option1.value = 'WHITE';
         this.option1.textContent = 'White American';
-        this.option2.value = 'black';
+        this.option2.value = 'BLACK';
         this.option2.textContent = 'Black or African American';
-        this.option3.value = 'native';
+        this.option3.value = 'INDIAN';
         this.option3.textContent = 'Native American and Alaska Native';
-        this.option4.value = 'asian';
+        this.option4.value = 'ASIAN';
         this.option4.textContent = 'Asian American';
-        this.option5.value = 'pacific';
+        this.option5.value = 'HAWAIIAN';
         this.option5.textContent = 'Native Hawaiian and Other Pacific Islander';
 
         this.heat_dropdown.appendChild(this.option1);
@@ -159,10 +159,15 @@ class Toolbar {
         this.right.addEventListener('click', () => {
             this.changeLayer(map);
         })
+        
+        this.heat_dropdown.addEventListener('change', () => {
+            this.changeLayer(map);
+        })
 
         this.heat_text.addEventListener('click', () => {
             var button = document.getElementById('heat-checkbox');
             button.checked = !button.checked;
+            this.changeLayer(map);
             var state = document.getElementById('state-selection').value;
             var ethnicGroup = document.getElementById('heatmap-select').value
             var params = JSON.stringify({
@@ -177,6 +182,7 @@ class Toolbar {
         this.heat.addEventListener('click', () => {
             var state = document.getElementById('state-selection').value;
             var ethnicGroup = document.getElementById('heatmap-select').value
+            this.changeLayer(map);
             var params = JSON.stringify({
                 's': {
                     'name': state
@@ -217,6 +223,26 @@ class Toolbar {
             var precinct_layer_name = states[i] + '-Precincts';
             var heat_layer_name = states[i] + '-HeatMap';
             var state_layer_name = states[i] +'-Layer';
+
+            if(heatmap_button_value && selected_state == 'AL'){
+                var race = document.getElementById("heatmap-select").value;
+                if(states[i] == 'AL'){
+                    map.setPaintProperty(heat_layer_name, 'heatmap-weight',{
+                        property: race,
+                        type: 'exponential',
+                        stops: [
+                          [1, 0],
+                          [62, 1]
+                        ]
+                      });
+                    map.setLayoutProperty(heat_layer_name, 'visibility', 'visible');
+                }
+            }else{
+                if(states[i] == 'AL')
+                    map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
+            }
+            
+
             if(!district_button_value && !precinct_button_value){ 
                 map.setLayoutProperty(district_layer_name, 'visibility', 'none');
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');

@@ -173,24 +173,17 @@ const MapComponent = ({props}) => {
         });
 
         map.addLayer({
-          'id': 'AL-Layer',
-          'type': 'fill',
-          'source': 'AL',
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-
-        map.addLayer({
           id: 'AL-HeatMap',
           type: 'heatmap',
           source: 'AL-heat',
+          layout:{
+            visibility:'none'
+          },
           maxzoom: 15,
           paint: {
             // increase weight as diameter breast height increases
             'heatmap-weight': {
-              property: 'BLACK',
+              property: 'WHITE',
               type: 'exponential',
               stops: [
                 [1, 0],
