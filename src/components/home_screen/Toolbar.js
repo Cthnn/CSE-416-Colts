@@ -1,6 +1,19 @@
 import './Toolbar.css'
 
 class Toolbar {
+    serverStateName(state){
+        var statename = state;
+        if (state === "AL"){
+            statename = "ALABAMA"
+        }else if (state === "FL"){
+            statename = "FLORIDA"
+        }else if (state === "VA"){
+            statename = "VIRGINIA"
+        }
+
+        return statename
+    }
+
     onAdd(map) {
         this.map = map;
         this.container = document.createElement('div');
@@ -127,16 +140,7 @@ class Toolbar {
             
 
             this.changeLayer(map);
-            var statename;
-            if (state === "AL"){
-                statename = "ALABAMA"
-            }else if (state === "FL"){
-                statename = "FLORIDA"
-            }else if (state === "VA"){
-                statename = "VIRGINIA"
-            }else{
-                statename = state;
-            }
+            var statename = this.serverStateName(state);
             var params = JSON.stringify(statename)
             console.log(params)
               fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
@@ -169,27 +173,32 @@ class Toolbar {
             button.checked = !button.checked;
             this.changeLayer(map);
             var state = document.getElementById('state-selection').value;
-            var ethnicGroup = document.getElementById('heatmap-select').value
-            var params = JSON.stringify({
-                's': {
-                    'name': state
-                },
-                'eg': ethnicGroup
-            })
-            fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+            var ethnicGroup = document.getElementById('heatmap-select').value;
+
+            if(button.checked){
+                var params = JSON.stringify({
+                    's': this.serverStateName(state),
+                    'eg': ethnicGroup
+                })
+                fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+
+            }
         })
 
         this.heat.addEventListener('click', () => {
+            var button = document.getElementById('heat-checkbox');
             var state = document.getElementById('state-selection').value;
-            var ethnicGroup = document.getElementById('heatmap-select').value
+            var ethnicGroup = document.getElementById('heatmap-select').value;
             this.changeLayer(map);
-            var params = JSON.stringify({
-                's': {
-                    'name': state
-                },
-                'eg': ethnicGroup
-            })
-            fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+
+            if(button.checked){
+                var params = JSON.stringify({
+                    's': this.serverStateName(state),
+                    'eg': ethnicGroup
+                })
+                fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+
+            }
         })
 
         this.sub_container.appendChild(this.left_text);
