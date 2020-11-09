@@ -19,23 +19,35 @@ const MapComponent = ({props}) => {
       });
 
       const VADemographic = `
-        <div>District 2 Demographics</div>
+        <div style="text-align: center;">Precinct 2 Demographics</div>
         <table style="font-size:10px; padding: 0px !important;">
         <tr>
-          <th>White</th>
-          <th>Black</th>
-          <th>Hispanic</th>
-          <th>Asian</th>
-          <th>Pacific Islander</th>
-          <th>American Indians</th>
+          <th>Race</th>
+          <th>Population</th>
         </tr>
         <tr>
-          <th>73%</th>
-          <th>12%</th>
-          <th>1%</th>
-          <th>5%</th>
-          <th>1%</th>
-          <th>6%</th>
+          <td>White</td>
+          <td>12401</td>
+        </tr>
+        <tr>
+          <td>Black</td>
+          <td>5835</td>
+        </tr>
+        <tr>
+          <td>Hispanic</td>
+          <td>2551</td>
+        </tr>
+        <tr>
+          <td>Asian</td>
+          <td>515</td>
+        </tr>
+        <tr>
+          <td>American Indians</td>
+          <td>84</td>
+        </tr>
+        <tr>
+          <td>Pacific Islander</td>
+          <td>243</td>
         </tr>
         </table>
       `
@@ -228,38 +240,6 @@ const MapComponent = ({props}) => {
           }
         }, 'waterway-label');
         
-
-        map.on('click', 'AL-Layer', function (e) {
-          new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Alabama")
-            .addTo(map);
-          
-          
-          var features = e.features
-          var bounds = new mapboxgl.LngLatBounds();
-
-          document.getElementById('state-selection').value = 'AL';
-          var elem = document.getElementById('select-state-generation');
-          elem.selectedIndex = '1';
-
-          features.forEach(function(feature){
-            feature.geometry.coordinates.forEach(function(coord){
-              coord.forEach(function(coordinate_pair){
-                bounds.extend(coordinate_pair)
-              })
-            })
-          })
-          console.log(bounds.getCenter());
-          map.flyTo({
-            center: bounds.getCenter(),
-            zoom: 6
-          })
-          toolbar.changeLayer(map);
-          var params = JSON.stringify('ALABAMA')
-          fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
-        });
-        
         map.on('click', function (e){
           var district_button_value = document.getElementById('district-checkbox').checked;
           var precinct_button_value = document.getElementById('precinct-checkbox').checked;
@@ -284,7 +264,7 @@ const MapComponent = ({props}) => {
           console.log(feature);
           var popup = new mapboxgl.Popup()
             .setLngLat(e.lngLat)
-            .setHTML("Feature properties not normalized for now");
+            .setHTML(VADemographic);
           
           //Change position in CSS
           popup.id = 'precinct-popup';
@@ -306,27 +286,31 @@ const MapComponent = ({props}) => {
           
 
         })
-        map.addLayer({
-          'id': 'AL-Layer',
-          'type': 'fill',
-          'source': 'AL',
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-        map.on('mouseenter', 'AL-Layer', function () {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', 'AL-Layer', function () {
-          map.getCanvas().style.cursor = '';
+        map.on('click', 'AL-Layer', function (e) {          
+          var features = e.features
+          var bounds = new mapboxgl.LngLatBounds();
+
+          document.getElementById('state-selection').value = 'AL';
+          var elem = document.getElementById('select-state-generation');
+          elem.selectedIndex = '1';
+
+          features.forEach(function(feature){
+            feature.geometry.coordinates.forEach(function(coord){
+              coord.forEach(function(coordinate_pair){
+                bounds.extend(coordinate_pair)
+              })
+            })
+          })
+          console.log(bounds.getCenter());
+          map.flyTo({
+            center: bounds.getCenter(),
+            zoom: 6
+          })
+          toolbar.changeLayer(map);
+          var params = JSON.stringify('ALABAMA')
+          fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         map.on('click', 'FL-Layer', function (e) {
-          new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Florida")
-            .addTo(map);
-
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
 
@@ -350,11 +334,6 @@ const MapComponent = ({props}) => {
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });    
         map.on('click', 'VA-Layer', function (e) {
-          new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(VADemographic)
-            .addTo(map);
-      
           var features = e.features
           var bounds = new mapboxgl.LngLatBounds();
 
@@ -378,6 +357,21 @@ const MapComponent = ({props}) => {
           toolbar.changeLayer(map);
           var params = JSON.stringify('VIRGINIA');
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+        });
+        map.addLayer({
+          'id': 'AL-Layer',
+          'type': 'fill',
+          'source': 'AL',
+          'paint': {
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
+          }
+        });
+        map.on('mouseenter', 'AL-Layer', function () {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', 'AL-Layer', function () {
+          map.getCanvas().style.cursor = '';
         });
         map.addLayer({
           'id': 'FL-Layer',

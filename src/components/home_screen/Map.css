@@ -5,16 +5,22 @@
 .mapboxgl-popup {
     max-width: none !important;
     transform:none !important;
-    top: 90%;
+    top: 8%;
     left: 10px;
 }
 
 .mapboxgl-popup th {
     width: 50px;
     padding: 5px 5px;
-    text-align: center;
+    text-align: left;
 }
 
-.mapboxgl-popup tr{
-    border-bottom: 1px solid grey;
-}
+.mapboxgl-popup td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 2px;
+  }
+
+.mapboxgl-popup tr:nth-child(even) {
+    background-color: #dddddd;
+  }
