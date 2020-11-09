@@ -4,7 +4,7 @@ import { Row } from 'react-materialize';
 import Plot from './Plot'
 class Summary extends React.Component {
     render() {
-        const {batch} = this.props;
+        const {job} = this.props;
         const containerStyle = {
             display:'flex',
             justifyContent: 'center'
@@ -18,7 +18,7 @@ class Summary extends React.Component {
 
             <div className="summary_container" style={containerStyle}>
                 <div className="summary_content" style={contentStyle}>
-                    <h1 className="center">{batch.title} Summary</h1>
+                    <h1 className="center">{job.title} Summary</h1>
                     <div style={{display:'block', width:'1000px',height:'1000px'}}><Plot></Plot></div>
 
                 </div>

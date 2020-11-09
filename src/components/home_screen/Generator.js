@@ -1,6 +1,6 @@
 import React from 'react';
 import M from 'materialize-css';
-import BatchCard from './BatchCard';
+import JobCard from './JobCard';
 import { Modal } from 'react-materialize';
 
 class Generate extends React.Component {

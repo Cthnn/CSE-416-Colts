@@ -3,32 +3,32 @@ import './HomeScreen.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import Generator from './Generator';
-import BatchLinks from './BatchLinks';
+import JobLinks from './JobLinks';
 import Map from './Map';
 import Summary from './Summary'
-import BatchCard from './BatchCard';
+import JobCard from './JobCard';
 
 class HomeScreen extends Component {
     state = {
-        // activeBatch: { id: '1', title: 'Batch 1', content: 'blah blah blah' }
-        activeBatch: null,
+        // activeJob: { id: '1', title: 'Job 1', content: 'blah blah blah' }
+        activeJob: null,
         summary: [],
         showMap: true,
-        // batches: [
-        //     BatchCard.createBatch(0, '', 0, 0, 0, '0', ''),
-        //     BatchCard.createBatch(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
-        //     BatchCard.createBatch(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
-        //     BatchCard.createBatch(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
-        //     BatchCard.createBatch(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
+        // jobs: [
+        //     JobCard.createJob(0, '', 0, 0, 0, '0', ''),
+        //     JobCard.createJob(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
+        //     JobCard.createJob(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
+        //     JobCard.createJob(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
+        //     JobCard.createJob(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
         // ],
-        batches: []
+        jobs: []
     }
 
-    loadBatch = (batch) => {
-        this.setState({ activeBatch: batch });
+    loadJob = (job) => {
+        this.setState({ activeJob: job });
         this.displaySummaryButton();
         var params = JSON.stringify({
-            'jobId': batch.id,
+            'jobId': job.id,
             'DistrictingType': 'AVERAGE'
         })
         fetch('http://localhost:8080/jobGeo', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
@@ -37,7 +37,7 @@ class HomeScreen extends Component {
         }).catch(error => { console.error('Error:', error); });
 
         var params = JSON.stringify({
-            'jobId': batch.id,
+            'jobId': job.id,
         })
         fetch('http://localhost:8080/genSummary', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
         .then(result => { 
@@ -46,14 +46,14 @@ class HomeScreen extends Component {
         }).catch(error => { console.error('Error:', error); });
     }
 
-    unloadBatch = () => {
-        this.setState({ activeBatch: null });
+    unloadJob = () => {
+        this.setState({ activeJob: null });
         document.getElementById("summaryToggle").style.visibility = "hidden";
     }
 
-    deleteBatch = (batch) => {
-        const id = batch.id;
-        this.setState({ batches: [...this.state.batches.filter(batch => batch.id != id)] })
+    deleteJob = (job) => {
+        const id = job.id;
+        this.setState({ jobs: [...this.state.jobs.filter(job => job.id != id)] })
         var params = JSON.stringify(id)
         fetch('http://localhost:8080/cancel', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
     }
@@ -62,8 +62,8 @@ class HomeScreen extends Component {
         fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET' }).then(response => response.text())
             .then(result => {
                 // console.log('Success:', JSON.parse(result));
-                // console.log(this.state.batches);
-                this.setState({batches: JSON.parse(result)})
+                // console.log(this.state.jobs);
+                this.setState({jobs: JSON.parse(result)})
             }).catch(error => { console.error('Error:', error); });
     }
 
@@ -85,7 +85,7 @@ class HomeScreen extends Component {
             overflow: 'auto',
         }
 
-        const batches = this.state.batches;
+        const jobs = this.state.jobs;
 
         return (
             <div className="HomeComponentComponents">
@@ -94,25 +94,25 @@ class HomeScreen extends Component {
 
                         <Tabs>
                             <TabList>
-                                <Tab onClick={this.unloadBatch}>Generate</Tab>
+                                <Tab onClick={this.unloadJob}>Generate</Tab>
                                 <Tab onClick={this.getHistory}>Results</Tab>
                             </TabList>
 
                             <TabPanel forceRender>
-                                <Generator batches={batches} />
+                                <Generator jobs={jobs} />
                             </TabPanel>
                             <TabPanel>
-                                <BatchLinks loadBatch={this.loadBatch.bind(this)} unloadBatch={this.unloadBatch} deleteBatch={this.deleteBatch} batches={batches} />
+                                <JobLinks loadJob={this.loadJob.bind(this)} unloadJob={this.unloadJob} deleteJob={this.deleteJob} jobs={jobs} />
                             </TabPanel>
                         </Tabs>
                     </div>
                     <div>
-                        {(this.state.activeBatch && !this.state.showMap) &&
+                        {(this.state.activeJob && !this.state.showMap) &&
                             <div className="grey lighten-4" style={containerStyle}>
-                                <Summary unloadBatch={this.unloadBatch} batch={this.state.activeBatch} />
+                                <Summary unloadJob={this.unloadJob} job={this.state.activeJob} />
                             </div>
                         }
-                        {(!this.state.activeBatch || this.state.showMap) &&
+                        {(!this.state.activeJob || this.state.showMap) &&
                             <Map className="col s6 m9 offset-s6 offset-m3"></Map>
                         }
                         <div id="summaryToggle" style={{ top: "100px" }}>
