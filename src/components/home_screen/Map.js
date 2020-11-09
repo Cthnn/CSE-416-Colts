@@ -188,6 +188,8 @@ const MapComponent = ({props}) => {
           var bounds = new mapboxgl.LngLatBounds();
 
           document.getElementById('state-selection').value = 'AL';
+          var elem = document.getElementById('select-state-generation');
+          elem.selectedIndex = '1';
 
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
@@ -268,6 +270,8 @@ const MapComponent = ({props}) => {
           var bounds = new mapboxgl.LngLatBounds();
 
           document.getElementById('state-selection').value = 'FL';
+          var elem = document.getElementById('select-state-generation');
+          elem.selectedIndex = '2';
 
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
@@ -276,7 +280,6 @@ const MapComponent = ({props}) => {
               })
             })
           })
-          console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
             zoom: 6
@@ -312,7 +315,9 @@ const MapComponent = ({props}) => {
           var bounds = new mapboxgl.LngLatBounds();
 
           document.getElementById('state-selection').value = 'VA';
-          console.log(document.getElementById('state-selection').value);
+          var elem = document.getElementById('select-state-generation');
+          elem.selectedIndex = '3';
+          // console.log(document.getElementById('state-selection').value);
 
           features.forEach(function(feature){
             feature.geometry.coordinates.forEach(function(coord){
@@ -321,7 +326,7 @@ const MapComponent = ({props}) => {
               })
             })
           })
-          console.log(bounds.getCenter());
+          // console.log(bounds.getCenter());
           map.flyTo({
             center: bounds.getCenter(),
             zoom: 5
