@@ -210,10 +210,12 @@ class Toolbar {
         var selected_state = document.getElementById('state-selection').value;
         var district_button_value = document.getElementById('district-checkbox').checked;
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
+        var heatmap_button_value = document.getElementById('heat-checkbox').checked;
         var states = ['AL', 'FL', 'VA'];
         for (var i = 0; i < states.length; i++) {
             var district_layer_name = states[i] + '-Districts';
             var precinct_layer_name = states[i] + '-Precincts';
+            var heat_layer_name = states[i] + '-HeatMap';
             var state_layer_name = states[i] +'-Layer';
             if(!district_button_value && !precinct_button_value){ 
                 map.setLayoutProperty(district_layer_name, 'visibility', 'none');
