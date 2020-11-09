@@ -222,6 +222,15 @@ const MapComponent = ({props}) => {
             map.removeSource('selectedFeature');   
           }
           var feature = features[0];
+          console.log(feature);
+          var popup = new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML("Feature properties not normalized for now");
+          
+          //Change position in CSS
+          popup.id = 'precinct-popup';
+          popup.addTo(map);
+
           map.addSource('selectedFeature', {
             "type": "geojson",
             "data": feature.toJSON()
@@ -235,6 +244,8 @@ const MapComponent = ({props}) => {
               'fill-outline-color': 'rgba(50, 50, 210, 1)'
             }
           });
+          
+
         })
         map.addLayer({
           'id': 'AL-Layer',
