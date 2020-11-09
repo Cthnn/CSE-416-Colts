@@ -90,6 +90,11 @@ const MapComponent = ({props}) => {
           'data':
           'virginia-precincts.geojson'
         });
+        map.addSource('AL-heat', {
+          'type': 'geojson',
+          'data':
+          './alabama_heatmap.geojson'
+        });
 
         map.addLayer({
           'id': 'VA-Precincts',
@@ -166,6 +171,67 @@ const MapComponent = ({props}) => {
             'fill-outline-color': 'rgba(240, 240, 40, 1)'
           }
         });
+
+        map.addLayer({
+          'id': 'AL-Layer',
+          'type': 'fill',
+          'source': 'AL',
+          'paint': {
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
+          }
+        });
+
+        map.addLayer({
+          id: 'AL-heat',
+          type: 'heatmap',
+          source: 'AL-heat',
+          maxzoom: 15,
+          paint: {
+            // increase weight as diameter breast height increases
+            'heatmap-weight': {
+              property: 'WHITE',
+              type: 'exponential',
+              stops: [
+                [1, 0],
+                [62, 1]
+              ]
+            },
+            // increase intensity as zoom level increases
+            'heatmap-intensity': {
+              stops: [
+                [11, 1],
+                [15, 3]
+              ]
+            },
+            // assign color values be applied to points depending on their density
+            'heatmap-color': [
+              'interpolate',
+              ['linear'],
+              ['heatmap-density'],
+              0, 'rgba(236,222,239,0)',
+              0.2, 'rgb(208,209,230)',
+              0.4, 'rgb(166,189,219)',
+              0.6, 'rgb(103,169,207)',
+              0.8, 'rgb(28,144,153)'
+            ],
+            // increase radius as zoom increases
+            'heatmap-radius': {
+              stops: [
+                [11, 15],
+                [15, 20]
+              ]
+            },
+            // decrease opacity to transition into the circle layer
+            'heatmap-opacity': {
+              default: 1,
+              stops: [
+                [14, 1],
+                [15, 0]
+              ]
+            },
+          }
+        }, 'waterway-label');
         
 
         map.on('click', 'AL-Layer', function (e) {
@@ -195,9 +261,7 @@ const MapComponent = ({props}) => {
             zoom: 6
           })
           toolbar.changeLayer(map);
-          var params = JSON.stringify({
-            'name': 'Alabama'
-          })
+          var params = JSON.stringify('ALABAMA')
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         
@@ -287,9 +351,7 @@ const MapComponent = ({props}) => {
             zoom: 6
           })
           toolbar.changeLayer(map);
-          var params = JSON.stringify({
-            'name': 'Florida'
-          })
+          var params = JSON.stringify('FLORIDA');
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });    
         map.on('click', 'VA-Layer', function (e) {
@@ -319,9 +381,7 @@ const MapComponent = ({props}) => {
             zoom: 5
           })
           toolbar.changeLayer(map);
-          var params = JSON.stringify({
-            'name': 'Virginia'
-          })
+          var params = JSON.stringify('VIRGINIA');
           fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         });
         map.addLayer({

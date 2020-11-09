@@ -127,9 +127,18 @@ class Toolbar {
             
 
             this.changeLayer(map);
-            var params = JSON.stringify({
-                'name': state
-              })
+            var statename;
+            if (state === "AL"){
+                statename = "ALABAMA"
+            }else if (state === "FL"){
+                statename = "FLORIDA"
+            }else if (state === "VA"){
+                statename = "VIRGINIA"
+            }else{
+                statename = state;
+            }
+            var params = JSON.stringify(statename)
+            console.log(params)
               fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         })
         this.middle_text.addEventListener('click', (e) => {
