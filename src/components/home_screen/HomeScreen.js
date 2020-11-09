@@ -28,21 +28,19 @@ class HomeScreen extends Component {
         this.setState({ activeJob: job });
         this.displaySummaryButton();
         var params = JSON.stringify({
-            'jobId': job.id,
+            'jobId': job.jobId,
             'DistrictingType': 'AVERAGE'
         })
         fetch('http://localhost:8080/jobGeo', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
         .then(result => { 
-            console.log('Success:', result); 
+            console.log('Job Geo:', result); 
         }).catch(error => { console.error('Error:', error); });
 
-        var params = JSON.stringify({
-            'jobId': job.id,
-        })
+        var params = JSON.stringify(job.jobId)
         fetch('http://localhost:8080/genSummary', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
         .then(result => { 
-            console.log('Success:', result);
-            this.setState({'Summary' : result}); 
+            console.log('Summary:', JSON.parse(result));
+            this.setState({'summary' : JSON.parse(result)}) 
         }).catch(error => { console.error('Error:', error); });
     }
 
@@ -52,8 +50,8 @@ class HomeScreen extends Component {
     }
 
     deleteJob = (job) => {
-        const id = job.id;
-        this.setState({ jobs: [...this.state.jobs.filter(job => job.id != id)] })
+        const id = job.jobId;
+        this.setState({ jobs: [...this.state.jobs.filter(job => job.jobId != id)] })
         var params = JSON.stringify(id)
         fetch('http://localhost:8080/cancel', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
     }
@@ -61,7 +59,7 @@ class HomeScreen extends Component {
     getHistory = () => {
         fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET' }).then(response => response.text())
             .then(result => {
-                // console.log('Success:', JSON.parse(result));
+                console.log('History:', JSON.parse(result));
                 // console.log(this.state.jobs);
                 this.setState({jobs: JSON.parse(result)})
             }).catch(error => { console.error('Error:', error); });
@@ -109,7 +107,7 @@ class HomeScreen extends Component {
                     <div>
                         {(this.state.activeJob && !this.state.showMap) &&
                             <div className="grey lighten-4" style={containerStyle}>
-                                <Summary unloadJob={this.unloadJob} job={this.state.activeJob} />
+                                <Summary unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary}/>
                             </div>
                         }
                         {(!this.state.activeJob || this.state.showMap) &&

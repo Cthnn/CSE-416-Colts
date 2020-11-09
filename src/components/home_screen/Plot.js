@@ -17,20 +17,22 @@ class Plot extends React.Component {
           outlierColor: '#999999',
           padding: 10,
           itemRadius: 0,
-          data: [
-            Array.from({length:100}).map(() => Math.random()*(25)+0),
-            Array.from({length:100}).map(() => Math.random()*(25)+15),
-            Array.from({length:100}).map(() => Math.random()*(25)+30),
-            Array.from({length:100}).map(() => Math.random()*(25)+45),
-            Array.from({length:100}).map(() => Math.random()*(25)+60),
-            Array.from({length:100}).map(() => Math.random()*(25)+75),
-            Array.from({length:100}).map(() => Math.random()*(25)+90),
-            Array.from({length:100}).map(() => Math.random()*(25)+105),
-            Array.from({length:100}).map(() => Math.random()*(25)+120),
-            Array.from({length:100}).map(() => Math.random()*(25)+135),
-          ]
+          // data: [
+          //   Array.from({length:100}).map(() => Math.random()*(25)+0),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+15),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+30),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+45),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+60),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+75),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+90),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+105),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+120),
+          //   Array.from({length:100}).map(() => Math.random()*(25)+135),
+          // ]
+          data: this.props.summary
         }]
       };
+      console.log(boxplotData)
       this.myChart = new Chart(this.chartRef.current, {
         type: 'boxplot',
         data: boxplotData,

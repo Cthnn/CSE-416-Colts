@@ -4,6 +4,9 @@
 
 .mapboxgl-popup {
     max-width: none !important;
+    transform:none !important;
+    top: 90%;
+    left: 10px;
 }
 
 .mapboxgl-popup th {
