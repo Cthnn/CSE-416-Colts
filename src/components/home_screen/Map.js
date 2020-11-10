@@ -1,16 +1,110 @@
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
+import * as Constants from './MapConstants.js';
 import Toolbar from './Toolbar.js';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
+const addStateSource = (map, state) => {
+  map.addSource(Constants.States[state], {
+    'type': 'geojson',
+    'data':
+    'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/'+state+'/shape.geojson'
+  });
+}
+
+const addDistrictSource = (map, state) => {
+  map.addSource(Constants.Districts[state], {
+    'type': 'geojson',
+    'data':
+    'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/'+Constants.StateNames[state]+'_108_to_112.geojson'
+  });
+}
+
+const addPrecinctSource = (map, state) => {
+  map.addSource(Constants.Precincts[state], {
+    'type': 'geojson',
+    'data': './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson'
+  });
+}
+
+const addHeatMapSource = (map, state) => {
+  map.addSource(Constants.HeatMaps[state], {
+    'type': 'geojson',
+    'data':
+    './'+Constants.StateNames[state].toLowerCase()+'_heatmap.geojson'
+  });
+}
+
+const addStateLayer = (map, state, toolbar) => {
+  var layer = Constants.StateLayers[state];
+  map.addLayer({
+    'id': layer,
+    'type': 'fill',
+    'source': Constants.States[state],
+    'paint': {
+      'fill-color': 'rgba(200, 100, 240, 0.4)',
+      'fill-outline-color': 'rgba(200, 100, 240, 1)'
+    }
+  });
+
+  map.on('mouseenter', layer, function () {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', layer, function () {
+    map.getCanvas().style.cursor = '';
+  });
+
+  map.on('click', layer, function (e) {
+    document.getElementById('state-selection').value = Constants.States[state];
+    document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state) + 1;
+
+    map.flyTo({
+      center: Constants.StateCenters[state],
+      zoom: 6
+    })
+    toolbar.changeLayer(map);
+    var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+    fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+  });
+}
+
+const addDistrictLayer = (map, state) => {
+  map.addLayer({
+    'id': Constants.DistrictLayers[state],
+    'type': 'fill',
+    'source': Constants.Districts[state],
+    'layout':{
+      'visibility':'none'
+    },
+    'paint': {
+      'fill-color': 'rgba(200, 100, 240, 0.2)',
+      'fill-outline-color': 'rgba(240, 240, 240, 1)'
+    }
+  });
+}
+
+const addPrecinctLayer = (map, state) => {
+  map.addLayer({
+    'id': Constants.PrecinctLayers[state],
+    'type': 'fill',
+    'source': Constants.Precincts[state], 
+    'layout':{
+      'visibility':'none'
+    },
+    'paint': {
+      'fill-color': 'rgba(200, 100, 240, 0.2)',
+      'fill-outline-color': 'rgba(200, 100, 240, 1)'
+    }
+  });
+}
 
 const addHeatMapLayer = (map, state) => {
   map.addLayer({
-    id: state+'-HeatMap',
+    id: Constants.HeatMapLayers[state],
     type: 'heatmap',
-    source: state+'-heat',
+    source: Constants.HeatMaps[state],
     layout:{
       visibility:'none'
     },
@@ -66,7 +160,8 @@ const addHeatMapLayer = (map, state) => {
 
 const MapComponent = ({props}) => {
     const mapContainerRef = useRef(null);
-    
+    const toolbar = new Toolbar();
+
     useEffect(() => {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
@@ -76,196 +171,38 @@ const MapComponent = ({props}) => {
         zoom: 3
       });
 
-      const VADemographic = `
-        <div style="text-align: center;">Precinct 2 Demographics</div>
-        <table style="font-size:10px; padding: 0px !important;">
-        <tr>
-          <th>Race</th>
-          <th>Population</th>
-        </tr>
-        <tr>
-          <td>White</td>
-          <td>12401</td>
-        </tr>
-        <tr>
-          <td>Black</td>
-          <td>5835</td>
-        </tr>
-        <tr>
-          <td>Hispanic</td>
-          <td>2551</td>
-        </tr>
-        <tr>
-          <td>Asian</td>
-          <td>515</td>
-        </tr>
-        <tr>
-          <td>American Indians</td>
-          <td>84</td>
-        </tr>
-        <tr>
-          <td>Pacific Islander</td>
-          <td>243</td>
-        </tr>
-        </table>
-      `
-      var toolbar = new Toolbar();
       map.addControl(toolbar, 'top-left');
-      
-
+      map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
       map.on('load', function () {
         // Add a source for the state polygons.
         map.resize();
-        map.addSource('VA', {
-          'type': 'geojson',
-          'data':
-          'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/VA/shape.geojson'
-        });
-        map.addSource('AL', {
-          'type': 'geojson',
-          'data': 'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/AL/shape.geojson'
-      });
-      map.addSource('FL', {
-        'type': 'geojson',
-        'data':
-          'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/FL/shape.geojson'
-        });
-        map.addSource('AL-Congressional', {
-          'type': 'geojson',
-          'data':
-          'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Alabama_108_to_112.geojson'
-        });
-        map.addSource('FL-Congressional', {
-          'type': 'geojson',
-          'data':
-          'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Florida_108_to_112.geojson'
-        });
-        map.addSource('VA-Congressional', {
-          'type': 'geojson',
-          'data':
-          'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/Virginia_108_to_112.geojson'
-        });
-        map.addSource('AL-Precinct', {
-          'type': 'geojson',
-          'data':
-          './alabama-precincts.geojson'
-        });
-        map.addSource('FL-Precinct', {
-          'type': 'geojson',
-          'data':
-          './florida-precincts.geojson'
-        });
-        map.addSource('VA-Precinct', {
-          'type': 'geojson',
-          'data':
-          'virginia-precincts.geojson'
-        });
-        map.addSource('AL-heat', {
-          'type': 'geojson',
-          'data':
-          './alabama_heatmap.geojson'
-        });
-        map.addSource('FL-heat', {
-          'type': 'geojson',
-          'data':
-          './florida_heatmap.geojson'
-        });
-        map.addSource('VA-heat', {
-          'type': 'geojson',
-          'data':
-          './virginia_heatmap.geojson'
-        });
 
-        map.addLayer({
-          'id': 'VA-Precincts',
-          'type': 'fill',
-          'source': 'VA-Precinct', 
-          'layout':{
-            'visibility':'none'
-          },
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
+        for(var state in Constants.States) {
+          addStateSource(map, state);
+          addDistrictSource(map, state);
+          addPrecinctSource(map, state);
+  
+          addHeatMapSource(map, state);
+  
+          addStateLayer(map, state, toolbar);
+          addDistrictLayer(map, state);
+          addPrecinctLayer(map, state);
+  
+  
+          addHeatMapLayer(map, state);
+        }
 
-        map.addLayer({
-          'id': 'AL-Precincts',
-          'type': 'fill',
-          'source': 'AL-Precinct',
-          'layout':{
-            'visibility':'none'
-          },
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
 
-        map.addLayer({
-          'id': 'FL-Precincts',
-          'type': 'fill',
-          'source': 'FL-Precinct',
-          'layout':{
-            'visibility':'none'
-          },
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-
-        map.addLayer({
-          'id': 'AL-Districts',
-          'type': 'fill',
-          'source': 'AL-Congressional',
-          'layout':{
-            'visibility':'none'
-          },
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-        map.addLayer({
-          'id': 'FL-Districts',
-          'type': 'fill',
-          'source': 'FL-Congressional',
-          'layout':{
-            'visibility':'none'
-          },
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-        map.addLayer({
-          'id': 'VA-Districts',
-          'type': 'fill',
-          'source': 'VA-Congressional',
-          'layout':{
-            'visibility':'none'
-          },
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(240, 240, 40, 1)'
-          }
-        });
-
-        addHeatMapLayer(map, 'AL');
-        addHeatMapLayer(map, 'FL');
-        addHeatMapLayer(map, 'VA');
-        
         map.on('click', function (e){
           var district_button_value = document.getElementById('district-checkbox').checked;
           var precinct_button_value = document.getElementById('precinct-checkbox').checked;
           var features = null;
           if(precinct_button_value){
-            features = map.queryRenderedFeatures(e.point, {layers: ['AL-Precincts','FL-Precincts','VA-Precincts']});
+            features = map.queryRenderedFeatures(e.point, {layers: Object.values(Constants.PrecinctLayers)});
           }
           else{
             if(district_button_value){
-              features = map.queryRenderedFeatures(e.point, {layers: ['AL-Districts','FL-Districts','VA-Districts']});
+              features = map.queryRenderedFeatures(e.point, {layers: Object.values(Constants.DistrictLayers)});
             }
           }
           // console.log(features);
@@ -280,7 +217,7 @@ const MapComponent = ({props}) => {
           console.log(feature);
           var popup = new mapboxgl.Popup()
             .setLngLat(e.lngLat)
-            .setHTML(VADemographic);
+            .setHTML(Constants.VADemographic);
           
           //Change position in CSS
           popup.id = 'precinct-popup';
@@ -299,130 +236,8 @@ const MapComponent = ({props}) => {
               'fill-outline-color': 'rgba(50, 50, 210, 1)'
             }
           });
-          
-
-        })
-        map.on('click', 'AL-Layer', function (e) {          
-          var features = e.features
-          var bounds = new mapboxgl.LngLatBounds();
-
-          document.getElementById('state-selection').value = 'AL';
-          var elem = document.getElementById('select-state-generation');
-          elem.selectedIndex = '1';
-
-          features.forEach(function(feature){
-            feature.geometry.coordinates.forEach(function(coord){
-              coord.forEach(function(coordinate_pair){
-                bounds.extend(coordinate_pair)
-              })
-            })
-          })
-          console.log(bounds.getCenter());
-          map.flyTo({
-            center: bounds.getCenter(),
-            zoom: 6
-          })
-          toolbar.changeLayer(map);
-          var params = JSON.stringify('ALABAMA')
-          fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
-        });
-        map.on('click', 'FL-Layer', function (e) {
-          var features = e.features
-          var bounds = new mapboxgl.LngLatBounds();
-
-          document.getElementById('state-selection').value = 'FL';
-          var elem = document.getElementById('select-state-generation');
-          elem.selectedIndex = '2';
-
-          features.forEach(function(feature){
-            feature.geometry.coordinates.forEach(function(coord){
-              coord.forEach(function(coordinate_pair){
-                bounds.extend(coordinate_pair)
-              })
-            })
-          })
-          map.flyTo({
-            center: bounds.getCenter(),
-            zoom: 6
-          })
-          toolbar.changeLayer(map);
-          var params = JSON.stringify('FLORIDA');
-          fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
-        });    
-        map.on('click', 'VA-Layer', function (e) {
-          var features = e.features
-          var bounds = new mapboxgl.LngLatBounds();
-
-          document.getElementById('state-selection').value = 'VA';
-          var elem = document.getElementById('select-state-generation');
-          elem.selectedIndex = '3';
-          // console.log(document.getElementById('state-selection').value);
-
-          features.forEach(function(feature){
-            feature.geometry.coordinates.forEach(function(coord){
-              coord.forEach(function(coordinate_pair){
-                bounds.extend(coordinate_pair)
-              })
-            })
-          })
-          // console.log(bounds.getCenter());
-          map.flyTo({
-            center: bounds.getCenter(),
-            zoom: 5
-          })
-          toolbar.changeLayer(map);
-          var params = JSON.stringify('VIRGINIA');
-          fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
-        });
-        map.addLayer({
-          'id': 'AL-Layer',
-          'type': 'fill',
-          'source': 'AL',
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-        map.on('mouseenter', 'AL-Layer', function () {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', 'AL-Layer', function () {
-          map.getCanvas().style.cursor = '';
-        });
-        map.addLayer({
-          'id': 'FL-Layer',
-          'type': 'fill',
-          'source': 'FL',
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-        map.on('mouseenter', 'FL-Layer', function () {
-          map.getCanvas().style.cursor = 'pointer';
-          });
-        map.on('mouseleave', 'FL-Layer', function () {
-          map.getCanvas().style.cursor = '';
-        });
-        map.addLayer({
-          'id': 'VA-Layer',
-          'type': 'fill',
-          'source': 'VA',
-          'paint': {
-            'fill-color': 'rgba(200, 100, 240, 0.4)',
-            'fill-outline-color': 'rgba(200, 100, 240, 1)'
-          }
-        });
-        map.on('mouseenter', 'VA-Layer', function () {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        
-        map.on('mouseleave', 'VA-Layer', function () {
-          map.getCanvas().style.cursor = '';
         });
       });
-      map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
       return () => map.remove();
     }, []); 
     return<div className="map" ref={mapContainerRef} />;

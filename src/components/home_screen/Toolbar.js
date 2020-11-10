@@ -1,17 +1,11 @@
-import './Toolbar.css'
-
+import './Toolbar.css';
+import * as Constants from './MapConstants.js';
 class Toolbar {
-    serverStateName(state){
-        var statename = state;
-        if (state === "AL"){
-            statename = "ALABAMA"
-        }else if (state === "FL"){
-            statename = "FLORIDA"
-        }else if (state === "VA"){
-            statename = "VIRGINIA"
-        }
 
-        return statename
+    getPrecinctGeoJson(state){
+        var params = JSON.stringify(state);
+        fetch('http://localhost:8080/precinct', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+
     }
 
     onAdd(map) {
@@ -30,14 +24,14 @@ class Toolbar {
         this.state_option3 = document.createElement('option');
 
         this.state_option0.value = 'None';
-        this.state_option1.value = 'AL';
-        this.state_option2.value = 'FL';
-        this.state_option3.value = 'VA';
+        this.state_option1.value = Constants.States.AL;
+        this.state_option2.value = Constants.States.FL;
+        this.state_option3.value = Constants.States.VA;
 
         this.state_option1.textContent = 'None';
-        this.state_option1.textContent = 'Alabama';
-        this.state_option2.textContent = 'Florida';
-        this.state_option3.textContent = 'Virginia';
+        this.state_option1.textContent = Constants.StateNames.AL;
+        this.state_option2.textContent = Constants.StateNames.FL;
+        this.state_option3.textContent = Constants.StateNames.VA;
 
         this.left.appendChild(this.state_option0);
         this.left.appendChild(this.state_option1);
@@ -113,96 +107,60 @@ class Toolbar {
         this.left.addEventListener('change', (e) => {
             var state = e.target.value;
             var elem = document.getElementById('select-state-generation');
-            if (state === 'AL') {
-                map.flyTo({
-                    center: [-86.68075561523438, 32.57631501316452],
-                    zoom: 6
-                })
-                elem.selectedIndex = '1';
-            }
-            if (state === 'FL') {
-                map.flyTo({
-                    center: [-82.87845611572266, 28.40022856730028],
-                    zoom: 6
-                })
-                elem.selectedIndex = '2';
-            }
-            if (state === 'VA') {
-                map.flyTo({
-                    center: [-79.42291259765625, 38.00321033702472], //NEED TO UPDATE NEW CENTER
-                    zoom: 5
-                })
-                elem.selectedIndex = '3';
-            }
+
             if (state === 'None') {
                 map.flyTo({
                     center: [-100.04, 38.907],
                     zoom: 3
                 })
                 elem.selectedIndex = '0';
+            }else{
+                map.flyTo({
+                    center: Constants.StateCenters[state],
+                    zoom: 6
+                })
+                elem.selectedIndex = Object.keys(Constants.States).indexOf(state) + 1;
             }
             
 
             this.changeLayer(map);
-            var statename = this.serverStateName(state);
-            var params = JSON.stringify(statename)
-            console.log(params)
+            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+            console.log(params);
               fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
         })
-        this.middle_text.addEventListener('click', (e) => {
-            var button = document.getElementById('district-checkbox');
-            button.checked = !button.checked;
-            this.changeLayer(map);
 
-        })
         this.middle.addEventListener('click', () => {
             this.changeLayer(map);
         })
 
-        this.right_text.addEventListener('click', () => {
-            var button = document.getElementById('precinct-checkbox');
-            button.checked = !button.checked;
-            this.changeLayer(map);
-        })
         this.right.addEventListener('click', () => {
             this.changeLayer(map);
+            // var params = Constants.StateNames[this.left.value].toUpperCase();
+            // console.log(params)
+            // fetch('http://localhost:8080/precinct', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+
         })
         
         this.heat_dropdown.addEventListener('change', () => {
             this.changeLayer(map);
         })
 
-        this.heat_text.addEventListener('click', () => {
-            var button = document.getElementById('heat-checkbox');
-            button.checked = !button.checked;
-            this.changeLayer(map);
-            var state = document.getElementById('state-selection').value;
-            var ethnicGroup = document.getElementById('heatmap-select').value;
-
-            if(button.checked){
-                var params = JSON.stringify({
-                    's': this.serverStateName(state),
-                    'eg': ethnicGroup
-                })
-                fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
-
-            }
-        })
-
         this.heat.addEventListener('click', () => {
-            var button = document.getElementById('heat-checkbox');
-            var state = document.getElementById('state-selection').value;
-            var ethnicGroup = document.getElementById('heatmap-select').value;
             this.changeLayer(map);
 
-            if(button.checked){
-                var params = JSON.stringify({
-                    's': this.serverStateName(state),
-                    'eg': ethnicGroup
-                })
-                fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+            // var button = document.getElementById('heat-checkbox');
+            // var state = document.getElementById('state-selection').value;
+            // var ethnicGroup = document.getElementById('heatmap-select').value;
+            
 
-            }
+            // if(button.checked){
+            //     var params = JSON.stringify({
+            //         's': Constants.StateNames[state].toUpperCase(),
+            //         'eg': ethnicGroup
+            //     })
+            //     fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+
+            // }
         })
 
         this.sub_container.appendChild(this.left_text);
@@ -230,15 +188,17 @@ class Toolbar {
         var district_button_value = document.getElementById('district-checkbox').checked;
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
         var heatmap_button_value = document.getElementById('heat-checkbox').checked;
-        var states = ['AL', 'FL', 'VA'];
 
-        for (var i = 0; i < states.length; i++) {
-            var district_layer_name = states[i] + '-Districts';
-            var precinct_layer_name = states[i] + '-Precincts';
-            var heat_layer_name = states[i] + '-HeatMap';
-            var state_layer_name = states[i] +'-Layer';
+        for (var state in Constants.States) {
+            var district_layer_name = Constants.DistrictLayers[state];
+            var precinct_layer_name = Constants.PrecinctLayers[state];
+            var heat_layer_name = Constants.HeatMapLayers[state];
+            var state_layer_name = Constants.StateLayers[state];
 
-            if(heatmap_button_value && selected_state == states[i]){
+            map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+            map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
+            
+            if(heatmap_button_value && selected_state == state){
                 var race = document.getElementById("heatmap-select").value;
                 map.setPaintProperty(heat_layer_name, 'heatmap-weight',{
                     property: race,
@@ -252,15 +212,14 @@ class Toolbar {
             }else{
                 map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
             }
-            
-            map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
-            if(precinct_button_value && selected_state == states[i]){
+
+            if(precinct_button_value && selected_state == state){
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
                 map.setLayoutProperty(state_layer_name, 'visibility', 'none');
             }else{
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
             }
-            if(district_button_value  && selected_state == states[i]){
+            if(district_button_value  && selected_state == state){
                 map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
                 map.setLayoutProperty(state_layer_name, 'visibility', 'none');
             }else{
@@ -268,7 +227,7 @@ class Toolbar {
             }
             if(!district_button_value && !precinct_button_value){
                 map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-                if(selected_state == states[i])
+                if(selected_state == state)
                     map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.2)');
                 else
                     map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.2)');
