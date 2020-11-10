@@ -1,11 +1,47 @@
 import './Toolbar.css';
 import * as Constants from './MapConstants.js';
+
 class Toolbar {
+    getDistrictGeoJson(map, state){
+        var layer = map.getLayer(Constants.DistrictLayers[state]);
+        if(layer == undefined){
+            this.addDistrictSource(map, state);
+            this.addDistrictLayer(map, state);
+            // var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+            // fetch('http://localhost:8080/district', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+            //     console.log("success");
+            //     this.addDistrictSource(map, state, result);
+            //     this.addDistrictLayer(map,state);
+            // }).catch(error => {console.error('Error:', error);});
+        }
+    }
 
-    getPrecinctGeoJson(state){
-        var params = JSON.stringify(state);
-        fetch('http://localhost:8080/precinct', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+    getPrecinctGeoJson(map, state){
+        var layer = map.getLayer(Constants.PrecinctLayers[state]);
+        if(layer == undefined){
+            this.addPrecinctSource(map, state);
+            this.addPrecinctLayer(map, state);
+            // var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+            // fetch('http://localhost:8080/precinct', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+            //     console.log("success");
+            //     this.addPrecinctSource(map, state, result);
+            //     this.addPrecinctLayer(map,state);
+            // }).catch(error => {console.error('Error:', error);});
+        }
+    }
 
+    getHeatMapGeoJson(map, state){
+        var layer = map.getLayer(Constants.HeatMapLayers[state]);
+        if(layer == undefined){
+            this.addHeatMapSource(map, state);
+            this.addHeatMapLayer(map, state);
+            // var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+            // fetch('http://localhost:8080/heatmap', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+            //     console.log("success");
+            //     this.addHeatMapSource(map, state, result);
+            //     this.addHeatMapLayer(map,state);
+            // }).catch(error => {console.error('Error:', error);});
+        }
     }
 
     onAdd(map) {
@@ -104,6 +140,7 @@ class Toolbar {
         this.heat_dropdown.appendChild(this.option6);
 
         this.heat.id = 'heat-checkbox';
+        //state
         this.left.addEventListener('change', (e) => {
             var state = e.target.value;
             var elem = document.getElementById('select-state-generation');
@@ -122,25 +159,23 @@ class Toolbar {
                 elem.selectedIndex = Object.keys(Constants.States).indexOf(state) + 1;
             }
             
-
-            this.changeLayer(map);
             var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             console.log(params);
-              fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+            fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+                console.log('Success:', result);
+                this.changeLayer(map);
+            }).catch(error => {console.error('Error:', error);});
         })
 
+        //district
         this.middle.addEventListener('click', () => {
             this.changeLayer(map);
         })
-
+        //precinct
         this.right.addEventListener('click', () => {
             this.changeLayer(map);
-            // var params = Constants.StateNames[this.left.value].toUpperCase();
-            // console.log(params)
-            // fetch('http://localhost:8080/precinct', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
-
         })
-        
+        //heatmap
         this.heat_dropdown.addEventListener('change', () => {
             this.changeLayer(map);
         })
@@ -189,6 +224,18 @@ class Toolbar {
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
         var heatmap_button_value = document.getElementById('heat-checkbox').checked;
 
+        if(district_button_value){
+            this.getDistrictGeoJson(selected_state);
+        }
+
+        if(precinct_button_value){
+            this.getPrecinctGeoJson(selected_state);
+        }
+
+        if(heatmap_button_value){
+            this.getHeatMapGeoJson(selected_state);
+        }
+
         for (var state in Constants.States) {
             var district_layer_name = Constants.DistrictLayers[state];
             var precinct_layer_name = Constants.PrecinctLayers[state];
@@ -197,8 +244,8 @@ class Toolbar {
 
             map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
             map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
-            
-            if(heatmap_button_value && selected_state == state){
+
+            if(heatmap_button_value && selected_state == state && map.getLayer(heat_layer_name) != undefined){
                 var race = document.getElementById("heatmap-select").value;
                 map.setPaintProperty(heat_layer_name, 'heatmap-weight',{
                     property: race,
@@ -210,20 +257,23 @@ class Toolbar {
                     });
                 map.setLayoutProperty(heat_layer_name, 'visibility', 'visible');
             }else{
-                map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
+                if(map.getLayer(heat_layer_name) != undefined)
+                    map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
             }
 
-            if(precinct_button_value && selected_state == state){
+            if(precinct_button_value && selected_state == state && map.getLayer(precinct_layer_name) != undefined){
                 map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
                 map.setLayoutProperty(state_layer_name, 'visibility', 'none');
             }else{
-                map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+                if(map.getLayer(precinct_layer_name) != undefined)
+                    map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
             }
-            if(district_button_value  && selected_state == state){
+            if(district_button_value  && selected_state == state && map.getLayer(district_layer_name) != undefined){
                 map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
                 map.setLayoutProperty(state_layer_name, 'visibility', 'none');
             }else{
-                map.setLayoutProperty(district_layer_name, 'visibility', 'none');
+                if(map.getLayer(district_layer_name) != undefined)
+                    map.setLayoutProperty(district_layer_name, 'visibility', 'none');
             }
             if(!district_button_value && !precinct_button_value){
                 map.setLayoutProperty(state_layer_name, 'visibility', 'visible');

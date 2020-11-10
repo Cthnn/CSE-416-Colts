@@ -6,161 +6,164 @@ import Toolbar from './Toolbar.js';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const addStateSource = (map, state) => {
-  map.addSource(Constants.States[state], {
-    'type': 'geojson',
-    'data':
-    'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/'+state+'/shape.geojson'
-  });
-}
+class MapHelper {
+  addStateSource = (map, state) => {
+    map.addSource(Constants.States[state], {
+      'type': 'geojson',
+      'data':
+      'https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/'+state+'/shape.geojson'
+    });
+  }
 
-const addDistrictSource = (map, state) => {
-  map.addSource(Constants.Districts[state], {
-    'type': 'geojson',
-    'data':
-    'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/'+Constants.StateNames[state]+'_108_to_112.geojson'
-  });
-}
+  addDistrictSource = (map, state) => {
+    map.addSource(Constants.Districts[state], {
+      'type': 'geojson',
+      'data':
+      'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/'+Constants.StateNames[state]+'_108_to_112.geojson'
+    });
+  }
 
-const addPrecinctSource = (map, state) => {
-  map.addSource(Constants.Precincts[state], {
-    'type': 'geojson',
-    'data': './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson'
-  });
-}
+  addPrecinctSource = (map, state) => {
+    map.addSource(Constants.Precincts[state], {
+      'type': 'geojson',
+      'data': './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson'
+    });
+  }
 
-const addHeatMapSource = (map, state) => {
-  map.addSource(Constants.HeatMaps[state], {
-    'type': 'geojson',
-    'data':
-    './'+Constants.StateNames[state].toLowerCase()+'_heatmap.geojson'
-  });
-}
+  addHeatMapSource = (map, state) => {
+    map.addSource(Constants.HeatMaps[state], {
+      'type': 'geojson',
+      'data':
+      './'+Constants.StateNames[state].toLowerCase()+'_heatmap.geojson'
+    });
+  }
 
-const addStateLayer = (map, state, toolbar) => {
-  var layer = Constants.StateLayers[state];
-  map.addLayer({
-    'id': layer,
-    'type': 'fill',
-    'source': Constants.States[state],
-    'paint': {
-      'fill-color': 'rgba(200, 100, 240, 0.4)',
-      'fill-outline-color': 'rgba(200, 100, 240, 1)'
-    }
-  });
+  addStateLayer = (map, state, toolbar) => {
+    var layer = Constants.StateLayers[state];
+    map.addLayer({
+      'id': layer,
+      'type': 'fill',
+      'source': Constants.States[state],
+      'paint': {
+        'fill-color': 'rgba(200, 100, 240, 0.4)',
+        'fill-outline-color': 'rgba(200, 100, 240, 1)'
+      }
+    });
 
-  map.on('mouseenter', layer, function () {
-    map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave', layer, function () {
-    map.getCanvas().style.cursor = '';
-  });
+    map.on('mouseenter', layer, function () {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', layer, function () {
+      map.getCanvas().style.cursor = '';
+    });
 
-  map.on('click', layer, function (e) {
-    document.getElementById('state-selection').value = Constants.States[state];
-    document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state) + 1;
+    map.on('click', layer, function (e) {
+      document.getElementById('state-selection').value = Constants.States[state];
+      document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state) + 1;
 
-    map.flyTo({
-      center: Constants.StateCenters[state],
-      zoom: 6
-    })
-    toolbar.changeLayer(map);
-    var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-    fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
-  });
-}
+      map.flyTo({
+        center: Constants.StateCenters[state],
+        zoom: 6
+      })
+      toolbar.changeLayer(map);
+      var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+      fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+    });
+  }
 
-const addDistrictLayer = (map, state) => {
-  map.addLayer({
-    'id': Constants.DistrictLayers[state],
-    'type': 'fill',
-    'source': Constants.Districts[state],
-    'layout':{
-      'visibility':'none'
-    },
-    'paint': {
-      'fill-color': 'rgba(200, 100, 240, 0.2)',
-      'fill-outline-color': 'rgba(240, 240, 240, 1)'
-    }
-  });
-}
-
-const addPrecinctLayer = (map, state) => {
-  map.addLayer({
-    'id': Constants.PrecinctLayers[state],
-    'type': 'fill',
-    'source': Constants.Precincts[state], 
-    'layout':{
-      'visibility':'none'
-    },
-    'paint': {
-      'fill-color': 'rgba(200, 100, 240, 0.2)',
-      'fill-outline-color': 'rgba(200, 100, 240, 1)'
-    }
-  });
-}
-
-const addHeatMapLayer = (map, state) => {
-  map.addLayer({
-    id: Constants.HeatMapLayers[state],
-    type: 'heatmap',
-    source: Constants.HeatMaps[state],
-    layout:{
-      visibility:'none'
-    },
-    maxzoom: 15,
-    paint: {
-      // increase weight as diameter breast height increases
-      'heatmap-weight': {
-        property: 'T2',
-        type: 'exponential',
-        stops: [
-          [1, 0],
-          [62, 1]
-        ]
+  addDistrictLayer = (map, state) => {
+    map.addLayer({
+      'id': Constants.DistrictLayers[state],
+      'type': 'fill',
+      'source': Constants.Districts[state],
+      'layout':{
+        'visibility':'none'
       },
-      // increase intensity as zoom level increases
-      'heatmap-intensity': {
-        stops: [
-          [3, 0.1],
-          [6, 1],
-          [10, 3]
-        ]
+      'paint': {
+        'fill-color': 'rgba(200, 100, 240, 0.2)',
+        'fill-outline-color': 'rgba(240, 240, 240, 1)'
+      }
+    });
+  }
+
+  addPrecinctLayer = (map, state) => {
+    map.addLayer({
+      'id': Constants.PrecinctLayers[state],
+      'type': 'fill',
+      'source': Constants.Precincts[state], 
+      'layout':{
+        'visibility':'none'
       },
-      // assign color values be applied to points depending on their density
-      'heatmap-color': [
-        'interpolate',
-        ['linear'],
-        ['heatmap-density'],
-        0,
-        'rgba(33,102,172,0)',
-        0.2,
-        'rgb(103,169,207)',
-        0.4,
-        'rgb(209,229,240)',
-        0.6,
-        'rgb(253,219,199)',
-        0.8,
-        'rgb(239,138,98)',
-        1,
-        'rgb(178,24,43)'
-        ],
-      // increase radius as zoom increases
-      'heatmap-radius': {
-        stops: [
-          [3, 1],
-          [6, 10],
-          [11, 50],
-          [12, 200]
-        ]
+      'paint': {
+        'fill-color': 'rgba(200, 100, 240, 0.2)',
+        'fill-outline-color': 'rgba(200, 100, 240, 1)'
+      }
+    });
+  }
+
+  addHeatMapLayer = (map, state) => {
+    map.addLayer({
+      id: Constants.HeatMapLayers[state],
+      type: 'heatmap',
+      source: Constants.HeatMaps[state],
+      layout:{
+        visibility:'none'
       },
-    }
-  }, 'waterway-label');
+      maxzoom: 15,
+      paint: {
+        // increase weight as diameter breast height increases
+        'heatmap-weight': {
+          property: 'T2',
+          type: 'exponential',
+          stops: [
+            [1, 0],
+            [62, 1]
+          ]
+        },
+        // increase intensity as zoom level increases
+        'heatmap-intensity': {
+          stops: [
+            [3, 0.1],
+            [6, 1],
+            [10, 3]
+          ]
+        },
+        // assign color values be applied to points depending on their density
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0,
+          'rgba(33,102,172,0)',
+          0.2,
+          'rgb(103,169,207)',
+          0.4,
+          'rgb(209,229,240)',
+          0.6,
+          'rgb(253,219,199)',
+          0.8,
+          'rgb(239,138,98)',
+          1,
+          'rgb(178,24,43)'
+          ],
+        // increase radius as zoom increases
+        'heatmap-radius': {
+          stops: [
+            [3, 1],
+            [6, 10],
+            [11, 50],
+            [12, 200]
+          ]
+        },
+      }
+    }, 'waterway-label');
+  }
 }
 
 const MapComponent = ({props}) => {
     const mapContainerRef = useRef(null);
     const toolbar = new Toolbar();
+    const mapHelper = new MapHelper();
 
     useEffect(() => {
       const map = new mapboxgl.Map({
@@ -173,23 +176,28 @@ const MapComponent = ({props}) => {
 
       map.addControl(toolbar, 'top-left');
       map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+      toolbar.getDistrictGeoJson = toolbar.getDistrictGeoJson.bind(mapHelper, map);
+      toolbar.getPrecinctGeoJson = toolbar.getPrecinctGeoJson.bind(mapHelper, map);
+      toolbar.getHeatMapGeoJson = toolbar.getHeatMapGeoJson.bind(mapHelper, map);
+
       map.on('load', function () {
         // Add a source for the state polygons.
         map.resize();
 
         for(var state in Constants.States) {
-          addStateSource(map, state);
-          addDistrictSource(map, state);
-          addPrecinctSource(map, state);
+          mapHelper.addStateSource(map, state);
+          // mapHelper.addDistrictSource(map, state);
+          // addPrecinctSource(map, state);
   
-          addHeatMapSource(map, state);
+          // addHeatMapSource(map, state);
   
-          addStateLayer(map, state, toolbar);
-          addDistrictLayer(map, state);
-          addPrecinctLayer(map, state);
+          mapHelper.addStateLayer(map, state, toolbar);
+          // mapHelper.addDistrictLayer(map, state);
+          // addPrecinctLayer(map, state);
   
   
-          addHeatMapLayer(map, state);
+          // addHeatMapLayer(map, state);
         }
 
 
@@ -198,14 +206,24 @@ const MapComponent = ({props}) => {
           var precinct_button_value = document.getElementById('precinct-checkbox').checked;
           var features = null;
           if(precinct_button_value){
-            features = map.queryRenderedFeatures(e.point, {layers: Object.values(Constants.PrecinctLayers)});
+            var layers = [];
+            for(var layer in Constants.PrecinctLayers){
+              if(map.getLayer(Constants.PrecinctLayers[layer]) != undefined)
+                layers.push(Constants.PrecinctLayers[layer]);
+            }
+            features = map.queryRenderedFeatures(e.point, {layers: layers});
           }
           else{
             if(district_button_value){
-              features = map.queryRenderedFeatures(e.point, {layers: Object.values(Constants.DistrictLayers)});
+              var layers = [];
+              for(var layer in Constants.DistrictLayers){
+                if(map.getLayer(Constants.DistrictLayers[layer]) != undefined)
+                  layers.push(Constants.DistrictLayers[layer]);
+              }
+              features = map.queryRenderedFeatures(e.point, {layers: layers});
             }
           }
-          // console.log(features);
+          //console.log(features);
           if(features === null || !features.length){
             return;
           }
