@@ -23,18 +23,17 @@ class MapHelper {
     });
   }
 
-  addPrecinctSource = (map, state) => {
+  addPrecinctSource = (map, state, data) => {
     map.addSource(Constants.Precincts[state], {
       'type': 'geojson',
-      'data': './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson'
+      'data': data
     });
   }
 
-  addHeatMapSource = (map, state) => {
+  addHeatMapSource = (map, state, data) => {
     map.addSource(Constants.HeatMaps[state], {
       'type': 'geojson',
-      'data':
-      './'+Constants.StateNames[state].toLowerCase()+'_heatmap.geojson'
+      'data': data
     });
   }
 
@@ -65,9 +64,7 @@ class MapHelper {
         center: Constants.StateCenters[state],
         zoom: 6
       })
-      toolbar.changeLayer(map);
-      var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-      fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {console.log('Success:', result);}).catch(error => {console.error('Error:', error);});
+      toolbar.setState(state);
     });
   }
 
@@ -187,17 +184,7 @@ const MapComponent = ({props}) => {
 
         for(var state in Constants.States) {
           mapHelper.addStateSource(map, state);
-          // mapHelper.addDistrictSource(map, state);
-          // addPrecinctSource(map, state);
-  
-          // addHeatMapSource(map, state);
-  
           mapHelper.addStateLayer(map, state, toolbar);
-          // mapHelper.addDistrictLayer(map, state);
-          // addPrecinctLayer(map, state);
-  
-  
-          // addHeatMapLayer(map, state);
         }
 
 

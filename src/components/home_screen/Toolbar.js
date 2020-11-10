@@ -2,11 +2,19 @@ import './Toolbar.css';
 import * as Constants from './MapConstants.js';
 
 class Toolbar {
-    getDistrictGeoJson(map, state){
+    setState(state){
+        var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+        fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+          console.log('Success:', result); 
+          this.changeLayer(this.map);
+        }).catch(error => {console.error('Error:', error);});
+    }
+    // this is binded to MapHelper
+    async getDistrictGeoJson(map, state){
         var layer = map.getLayer(Constants.DistrictLayers[state]);
         if(layer == undefined){
             this.addDistrictSource(map, state);
-            this.addDistrictLayer(map, state);
+            this.addDistrictLayer(map,state);
             // var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             // fetch('http://localhost:8080/district', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
             //     console.log("success");
@@ -15,32 +23,38 @@ class Toolbar {
             // }).catch(error => {console.error('Error:', error);});
         }
     }
-
-    getPrecinctGeoJson(map, state){
+    // this is binded to MapHelper
+    async getPrecinctGeoJson(map, state){
         var layer = map.getLayer(Constants.PrecinctLayers[state]);
         if(layer == undefined){
-            this.addPrecinctSource(map, state);
-            this.addPrecinctLayer(map, state);
-            // var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            // fetch('http://localhost:8080/precinct', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
-            //     console.log("success");
-            //     this.addPrecinctSource(map, state, result);
-            //     this.addPrecinctLayer(map,state);
-            // }).catch(error => {console.error('Error:', error);});
+            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+            await fetch('http://localhost:8080/precinct', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+                console.log("recieved precinct data");
+                this.addPrecinctSource(map, state, JSON.parse(result));
+                this.addPrecinctLayer(map,state);
+            }).catch(error => {
+                console.error('Error:', error);
+                // For debugging when server is offline
+                // this.addPrecinctSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson');
+                // this.addPrecinctLayer(map,state);
+            });
         }
     }
-
-    getHeatMapGeoJson(map, state){
+    // this is binded to MapHelper
+    async getHeatMapGeoJson(map, state){
         var layer = map.getLayer(Constants.HeatMapLayers[state]);
         if(layer == undefined){
-            this.addHeatMapSource(map, state);
-            this.addHeatMapLayer(map, state);
-            // var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            // fetch('http://localhost:8080/heatmap', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
-            //     console.log("success");
-            //     this.addHeatMapSource(map, state, result);
-            //     this.addHeatMapLayer(map,state);
-            // }).catch(error => {console.error('Error:', error);});
+            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+            await fetch('http://localhost:8080/heatmap', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+                console.log("recieved heatmap data");
+                this.addHeatMapSource(map, state, JSON.parse(result));
+                this.addHeatMapLayer(map,state);
+            }).catch(error => {
+                console.error('Error:', error);
+                // For debugging when server is offline
+                // this.addHeatMapSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'_heatmap.geojson');
+                // this.addHeatMapLayer(map,state);
+            });
         }
     }
 
@@ -158,13 +172,7 @@ class Toolbar {
                 })
                 elem.selectedIndex = Object.keys(Constants.States).indexOf(state) + 1;
             }
-            
-            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            console.log(params);
-            fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
-                console.log('Success:', result);
-                this.changeLayer(map);
-            }).catch(error => {console.error('Error:', error);});
+            this.setState(state);
         })
 
         //district
@@ -182,20 +190,6 @@ class Toolbar {
 
         this.heat.addEventListener('click', () => {
             this.changeLayer(map);
-
-            // var button = document.getElementById('heat-checkbox');
-            // var state = document.getElementById('state-selection').value;
-            // var ethnicGroup = document.getElementById('heatmap-select').value;
-            
-
-            // if(button.checked){
-            //     var params = JSON.stringify({
-            //         's': Constants.StateNames[state].toUpperCase(),
-            //         'eg': ethnicGroup
-            //     })
-            //     fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
-
-            // }
         })
 
         this.sub_container.appendChild(this.left_text);
@@ -218,23 +212,11 @@ class Toolbar {
         this.map = undefined;
     }
 
-    changeLayer = (map) => {
+    displayLayer = (map) => {
         var selected_state = document.getElementById('state-selection').value;
         var district_button_value = document.getElementById('district-checkbox').checked;
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
         var heatmap_button_value = document.getElementById('heat-checkbox').checked;
-
-        if(district_button_value){
-            this.getDistrictGeoJson(selected_state);
-        }
-
-        if(precinct_button_value){
-            this.getPrecinctGeoJson(selected_state);
-        }
-
-        if(heatmap_button_value){
-            this.getHeatMapGeoJson(selected_state);
-        }
 
         for (var state in Constants.States) {
             var district_layer_name = Constants.DistrictLayers[state];
@@ -283,6 +265,23 @@ class Toolbar {
                     map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.2)');
             }
         }
+    }
+
+    changeLayer = (map) => {
+        var selected_state = document.getElementById('state-selection').value;
+        var district_button_value = document.getElementById('district-checkbox').checked;
+        var precinct_button_value = document.getElementById('precinct-checkbox').checked;
+        var heatmap_button_value = document.getElementById('heat-checkbox').checked;
+
+        if(district_button_value)
+            this.getDistrictGeoJson(selected_state).then(() => this.displayLayer(map));
+        if(precinct_button_value)
+            this.getPrecinctGeoJson(selected_state).then(() => this.displayLayer(map));
+        if(heatmap_button_value)
+            this.getHeatMapGeoJson(selected_state).then(() => this.displayLayer(map));
+
+        if(!district_button_value && !precinct_button_value && !heatmap_button_value)
+            this.displayLayer(map);
     }
 }
 
