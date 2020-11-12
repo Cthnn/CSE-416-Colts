@@ -3,16 +3,18 @@ import * as Constants from './MapConstants.js';
 
 class Toolbar {
     setState(state){
-        var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-        fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
-          console.log('Success:', result); 
-          this.changeLayer(this.map);
-        }).catch(error => {console.error('Error:', error);});
+        if(state != 'None'){
+            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+            fetch('http://localhost:8080/state', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+            console.log('Success:', result); 
+            this.changeLayer(this.map);
+            }).catch(error => {console.error('Error:', error);});
+        }
     }
     // this is binded to MapHelper
     async getDistrictGeoJson(map, state){
         var layer = map.getLayer(Constants.DistrictLayers[state]);
-        if(layer == undefined){
+        if(layer == undefined && state != 'None'){
             this.addDistrictSource(map, state);
             this.addDistrictLayer(map,state);
             // var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
@@ -26,10 +28,11 @@ class Toolbar {
     // this is binded to MapHelper
     async getPrecinctGeoJson(map, state){
         var layer = map.getLayer(Constants.PrecinctLayers[state]);
-        if(layer == undefined){
+        if(layer == undefined && state != 'None'){
             var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             await fetch('http://localhost:8080/precinct', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
                 console.log("recieved precinct data");
+                console.log(result);
                 this.addPrecinctSource(map, state, JSON.parse(result));
                 this.addPrecinctLayer(map,state);
             }).catch(error => {
@@ -43,7 +46,7 @@ class Toolbar {
     // this is binded to MapHelper
     async getHeatMapGeoJson(map, state){
         var layer = map.getLayer(Constants.HeatMapLayers[state]);
-        if(layer == undefined){
+        if(layer == undefined && state != 'None'){
             var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             await fetch('http://localhost:8080/heatmap', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
                 console.log("recieved heatmap data");
@@ -64,98 +67,148 @@ class Toolbar {
         this.sub_container = document.createElement('form');
         this.container.className = 'toolbar';
 
-        this.left_text = document.createElement('p');
-        this.left = document.createElement('select');
-        this.left.className = 'state-select';
+        this.stateText = document.createElement('p');
+        this.stateSelect = document.createElement('select');
+        this.setStateSelect(this.stateSelect, this.stateText, this.map);
 
-        this.state_option0 = document.createElement('option');
-        this.state_option1 = document.createElement('option');
-        this.state_option2 = document.createElement('option');
-        this.state_option3 = document.createElement('option');
+        this.districtText = document.createElement('p');
+        this.districtCheckbox = document.createElement('input');
+        this.setDistrictCheckbox(this.districtCheckbox, this.districtText, this.map);
 
-        this.state_option0.value = 'None';
-        this.state_option1.value = Constants.States.AL;
-        this.state_option2.value = Constants.States.FL;
-        this.state_option3.value = Constants.States.VA;
-
-        this.state_option1.textContent = 'None';
-        this.state_option1.textContent = Constants.StateNames.AL;
-        this.state_option2.textContent = Constants.StateNames.FL;
-        this.state_option3.textContent = Constants.StateNames.VA;
-
-        this.left.appendChild(this.state_option0);
-        this.left.appendChild(this.state_option1);
-        this.left.appendChild(this.state_option2);
-        this.left.appendChild(this.state_option3);
-
-        this.left_text.textContent = 'State';
-        this.left_text.className = 'text';
-
-        this.middle_text = document.createElement('p');
-        this.middle = document.createElement('input');
-
-        this.middle_text.textContent = 'Districts';
-        this.middle_text.className = 'text';
-        this.middle.type = 'checkbox';
-        this.middle.className = 'view-button';
-
-        this.right_text = document.createElement('p');
-        this.right = document.createElement('input');
-
-        this.right_text.className = 'text';
-        this.right_text.textContent = 'Precinct';
-        this.right.type = 'checkbox';
-        this.right.className = 'view-button';
-
-        this.left.name = 'view-choice';
-        this.middle.name = 'view-choice';
-        this.right.name = 'view-choice';
-
-        this.left.id = 'state-selection';
-        this.middle.id = 'district-checkbox';
-        this.right.id = 'precinct-checkbox';
+        this.precinctText = document.createElement('p');
+        this.precinctCheckbox = document.createElement('input');
+        this.setPrecinctCheckbox(this.precinctCheckbox, this.precinctText, this.map);
 
         this.heat_text = document.createElement('p');
         this.heat = document.createElement('input');
         this.heat_dropdown = document.createElement('select');
+        this.setHeatMap(this.heat, this.heat_dropdown, this.heat_text, this.map); 
 
-        this.heat_text.textContent = 'Heatmap View'
-        this.heat_text.className = 'text';
-        this.heat_dropdown.className = 'heatmap-select';
-        this.heat_dropdown.id = 'heatmap-select';
-        this.heat.type = 'checkbox';
-        this.heat.className = 'view-button';
+        this.sub_container.appendChild(this.stateText);
+        this.sub_container.appendChild(this.stateSelect);
+        this.sub_container.appendChild(this.districtText);
+        this.sub_container.appendChild(this.districtCheckbox);
+        this.sub_container.appendChild(this.precinctText);
+        this.sub_container.appendChild(this.precinctCheckbox);
+
+        this.sub_container.appendChild(this.heat_text);
+        this.sub_container.appendChild(this.heat);
+        this.sub_container.appendChild(this.heat_dropdown);
+
+        this.container.appendChild(this.sub_container);
+
+        return this.container;
+    }
+    onRemove() {
+        this.container.parentNode.removeChild(this.container);
+        this.map = undefined;
+    }
+    setHeatMap(heatCheckbox, heatSelect, heatText, map){
+        heatText.textContent = 'Heatmap View'
+        heatText.className = 'text';
+        heatSelect.className = 'heatmap-select';
+        heatSelect.id = 'heatmap-select';
+        heatCheckbox.type = 'checkbox';
+        heatCheckbox.className = 'view-button';
 
         this.option1 = document.createElement('option');
         this.option2 = document.createElement('option');
         this.option3 = document.createElement('option');
         this.option4 = document.createElement('option');
         this.option5 = document.createElement('option');
-        this.option6 = document.createElement('option');
 
-        this.option1.value = 'T2';
+        this.option1.value = 'white';
         this.option1.textContent = 'White American';
-        this.option2.value = 'T3';
+        this.option2.value = 'black';
         this.option2.textContent = 'Black or African American';
-        this.option3.value = 'T4';
+        this.option3.value = 'native';
         this.option3.textContent = 'Native American and Alaska Native';
-        this.option4.value = 'T5';
+        this.option4.value = 'asian';
         this.option4.textContent = 'Asian American';
-        this.option5.value = 'T6';
+        this.option5.value = 'pacific';
         this.option5.textContent = 'Native Hawaiian and Other Pacific Islander';
-        this.option6.value = 'T8';
-        this.option6.textContent = 'Hispanic or Latino';
 
-        this.heat_dropdown.appendChild(this.option1);
-        this.heat_dropdown.appendChild(this.option2);
-        this.heat_dropdown.appendChild(this.option3);
-        this.heat_dropdown.appendChild(this.option4);
-        this.heat_dropdown.appendChild(this.option5);
-        this.heat_dropdown.appendChild(this.option6);
+        heatSelect.appendChild(this.option1);
+        heatSelect.appendChild(this.option2);
+        heatSelect.appendChild(this.option3);
+        heatSelect.appendChild(this.option4);
+        heatSelect.appendChild(this.option5);
 
-        this.heat.id = 'heat-checkbox';
-        //state
-        this.left.addEventListener('change', (e) => {
+        heatCheckbox.id = 'heat-checkbox';
+        heatText.addEventListener('click', () => {
+            heatCheckbox.checked = !heatCheckbox.checked;
+            this.changeLayer(map);
+        })
+        heatSelect.addEventListener('change', () => {
+            this.changeLayer(map);
+        })
+
+        heatCheckbox.addEventListener('click', () => {
+            this.changeLayer(map);
+        })
+    }
+
+    setPrecinctCheckbox(precinctCheckbox, precinctText, map){
+        precinctText.className = 'text';
+        precinctText.textContent = 'Precinct';
+        precinctCheckbox.type = 'checkbox';
+        precinctCheckbox.className = 'view-button';
+        precinctCheckbox.name = 'view-choice';
+        precinctCheckbox.id = 'precinct-checkbox';
+
+        precinctCheckbox.addEventListener('click', () => {
+            this.changeLayer(map);
+        })
+        precinctText.addEventListener('click', () => {
+            precinctCheckbox.checked = !precinctCheckbox.checked;
+            this.changeLayer(map);
+        })
+    }
+    setDistrictCheckbox(districtCheckbox, districtText, map){
+        districtCheckbox.name = 'view-choice';
+        districtCheckbox.id = 'district-checkbox';
+        districtText.textContent = 'Districts';
+        districtText.className = 'text';
+        districtCheckbox.type = 'checkbox';
+        districtCheckbox.className = 'view-button';
+
+        districtCheckbox.addEventListener('click', () => {
+            this.changeLayer(map);
+        })
+        districtText.addEventListener('click', () => {
+            districtCheckbox.checked = !districtCheckbox.checked;
+            this.changeLayer(map);
+        })
+    }
+    setStateSelect(stateSelect, stateSelectText, map){
+        this.state_option0 = document.createElement('option');
+        this.state_option1 = document.createElement('option');
+        this.state_option2 = document.createElement('option');
+        this.state_option3 = document.createElement('option');
+
+        this.state_option0.value = 'None';
+        this.state_option1.value = 'AL';
+        this.state_option2.value = 'FL';
+        this.state_option3.value = 'VA';
+
+        this.state_option1.textContent = 'None';
+        this.state_option1.textContent = 'Alabama';
+        this.state_option2.textContent = 'Florida';
+        this.state_option3.textContent = 'Virginia';
+
+        stateSelect.className = 'state-select';
+
+        stateSelect.appendChild(this.state_option0);
+        stateSelect.appendChild(this.state_option1);
+        stateSelect.appendChild(this.state_option2);
+        stateSelect.appendChild(this.state_option3);
+
+        stateSelectText.textContent = 'State';
+        stateSelectText.className = 'text';
+        stateSelect.name = 'view-choice';
+        stateSelect.id = 'state-selection';
+
+        stateSelect.addEventListener('change', (e) => {
             var state = e.target.value;
             var elem = document.getElementById('select-state-generation');
 
@@ -174,44 +227,7 @@ class Toolbar {
             }
             this.setState(state);
         })
-
-        //district
-        this.middle.addEventListener('click', () => {
-            this.changeLayer(map);
-        })
-        //precinct
-        this.right.addEventListener('click', () => {
-            this.changeLayer(map);
-        })
-        //heatmap
-        this.heat_dropdown.addEventListener('change', () => {
-            this.changeLayer(map);
-        })
-
-        this.heat.addEventListener('click', () => {
-            this.changeLayer(map);
-        })
-
-        this.sub_container.appendChild(this.left_text);
-        this.sub_container.appendChild(this.left);
-        this.sub_container.appendChild(this.middle_text);
-        this.sub_container.appendChild(this.middle);
-        this.sub_container.appendChild(this.right_text);
-        this.sub_container.appendChild(this.right);
-
-        this.sub_container.appendChild(this.heat_text);
-        this.sub_container.appendChild(this.heat);
-        this.sub_container.appendChild(this.heat_dropdown);
-
-        this.container.appendChild(this.sub_container);
-
-        return this.container;
     }
-    onRemove() {
-        this.container.parentNode.removeChild(this.container);
-        this.map = undefined;
-    }
-
     displayLayer = (map) => {
         var selected_state = document.getElementById('state-selection').value;
         var district_button_value = document.getElementById('district-checkbox').checked;
