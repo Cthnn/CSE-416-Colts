@@ -10,6 +10,9 @@ class Toolbar {
             this.changeLayer(this.map);
             }).catch(error => {console.error('Error:', error);});
         }
+        else{
+            this.changeLayer(this.map);
+        }
     }
     // this is binded to MapHelper
     async getDistrictGeoJson(map, state){
@@ -233,6 +236,7 @@ class Toolbar {
         var district_button_value = document.getElementById('district-checkbox').checked;
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
         var heatmap_button_value = document.getElementById('heat-checkbox').checked;
+        console.log(selected_state + " " + district_button_value);
 
         for (var state in Constants.States) {
             var district_layer_name = Constants.DistrictLayers[state];
@@ -242,43 +246,51 @@ class Toolbar {
 
             map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
             map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.4)');
+            if(selected_state != 'None'){
+                if(heatmap_button_value && selected_state == state && map.getLayer(heat_layer_name) != undefined){
+                    var race = document.getElementById("heatmap-select").value;
+                    map.setPaintProperty(heat_layer_name, 'heatmap-weight',{
+                        property: race,
+                        type: 'exponential',
+                        stops: [
+                            [1, 0],
+                            [62, 1]
+                        ]
+                        });
+                    map.setLayoutProperty(heat_layer_name, 'visibility', 'visible');
+                }else{
+                    if(map.getLayer(heat_layer_name) != undefined)
+                        map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
+                }
 
-            if(heatmap_button_value && selected_state == state && map.getLayer(heat_layer_name) != undefined){
-                var race = document.getElementById("heatmap-select").value;
-                map.setPaintProperty(heat_layer_name, 'heatmap-weight',{
-                    property: race,
-                    type: 'exponential',
-                    stops: [
-                        [1, 0],
-                        [62, 1]
-                    ]
-                    });
-                map.setLayoutProperty(heat_layer_name, 'visibility', 'visible');
-            }else{
-                if(map.getLayer(heat_layer_name) != undefined)
-                    map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
+                if(precinct_button_value && selected_state == state && map.getLayer(precinct_layer_name) != undefined){
+                    map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
+                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                }else{
+                    if(map.getLayer(precinct_layer_name) != undefined)
+                        map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+                }
+                if(district_button_value  && selected_state == state && map.getLayer(district_layer_name) != undefined){
+                    map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
+                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+                }else{
+                    if(map.getLayer(district_layer_name) != undefined)
+                        map.setLayoutProperty(district_layer_name, 'visibility', 'none');
+                }
+                if(!district_button_value && !precinct_button_value){
+                    map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+                    if(selected_state == state)
+                        map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.2)');
+                    else
+                        map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.2)');
+                }
             }
-
-            if(precinct_button_value && selected_state == state && map.getLayer(precinct_layer_name) != undefined){
-                map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
-                map.setLayoutProperty(state_layer_name, 'visibility', 'none');
-            }else{
-                if(map.getLayer(precinct_layer_name) != undefined)
-                    map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
-            }
-            if(district_button_value  && selected_state == state && map.getLayer(district_layer_name) != undefined){
-                map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
-                map.setLayoutProperty(state_layer_name, 'visibility', 'none');
-            }else{
+            else{ //Show just states now
+                map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
                 if(map.getLayer(district_layer_name) != undefined)
                     map.setLayoutProperty(district_layer_name, 'visibility', 'none');
-            }
-            if(!district_button_value && !precinct_button_value){
-                map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-                if(selected_state == state)
-                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(252, 215, 3, 0.2)');
-                else
-                    map.setPaintProperty(state_layer_name, 'fill-color',  'rgba(200, 100, 240, 0.2)');
+                if(map.getLayer(precinct_layer_name) != undefined)
+                    map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
             }
         }
     }
@@ -288,7 +300,7 @@ class Toolbar {
         var district_button_value = document.getElementById('district-checkbox').checked;
         var precinct_button_value = document.getElementById('precinct-checkbox').checked;
         var heatmap_button_value = document.getElementById('heat-checkbox').checked;
-
+        console.log(selected_state);
         if(district_button_value)
             this.getDistrictGeoJson(selected_state).then(() => this.displayLayer(map));
         if(precinct_button_value)
@@ -296,8 +308,10 @@ class Toolbar {
         if(heatmap_button_value)
             this.getHeatMapGeoJson(selected_state).then(() => this.displayLayer(map));
 
-        if(!district_button_value && !precinct_button_value && !heatmap_button_value)
+        // if(!district_button_value && !precinct_button_value && !heatmap_button_value)
+        if(selected_state == 'None' || (!district_button_value && !precinct_button_value && !heatmap_button_value)){
             this.displayLayer(map);
+        }
     }
 }
 
