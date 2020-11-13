@@ -33,13 +33,13 @@ class HomeScreen extends Component {
         })
         fetch('http://localhost:8080/jobGeo', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
         .then(result => { 
-            console.log('Job Geo:', result); 
+            // console.log('Job Geo:', result); 
         }).catch(error => { console.error('Error:', error); });
 
         var params = JSON.stringify(job.jobId)
         fetch('http://localhost:8080/genSummary', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
         .then(result => { 
-            console.log('Summary:', JSON.parse(result));
+            // console.log('Summary:', JSON.parse(result));
             this.setState({'summary' : JSON.parse(result)}) 
         }).catch(error => { console.error('Error:', error); });
     }
@@ -59,7 +59,7 @@ class HomeScreen extends Component {
     getHistory = () => {
         fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET' }).then(response => response.text())
             .then(result => {
-                console.log('History:', JSON.parse(result));
+                // console.log('History:', JSON.parse(result));
                 // console.log(this.state.jobs);
                 this.setState({jobs: JSON.parse(result)})
             }).catch(error => { console.error('Error:', error); });

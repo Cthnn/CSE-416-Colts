@@ -1,6 +1,8 @@
 import React from 'react';
 import './JobCard.css';
 
+import { Button } from 'react-materialize';
+
 class JobCard extends React.Component {
     static createJob(jobId, state, runs, compactness, populationDeviation, group, status) {
         if (jobId === 0)
@@ -11,6 +13,12 @@ class JobCard extends React.Component {
     handleDeleteClick = (e) => {
         e.stopPropagation();
         this.props.deleteJob(this.props.job)
+    }
+
+    setDistrictType = (type) => {
+        var districtType = document.getElementById('district-type');
+        districtType.value = type;
+        districtType.click()
     }
 
     render() {
@@ -27,7 +35,9 @@ class JobCard extends React.Component {
                 <div style={{ padding: "20px" }} className="card-content black-text">
                     <span className="blue-text">
                         <h4 style={{ display: 'inline-block', margin: "0px" }}>Job {job.jobId}</h4>
-                        <span className={statusStyles[job.status]? statusStyles[job.status]: "badge"}>{job.status}</span>
+                        <Button className="blue lighten-2" style={{ position: "absolute", top: '10px', left: '70px', cursor: 'pointer' }} onClick={() => this.setDistrictType('average')}>average</Button>
+                        <Button className="red lighten-2" style={{ position: "absolute", top: '10px', left: '170px', cursor: 'pointer' }} onClick={() => this.setDistrictType('extreme')}>extreme</Button>
+                        <span className={statusStyles[job.status] ? statusStyles[job.status] : "badge"}>{job.status}</span>
                     </span>
                     {job.jobId !== 0 &&
                         <div onClick={this.handleDeleteClick} style={{ position: "absolute", top: '0px', right: '0px', color: '#f44336', cursor: 'pointer' }}>
