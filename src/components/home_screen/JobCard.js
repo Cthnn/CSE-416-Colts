@@ -35,8 +35,6 @@ class JobCard extends React.Component {
                 <div style={{ padding: "20px" }} className="card-content black-text">
                     <span className="blue-text">
                         <h4 style={{ display: 'inline-block', margin: "0px" }}>Job {job.jobId}</h4>
-                        <Button className="blue lighten-2" style={{ position: "absolute", top: '10px', left: '70px', cursor: 'pointer' }} onClick={() => this.setDistrictType('average')}>average</Button>
-                        <Button className="red lighten-2" style={{ position: "absolute", top: '10px', left: '170px', cursor: 'pointer' }} onClick={() => this.setDistrictType('extreme')}>extreme</Button>
                         <span className={statusStyles[job.status] ? statusStyles[job.status] : "badge"}>{job.status}</span>
                     </span>
                     {job.jobId !== 0 &&
@@ -69,6 +67,8 @@ class JobCard extends React.Component {
                                 <td>{job.populationDeviation}</td>
                             </tr>
                         </tbody></table>
+                        <Button className="blue lighten-2" style={{ position: "absolute", top: '50px', right: '20px', cursor: 'pointer' }} onClick={() => this.setDistrictType('average')}>average</Button>
+                        <Button className="red lighten-2" style={{ position: "absolute", top: '100px', right: '20px', cursor: 'pointer' }} onClick={() => this.setDistrictType('extreme')}>extreme</Button>
                     </div>
                 </div>
             </div>
