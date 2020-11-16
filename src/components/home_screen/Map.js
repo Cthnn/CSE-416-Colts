@@ -15,11 +15,10 @@ class MapHelper {
     });
   }
 
-  addDistrictSource = (map, state) => {
+  addDistrictSource = (map, state, data) => {
     map.addSource(Constants.Districts[state], {
       'type': 'geojson',
-      'data':
-      'https://raw.githubusercontent.com/JeffreyBLewis/congressional-district-boundaries/master/'+Constants.StateNames[state]+'_108_to_112.geojson'
+      'data': data
     });
   }
 

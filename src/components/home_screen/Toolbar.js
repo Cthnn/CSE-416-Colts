@@ -18,14 +18,17 @@ class Toolbar {
     async getDistrictGeoJson(map, state) {
         var layer = map.getLayer(Constants.DistrictLayers[state]);
         if (layer == undefined && state != 'None') {
-            this.addDistrictSource(map, state);
-            this.addDistrictLayer(map, state);
-            // var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            // fetch('http://localhost:8080/district', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
-            //     console.log("success");
-            //     this.addDistrictSource(map, state, result);
-            //     this.addDistrictLayer(map,state);
-            // }).catch(error => {console.error('Error:', error);});
+            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+            fetch('http://localhost:8080/district', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+                console.log("success");
+                this.addDistrictSource(map, state, result);
+                this.addDistrictLayer(map,state);
+            }).catch(error => {
+                console.error('Error:', error);
+                // For debugging when server is offline
+                // this.addPrecinctSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson');
+                // this.addPrecinctLayer(map,state);
+            });
         }
     }
     // this is binded to MapHelper
