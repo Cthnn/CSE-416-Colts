@@ -74,7 +74,13 @@ class Generate extends React.Component {
     generatePlans(e) {
         e.preventDefault();
         //send request to server
-        var params = JSON.stringify(this.state)
+        var params = JSON.stringify({
+            state: this.state.state.toUpperCase(),
+            plans: this.state.plans,
+            comp: this.state.comp,
+            pop: this.state.pop,
+            group: this.state.group
+        })
         fetch('http://localhost:8080/createJob', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { 
             console.log('Success:', result); 
             this.setState({batchNumber: result});
