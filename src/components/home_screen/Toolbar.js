@@ -19,9 +19,9 @@ class Toolbar {
         var layer = map.getLayer(Constants.DistrictLayers[state]);
         if (layer == undefined && state != 'None') {
             var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            fetch('http://localhost:8080/district', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
-                console.log("success");
-                this.addDistrictSource(map, state, result);
+            await fetch('http://localhost:8080/district', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
+                console.log("recieved district data");
+                this.addDistrictSource(map, state, JSON.parse(result));
                 this.addDistrictLayer(map,state);
             }).catch(error => {
                 console.error('Error:', error);
@@ -38,7 +38,6 @@ class Toolbar {
             var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             await fetch('http://localhost:8080/precinct', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => {
                 console.log("recieved precinct data");
-                console.log(result);
                 this.addPrecinctSource(map, state, JSON.parse(result));
                 this.addPrecinctLayer(map, state);
             }).catch(error => {

@@ -77,7 +77,7 @@ class MapHelper {
       },
       'paint': {
         'fill-color': 'rgba(200, 100, 240, 0.2)',
-        'fill-outline-color': 'rgba(240, 240, 240, 1)'
+        'fill-outline-color': 'rgba(100, 100, 100, 1)'
       }
     });
   }
