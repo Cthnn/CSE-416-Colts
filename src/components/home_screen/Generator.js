@@ -75,7 +75,9 @@ class Generate extends React.Component {
             pop: this.state.pop,
             group: this.state.group
         })
-        fetch('http://localhost:8080/createJob', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { 
+        fetch('http://localhost:8080/createJob', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
+        .then(response => response.text())
+        .then(result => { 
             console.log('Success:', result); 
             this.setState({batchNumber: result});
             M.Modal.getInstance(document.getElementById("modal1")).open();

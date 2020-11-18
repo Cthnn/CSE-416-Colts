@@ -7,6 +7,8 @@ import JobLinks from './JobLinks';
 import Map from './Map';
 import Summary from './Summary'
 import JobCard from './JobCard';
+import M from 'materialize-css';
+import { Modal } from 'react-materialize';
 
 class HomeScreen extends Component {
     state = {
@@ -31,13 +33,15 @@ class HomeScreen extends Component {
             'jobId': job.jobId,
             'DistrictingType': 'AVERAGE'
         })
-        fetch('http://localhost:8080/jobGeo', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
+        fetch('http://localhost:8080/jobGeo', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
+        .then(response => response.text())
         .then(result => { 
             // console.log('Job Geo:', result); 
         }).catch(error => { console.error('Error:', error); });
 
         var params = JSON.stringify(job.jobId)
-        fetch('http://localhost:8080/genSummary', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text())
+        fetch('http://localhost:8080/genSummary', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
+        .then(response => response.text())
         .then(result => { 
             // console.log('Summary:', JSON.parse(result));
             this.setState({'summary' : JSON.parse(result)}) 
@@ -53,16 +57,22 @@ class HomeScreen extends Component {
         const id = job.jobId;
         this.setState({ jobs: [...this.state.jobs.filter(job => job.jobId != id)] })
         var params = JSON.stringify(id)
-        fetch('http://localhost:8080/cancel', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => { console.log('Success:', result); }).catch(error => { console.error('Error:', error); });
+        fetch('http://localhost:8080/cancel', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
+        .then(response => response.text())
+        .then(result => { 
+            console.log('Success:', result); 
+            M.Modal.getInstance(document.getElementById("modal2")).open();
+        }).catch(error => { console.error('Error:', error); });
     }
 
     getHistory = () => {
-        fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET' }).then(response => response.text())
-            .then(result => {
-                // console.log('History:', JSON.parse(result));
-                // console.log(this.state.jobs);
-                this.setState({jobs: JSON.parse(result)})
-            }).catch(error => { console.error('Error:', error); });
+        fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET' })
+        .then(response => response.text())
+        .then(result => {
+            // console.log('History:', JSON.parse(result));
+            // console.log(this.state.jobs);
+            this.setState({jobs: JSON.parse(result)})
+        }).catch(error => { console.error('Error:', error); });
     }
 
     displaySummaryButton = () => {
@@ -120,6 +130,11 @@ class HomeScreen extends Component {
                         </div>
                     </div>
                 </div>
+                <Modal id="modal2" className="modal">
+                    <div className="modal-content center-align">
+                        <h4>Job Deleted</h4>
+                    </div>
+                </Modal>
             </div>
         )
     }
