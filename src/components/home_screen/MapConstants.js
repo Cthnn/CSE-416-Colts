@@ -9,6 +9,7 @@ export const DistrictLineLayers = {AL: "AL-Line-Layer", FL: "FL-Line-Layer", VA:
 export const DistrictLayers = {AL: "AL-District-Layer", FL: "FL-District-Layer", VA: "VA-District-Layer"};
 export const PrecinctLayers = {AL: "AL-Precinct-Layer", FL: "FL-Precinct-Layer", VA: "VA-Precinct-Layer"};
 export const HeatMapLayers = {AL: "AL-HeatMap-Layer", FL: "FL-HeatMap-Layer", VA: "VA-HeatMap-Layer"};
+export const SelectedFeatureLayer = 'selectedFeature';
 
 export const StateCenters = {AL: [-86.68075561523438, 32.57631501316452], FL: [-82.87845611572266, 28.40022856730028], VA: [-79.42291259765625, 38.00321033702472]};
 export const CountryCenter = [-82.994041442871, 32.99325130583]

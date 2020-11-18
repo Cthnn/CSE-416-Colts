@@ -152,6 +152,7 @@ class Toolbar {
                 this.setToStateOnlyView(state_layer_name, district_layer_name, district_line_layer_name, precinct_layer_name, map);
             }
         }
+        this.removeSelectedFeatureLayer(map);
     }
     
     changeLayer = (map) => {
@@ -223,7 +224,8 @@ class Toolbar {
     }
 
     setToStateOnlyView = (state_layer_name, district_layer_name, district_line_layer_name, precinct_layer_name, map) => {
-        map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+        if (map.getLayer(state_layer_name) !== undefined)
+            map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
         if (map.getLayer(district_layer_name) !== undefined && map.getLayer(district_line_layer_name) !== undefined){
             map.setLayoutProperty(district_layer_name, 'visibility', 'none');
             map.setLayoutProperty(district_line_layer_name, 'visibility', 'none');
@@ -231,7 +233,12 @@ class Toolbar {
         if (map.getLayer(precinct_layer_name) !== undefined)
             map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
     }
-
+    removeSelectedFeatureLayer = (map) => {
+        if (map.getLayer(Constants.SelectedFeatureLayer) !== undefined){
+            map.removeLayer(Constants.SelectedFeatureLayer);
+            map.removeSource(Constants.SelectedFeatureLayer);
+        }
+    }
     
     setDistrictType(districtType, map) {
         districtType.className = 'district-type';

@@ -204,64 +204,85 @@ const MapComponent = ({props}) => {
         map.on('click', function (e){
           let district_button_value = document.getElementById('district-checkbox').checked;
           let precinct_button_value = document.getElementById('precinct-checkbox').checked;
-          let features = null;
-          if(precinct_button_value){
-            let layers = [];
-            for(let layer in Constants.PrecinctLayers){
-              if(map.getLayer(Constants.PrecinctLayers[layer]) !== undefined)
-                layers.push(Constants.PrecinctLayers[layer]);
-            }
-            features = map.queryRenderedFeatures(e.point, {layers: layers});
-          }
-          else{
-            if(district_button_value){
-              let layers = [];
-              for(let layer in Constants.DistrictLayers){
-                if(map.getLayer(Constants.DistrictLayers[layer]) !== undefined)
-                  layers.push(Constants.DistrictLayers[layer]);
-              }
-              features = map.queryRenderedFeatures(e.point, {layers: layers});
-            }
-          }
-          //console.log(features);
+          let features = getFeatures(precinct_button_value, district_button_value, e.point, map);
+
           if(features === null || !features.length){
             return;
           }
-          if (typeof map.getLayer('selectedFeature') !== "undefined" ){         
-            map.removeLayer('selectedFeature');
-            map.removeSource('selectedFeature');   
+          else{
+            let feature = features[0];
+            addSelectedFeatureLayer(feature, map);
           }
-          let feature = features[0];
-          console.log(feature);
-          let popup = new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(Constants.VADemographic);
-          
-          //Change position in CSS
-          popup.id = 'precinct-popup';
-          popup.addTo(map);
-
-          map.addSource('selectedFeature', {
-            "type": "geojson",
-            "data": feature.toJSON()
-          });
-          map.addLayer({
-            'id': 'selectedFeature',
-            'type': 'fill',
-            'source': 'selectedFeature',
-            'paint': {
-              // 'fill-color': 'rgba(50, 50, 210, 0.4)',
-              // 'fill-outline-color': 'rgba(50, 50, 210, 1)'
-              'fill-color': Constants.SelectedFeatureColor,
-              'fill-outline-color': Constants.OutlineSelectedFeatureColor
-            }
-          });
         });
+
+        
+        
       });
       return () => map.remove();
     }, []); 
     return<div className="map" ref={mapContainerRef} />;
 };
 
+function addSelectedFeatureLayer(feature, map){
+  if (typeof map.getLayer(Constants.SelectedFeatureLayer) !== "undefined" ){         
+    map.removeLayer(Constants.SelectedFeatureLayer);
+    map.removeSource(Constants.SelectedFeatureLayer);   
+  }
+  
+  // console.log(feature);
+  let popup = new mapboxgl.Popup()
+    .setLngLat([0,0])
+    .setHTML(Constants.VADemographic);
+  
+  popup.id = 'precinct-popup';
+  popup.addTo(map);
+
+  map.addSource(Constants.SelectedFeatureLayer, {
+    "type": "geojson",
+    "data": feature.toJSON()
+  });
+  map.addLayer({
+    'id': Constants.SelectedFeatureLayer,
+    'type': 'fill',
+    'source': Constants.SelectedFeatureLayer,
+    'paint': {
+      'fill-color': Constants.SelectedFeatureColor,
+      'fill-outline-color': Constants.OutlineSelectedFeatureColor
+    }
+  });
+}
+
+function getFeatures(precinct_button_value, district_button_value, point, map){
+  let features = [];
+  let layers = '';
+  if(precinct_button_value){
+    layers = queryPrecinctLayers(map);
+  }
+  else{
+    if(district_button_value){
+      layers = queryDistrictLayers(map);
+    }
+  }
+  if(layers.length != 0){
+    features = map.queryRenderedFeatures(point, {layers: layers});
+  }
+  return features;
+}
+function queryPrecinctLayers(map){
+  let layers = [];
+  for(let layer in Constants.PrecinctLayers){
+    if(map.getLayer(Constants.PrecinctLayers[layer]) !== undefined)
+      layers.push(Constants.PrecinctLayers[layer]);
+  }
+  return layers;
+}
+function queryDistrictLayers(map){
+  let layers = [];
+  for(let layer in Constants.DistrictLayers){
+    if(map.getLayer(Constants.DistrictLayers[layer]) !== undefined)
+      layers.push(Constants.DistrictLayers[layer]);
+  }
+  return layers;
+}
 
 export default MapComponent;
