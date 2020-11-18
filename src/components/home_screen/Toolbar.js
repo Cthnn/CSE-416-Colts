@@ -3,8 +3,8 @@ import * as Constants from './MapConstants.js';
 
 class Toolbar {
     setState(state) {
-        if (state != 'None') {
-            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+        if (state !== Constants.States.NONE) {
+            let params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             fetch('http://localhost:8080/state', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => {
                 console.log('Success:', result);
                 this.changeLayer(this.map);
@@ -16,9 +16,9 @@ class Toolbar {
     }
     // this is binded to MapHelper
     async getDistrictGeoJson(map, state) {
-        var layer = map.getLayer(Constants.DistrictLayers[state]);
-        if (layer == undefined && state != 'None') {
-            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+        let layer = map.getLayer(Constants.DistrictLayers[state]);
+        if (layer === undefined && state !== Constants.States.NONE) {
+            let params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             await fetch('http://localhost:8080/district', {headers:{"Content-Type":"application/json"},method: 'POST',body:params}).then(response => response.text()).then(result => {
                 console.log("recieved district data");
                 this.addDistrictSource(map, state, JSON.parse(result));
@@ -32,10 +32,11 @@ class Toolbar {
         }
     }
     // this is binded to MapHelper
+
     async getPrecinctGeoJson(map, state) {
-        var layer = map.getLayer(Constants.PrecinctLayers[state]);
-        if (layer == undefined && state != 'None') {
-            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+        let layer = map.getLayer(Constants.PrecinctLayers[state]);
+        if (layer === undefined && state !== Constants.States.NONE) {
+            let params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             await fetch('http://localhost:8080/precinct', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => {
                 console.log("recieved precinct data");
                 this.addPrecinctSource(map, state, JSON.parse(result));
@@ -50,9 +51,9 @@ class Toolbar {
     }
     // this is binded to MapHelper
     async getHeatMapGeoJson(map, state) {
-        var layer = map.getLayer(Constants.HeatMapLayers[state]);
-        if (layer == undefined && state != 'None') {
-            var params = JSON.stringify(Constants.StateNames[state].toUpperCase());
+        let layer = map.getLayer(Constants.HeatMapLayers[state]);
+        if (layer === undefined && state !== Constants.States.NONE) {
+            let params = JSON.stringify(Constants.StateNames[state].toUpperCase());
             await fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params }).then(response => response.text()).then(result => {
                 console.log("recieved heatmap data");
                 this.addHeatMapSource(map, state, JSON.parse(result));
@@ -113,6 +114,117 @@ class Toolbar {
         this.map = undefined;
     }
 
+    displayLayer = (map) => {
+        let selected_state = document.getElementById('state-selection').value;
+        let district_button_value = document.getElementById('district-checkbox').checked;
+        let precinct_button_value = document.getElementById('precinct-checkbox').checked;
+        let heatmap_button_value = document.getElementById('heat-checkbox').checked;
+
+        for (let state in Constants.States) {
+            let district_layer_name = Constants.DistrictLayers[state];
+            let district_line_layer_name = Constants.DistrictLineLayers[state];
+            let precinct_layer_name = Constants.PrecinctLayers[state];
+            let heat_layer_name = Constants.HeatMapLayers[state];
+            let state_layer_name = Constants.StateLayers[state];
+
+            if(map.getLayer(state_layer_name) !== undefined){
+                map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+                map.setPaintProperty(state_layer_name, 'fill-color', Constants.DefaultColor);
+            }
+            if (selected_state !== Constants.States.NONE) {
+                this.determineHeatLayerProperty(heatmap_button_value, heat_layer_name, selected_state, state, map);
+                this.determinePrecinctLayerProperty(precinct_button_value, precinct_layer_name, state_layer_name, selected_state, state, map);
+                this.determineDistrictLayerProperty(district_button_value, district_layer_name, district_line_layer_name, state_layer_name, selected_state, state, map);
+                
+                if (!district_button_value && !precinct_button_value) { //All states visible
+                    this.determineStateLayerProperty(state_layer_name, selected_state, state, map);
+                }
+            }
+            else { //Show just states now
+                this.setToStateOnlyView(state_layer_name, district_layer_name, district_line_layer_name, precinct_layer_name, map);
+            }
+        }
+    }
+    
+    changeLayer = (map) => {
+        let selected_state = document.getElementById('state-selection').value;
+        let district_button_value = document.getElementById('district-checkbox').checked;
+        let precinct_button_value = document.getElementById('precinct-checkbox').checked;
+        let heatmap_button_value = document.getElementById('heat-checkbox').checked;
+        let district_type_value = document.getElementById('district-type').value;
+
+        console.log(selected_state);
+        if (district_button_value)
+            this.getDistrictGeoJson(selected_state).then(() => this.displayLayer(map));
+        if (precinct_button_value)
+            this.getPrecinctGeoJson(selected_state).then(() => this.displayLayer(map));
+        if (heatmap_button_value)
+            this.getHeatMapGeoJson(selected_state).then(() => this.displayLayer(map));
+
+        // if(!district_button_value && !precinct_button_value && !heatmap_button_value)
+        if (selected_state === Constants.States.NONE || (!district_button_value && !precinct_button_value && !heatmap_button_value)) {
+            this.displayLayer(map);
+        }
+    }
+    determineDistrictLayerProperty = (district_button_value, district_layer_name, district_line_layer_name, state_layer_name, selected_state, state, map) => {
+        if (district_button_value && selected_state === state && map.getLayer(district_layer_name) !== undefined && map.getLayer(district_line_layer_name) !== undefined) {
+            map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
+            map.setLayoutProperty(district_line_layer_name, 'visibility', 'visible');
+            map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+        } else {
+            if (map.getLayer(district_layer_name) !== undefined && map.getLayer(district_line_layer_name) !== undefined){
+                map.setLayoutProperty(district_layer_name, 'visibility', 'none');
+                map.setLayoutProperty(district_line_layer_name, 'visibility', 'none');
+            } 
+        }
+    }
+    determinePrecinctLayerProperty = (precinct_button_value, precinct_layer_name, state_layer_name, selected_state, state, map) => {
+        if (precinct_button_value && selected_state === state && map.getLayer(precinct_layer_name) !== undefined) {
+            map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
+            map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+        } else {
+            if (map.getLayer(precinct_layer_name) !== undefined)
+                map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+        }
+    }
+    determineHeatLayerProperty = (heatmap_button_value, heat_layer_name, selected_state, state, map) => {
+        if (heatmap_button_value && selected_state === state && map.getLayer(heat_layer_name) !== undefined) {
+            let race = document.getElementById("heatmap-select").value;
+            map.setPaintProperty(heat_layer_name, 'heatmap-weight', {
+                property: race,
+                type: 'exponential',
+                stops: [
+                    [1, 0],
+                    [62, 1]
+                ]
+            });
+            map.setLayoutProperty(heat_layer_name, 'visibility', 'visible');
+        } else {
+            if (map.getLayer(heat_layer_name) !== undefined)
+                map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
+        }
+    }
+    determineStateLayerProperty = (state_layer_name, selected_state, state, map) => {
+        if(map.getLayer(state_layer_name) !== undefined){
+            map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+            if (selected_state === state)
+                map.setPaintProperty(state_layer_name, 'fill-color', Constants.SelectedColor);
+            else
+                map.setPaintProperty(state_layer_name, 'fill-color', Constants.DefaultColor);
+        }
+    }
+
+    setToStateOnlyView = (state_layer_name, district_layer_name, district_line_layer_name, precinct_layer_name, map) => {
+        map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
+        if (map.getLayer(district_layer_name) !== undefined && map.getLayer(district_line_layer_name) !== undefined){
+            map.setLayoutProperty(district_layer_name, 'visibility', 'none');
+            map.setLayoutProperty(district_line_layer_name, 'visibility', 'none');
+        }
+        if (map.getLayer(precinct_layer_name) !== undefined)
+            map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+    }
+
+    
     setDistrictType(districtType, map) {
         districtType.className = 'district-type';
         districtType.id = 'district-type';
@@ -205,15 +317,15 @@ class Toolbar {
         this.state_option2 = document.createElement('option');
         this.state_option3 = document.createElement('option');
 
-        this.state_option0.value = 'None';
-        this.state_option1.value = 'AL';
-        this.state_option2.value = 'FL';
-        this.state_option3.value = 'VA';
+        this.state_option0.value = Constants.States.NONE;
+        this.state_option1.value = Constants.States.AL;
+        this.state_option2.value = Constants.States.FL;
+        this.state_option3.value = Constants.States.VA;
 
-        this.state_option1.textContent = 'None';
-        this.state_option1.textContent = 'Alabama';
-        this.state_option2.textContent = 'Florida';
-        this.state_option3.textContent = 'Virginia';
+        this.state_option1.textContent = Constants.States.NONE;
+        this.state_option1.textContent = Constants.StateNames.AL;
+        this.state_option2.textContent = Constants.StateNames.FL;
+        this.state_option3.textContent = Constants.StateNames.VA;
 
         stateSelect.className = 'state-select';
 
@@ -228,107 +340,25 @@ class Toolbar {
         stateSelect.id = 'state-selection';
 
         stateSelect.addEventListener('change', (e) => {
-            var state = e.target.value;
-            var elem = document.getElementById('select-state-generation');
+            let state = e.target.value;
+            let elem = document.getElementById('select-state-generation');
 
-            if (state === 'None') {
+            if (state === Constants.States.NONE) {
                 map.flyTo({
-                    center: [-100.04, 38.907],
-                    zoom: 3
+                    center: Constants.CountryCenter,
+                    zoom: 5
                 })
-                elem.selectedIndex = '0';
             } else {
                 map.flyTo({
                     center: Constants.StateCenters[state],
                     zoom: 6
                 })
-                elem.selectedIndex = Object.keys(Constants.States).indexOf(state) + 1;
             }
+            elem.selectedIndex = Object.keys(Constants.States).indexOf(state);
             this.setState(state);
         })
     }
-    displayLayer = (map) => {
-        var selected_state = document.getElementById('state-selection').value;
-        var district_button_value = document.getElementById('district-checkbox').checked;
-        var precinct_button_value = document.getElementById('precinct-checkbox').checked;
-        var heatmap_button_value = document.getElementById('heat-checkbox').checked;
-        console.log(selected_state + " " + district_button_value);
-
-        for (var state in Constants.States) {
-            var district_layer_name = Constants.DistrictLayers[state];
-            var precinct_layer_name = Constants.PrecinctLayers[state];
-            var heat_layer_name = Constants.HeatMapLayers[state];
-            var state_layer_name = Constants.StateLayers[state];
-
-            map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-            map.setPaintProperty(state_layer_name, 'fill-color', 'rgba(200, 100, 240, 0.4)');
-            if (selected_state != 'None') {
-                if (heatmap_button_value && selected_state == state && map.getLayer(heat_layer_name) != undefined) {
-                    var race = document.getElementById("heatmap-select").value;
-                    map.setPaintProperty(heat_layer_name, 'heatmap-weight', {
-                        property: race,
-                        type: 'exponential',
-                        stops: [
-                            [1, 0],
-                            [62, 1]
-                        ]
-                    });
-                    map.setLayoutProperty(heat_layer_name, 'visibility', 'visible');
-                } else {
-                    if (map.getLayer(heat_layer_name) != undefined)
-                        map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
-                }
-
-                if (precinct_button_value && selected_state == state && map.getLayer(precinct_layer_name) != undefined) {
-                    map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
-                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
-                } else {
-                    if (map.getLayer(precinct_layer_name) != undefined)
-                        map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
-                }
-                if (district_button_value && selected_state == state && map.getLayer(district_layer_name) != undefined) {
-                    map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
-                    map.setLayoutProperty(state_layer_name, 'visibility', 'none');
-                } else {
-                    if (map.getLayer(district_layer_name) != undefined)
-                        map.setLayoutProperty(district_layer_name, 'visibility', 'none');
-                }
-                if (!district_button_value && !precinct_button_value) {
-                    map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-                    if (selected_state == state)
-                        map.setPaintProperty(state_layer_name, 'fill-color', 'rgba(252, 215, 3, 0.2)');
-                    else
-                        map.setPaintProperty(state_layer_name, 'fill-color', 'rgba(200, 100, 240, 0.2)');
-                }
-            }
-            else { //Show just states now
-                map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-                if (map.getLayer(district_layer_name) != undefined)
-                    map.setLayoutProperty(district_layer_name, 'visibility', 'none');
-                if (map.getLayer(precinct_layer_name) != undefined)
-                    map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
-            }
-        }
-    }
-
-    changeLayer = (map) => {
-        var selected_state = document.getElementById('state-selection').value;
-        var district_button_value = document.getElementById('district-checkbox').checked;
-        var precinct_button_value = document.getElementById('precinct-checkbox').checked;
-        var heatmap_button_value = document.getElementById('heat-checkbox').checked;
-        console.log(selected_state);
-        if (district_button_value)
-            this.getDistrictGeoJson(selected_state).then(() => this.displayLayer(map));
-        if (precinct_button_value)
-            this.getPrecinctGeoJson(selected_state).then(() => this.displayLayer(map));
-        if (heatmap_button_value)
-            this.getHeatMapGeoJson(selected_state).then(() => this.displayLayer(map));
-
-        // if(!district_button_value && !precinct_button_value && !heatmap_button_value)
-        if (selected_state == 'None' || (!district_button_value && !precinct_button_value && !heatmap_button_value)) {
-            this.displayLayer(map);
-        }
-    }
+    
 }
 
 export default Toolbar;

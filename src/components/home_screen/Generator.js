@@ -2,6 +2,7 @@ import React from 'react';
 import M from 'materialize-css';
 import JobCard from './JobCard';
 import { Modal } from 'react-materialize';
+import * as Constants from './MapConstants.js';
 
 class Generate extends React.Component {
     constructor(props) {
@@ -15,11 +16,11 @@ class Generate extends React.Component {
         }
 
         this.state = {
-            state: "0",
+            state: Constants.States.NONE,
             plans: this.minMax['plans'][0],
             comp: this.minMax['comp'][0],
             pop: this.minMax['pop'][0],
-            group: "0",
+            group: Constants.States.NONE,
             batchNumber: 0
         }
     }
@@ -51,24 +52,31 @@ class Generate extends React.Component {
         let input = {}
         input[name] = e.target.value
         this.setState(input)
+        
+        // if(e.target.value === Constants.None){
+        //     element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
+        // }
+        // else{
+        //     element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value)+1;
+        // }
+        // if(name == "state"){
+        //     var element = document.getElementById('state-selection');
+        //     element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
+        //     element.dispatchEvent(new Event('change'));
+        // }
+    }
+    updateState(e, name){
+        let input = {}
+        input[name] = e.target.value
+        this.setState(input)
+
         var element = document.getElementById('state-selection');
-        if(e.target.value === "0"){ //None option
-            element.selectedIndex = "0";
-        }
-        if(e.target.value === "Alabama"){
-            element.selectedIndex = "1";
-        }
-        if(e.target.value === "Florida"){
-            element.selectedIndex = "2";
-        }
-        if(e.target.value === "Virginia"){
-            element.selectedIndex = "3";
-        }
-        element.dispatchEvent(new Event('change'));
+            element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
+            element.dispatchEvent(new Event('change'));
     }
 
     enableGeneration() {
-        return this.state.state !== 0 && this.state.group !== 0;
+        return this.state.state !== Constants.States.NONE && this.state.group !== Constants.States.NONE;
     }
 
     generatePlans(e) {
@@ -95,11 +103,11 @@ class Generate extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <label className="black-text">State</label>
                     <div className="input-field">
-                        <select id = "select-state-generation" className="browser-default" onChange={e => { this.updateSelection(e, "state") }}>
-                            <option value="0">None</option>
-                            <option value="Alabama">Alabama</option>
-                            <option value="Florida">Florida</option>
-                            <option value="Virginia">Virginia</option>
+                        <select id = "select-state-generation" className="browser-default" onChange={e => { this.updateState(e, "state") }}>
+                            <option value={Constants.States.NONE}>None</option>
+                            <option value={Constants.States.AL}>Alabama</option>
+                            <option value={Constants.States.FL}>Florida</option>
+                            <option value={Constants.States.VA}>Virginia</option>
                         </select>
                     </div>
                     <div>
@@ -120,12 +128,12 @@ class Generate extends React.Component {
                         <label className="black-text" htmlFor="minority_group">Racial/Ethnic Group</label>
                         <div className="input-field">
                             <select className="browser-default" onChange={e => { this.updateSelection(e, "group") }}>
-                                <option value="0">None</option>
-                                <option value="BLACK">Black or African American</option>
-                                <option value="ASIAN">Asian</option>
-                                <option value="HISPANIC">Hispanic or Latino</option>
-                                <option value="PACIFIC_ISLANDER">Native Hawaiian and Other Pacific Islander</option>
-                                <option value="NATIVE_AMERICAN">Native American and Alaska Native</option>
+                                <option value={Constants.EthnicGroup.NONE}>None</option>
+                                <option value={Constants.EthnicGroup.BLACK}>Black or African American</option>
+                                <option value={Constants.EthnicGroup.ASIAN}>Asian</option>
+                                <option value={Constants.EthnicGroup.HISPANIC}>Hispanic or Latino</option>
+                                <option value={Constants.EthnicGroup.PACIFIC_ISLANDER}>Native Hawaiian and Other Pacific Islander</option>
+                                <option value={Constants.EthnicGroup.NATIVE_AMERICAN}>Native American and Alaska Native</option>
                             </select>
                         </div>
                     </div>
