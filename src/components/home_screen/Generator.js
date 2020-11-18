@@ -69,7 +69,7 @@ class Generate extends React.Component {
         e.preventDefault();
         //send request to server
         var params = JSON.stringify({
-            state: this.state.state.toUpperCase(),
+            state: Constants.StateNames[this.state.state].toUpperCase(),
             plans: this.state.plans,
             comp: this.state.comp,
             pop: this.state.pop,
