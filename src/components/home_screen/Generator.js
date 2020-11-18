@@ -48,26 +48,12 @@ class Generate extends React.Component {
         this.setState(input)
     }
 
-    updateSelection(e, name) {
-        let input = {}
-        input[name] = e.target.value
+    updateSelection(e) {
+        let input = {group: e.target.value}
         this.setState(input)
-        
-        // if(e.target.value === Constants.None){
-        //     element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
-        // }
-        // else{
-        //     element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value)+1;
-        // }
-        // if(name == "state"){
-        //     var element = document.getElementById('state-selection');
-        //     element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
-        //     element.dispatchEvent(new Event('change'));
-        // }
     }
-    updateState(e, name){
-        let input = {}
-        input[name] = e.target.value
+    updateState(e){
+        let input = {state: e.target.value}
         this.setState(input)
 
         var element = document.getElementById('state-selection');
@@ -76,7 +62,7 @@ class Generate extends React.Component {
     }
 
     enableGeneration() {
-        return this.state.state !== Constants.States.NONE && this.state.group !== Constants.States.NONE;
+        return this.state.state !== Constants.States.NONE && this.state.group !== Constants.EthnicGroup.NONE;
     }
 
     generatePlans(e) {
@@ -103,7 +89,7 @@ class Generate extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <label className="black-text">State</label>
                     <div className="input-field">
-                        <select id = "select-state-generation" className="browser-default" onChange={e => { this.updateState(e, "state") }}>
+                        <select id = "select-state-generation" className="browser-default" onChange={e => { this.updateState(e) }}>
                             <option value={Constants.States.NONE}>None</option>
                             <option value={Constants.States.AL}>Alabama</option>
                             <option value={Constants.States.FL}>Florida</option>
@@ -127,7 +113,7 @@ class Generate extends React.Component {
                     <div>
                         <label className="black-text" htmlFor="minority_group">Racial/Ethnic Group</label>
                         <div className="input-field">
-                            <select className="browser-default" onChange={e => { this.updateSelection(e, "group") }}>
+                            <select className="browser-default" onChange={e => { this.updateSelection(e) }}>
                                 <option value={Constants.EthnicGroup.NONE}>None</option>
                                 <option value={Constants.EthnicGroup.BLACK}>Black or African American</option>
                                 <option value={Constants.EthnicGroup.ASIAN}>Asian</option>

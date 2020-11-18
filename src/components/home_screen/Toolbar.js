@@ -119,16 +119,14 @@ class Toolbar {
         let district_button_value = document.getElementById('district-checkbox').checked;
         let precinct_button_value = document.getElementById('precinct-checkbox').checked;
         let heatmap_button_value = document.getElementById('heat-checkbox').checked;
-        
+
         for (let state in Constants.States) {
-            if (Constants.States[state] === Constants.States.NONE){
-                continue;
-            }
             let district_layer_name = Constants.DistrictLayers[state];
             let district_line_layer_name = Constants.DistrictLineLayers[state];
             let precinct_layer_name = Constants.PrecinctLayers[state];
             let heat_layer_name = Constants.HeatMapLayers[state];
             let state_layer_name = Constants.StateLayers[state];
+
             if(map.getLayer(state_layer_name) !== undefined){
                 map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
                 map.setPaintProperty(state_layer_name, 'fill-color', Constants.DefaultColor);
@@ -249,23 +247,27 @@ class Toolbar {
         this.option3 = document.createElement('option');
         this.option4 = document.createElement('option');
         this.option5 = document.createElement('option');
+        this.option6 = document.createElement('option');
 
-        this.option1.value = 'white';
+        this.option1.value = Constants.HeatMapMapping.WHITE;
         this.option1.textContent = 'White American';
-        this.option2.value = 'black';
+        this.option2.value = Constants.HeatMapMapping.BLACK;
         this.option2.textContent = 'Black or African American';
-        this.option3.value = 'native';
+        this.option3.value = Constants.HeatMapMapping.NATIVE_AMERICAN;
         this.option3.textContent = 'Native American and Alaska Native';
-        this.option4.value = 'asian';
+        this.option4.value = Constants.HeatMapMapping.ASIAN;
         this.option4.textContent = 'Asian American';
-        this.option5.value = 'pacific';
+        this.option5.value = Constants.HeatMapMapping.PACIFIC_ISLANDER;
         this.option5.textContent = 'Native Hawaiian and Other Pacific Islander';
+        this.option6.value = Constants.HeatMapMapping.HISPANIC;
+        this.option6.textContent = 'Hispanic or Latino';
 
         heatSelect.appendChild(this.option1);
         heatSelect.appendChild(this.option2);
         heatSelect.appendChild(this.option3);
         heatSelect.appendChild(this.option4);
         heatSelect.appendChild(this.option5);
+        heatSelect.appendChild(this.option6);
 
         heatCheckbox.id = 'heat-checkbox';
         heatText.addEventListener('click', () => {

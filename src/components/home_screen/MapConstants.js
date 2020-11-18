@@ -21,7 +21,8 @@ export const OutlinePrecinctColor = 'rgba(200, 100, 255, 1)';
 export const SelectedFeatureColor = 'rgba(50, 50, 210, 0.4)';
 export const OutlineSelectedFeatureColor = 'rgba(50, 50, 210, 1)';
 
-export const EthnicGroup = {NONE: "NONE",BLACK: "BLACK", ASIAN: "ASIAN", HISPANIC: "HISPANIC", PACIFIC_ISLANDER: "PACIFIC_ISLANDER", NATIVE_AMERICAN: "NATIVE_AMERICAN",};
+export const EthnicGroup = {NONE: "NONE",BLACK: "BLACK", ASIAN: "ASIAN", HISPANIC: "HISPANIC", PACIFIC_ISLANDER: "PACIFIC_ISLANDER", NATIVE_AMERICAN: "NATIVE_AMERICAN"};
+export const HeatMapMapping = {WHITE: "R2", BLACK: "R3",  NATIVE_AMERICAN: "R4", ASIAN: "R5", PACIFIC_ISLANDER: "R6", HISPANIC: "R8"};
 export const VADemographic = `
 <div style="text-align: center;">Precinct 2 Demographics</div>
 <table style="font-size:10px; padding: 0px !important;">
