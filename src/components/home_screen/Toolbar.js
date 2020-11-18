@@ -119,14 +119,16 @@ class Toolbar {
         let district_button_value = document.getElementById('district-checkbox').checked;
         let precinct_button_value = document.getElementById('precinct-checkbox').checked;
         let heatmap_button_value = document.getElementById('heat-checkbox').checked;
-
+        
         for (let state in Constants.States) {
+            if (Constants.States[state] === Constants.States.NONE){
+                continue;
+            }
             let district_layer_name = Constants.DistrictLayers[state];
             let district_line_layer_name = Constants.DistrictLineLayers[state];
             let precinct_layer_name = Constants.PrecinctLayers[state];
             let heat_layer_name = Constants.HeatMapLayers[state];
             let state_layer_name = Constants.StateLayers[state];
-
             if(map.getLayer(state_layer_name) !== undefined){
                 map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
                 map.setPaintProperty(state_layer_name, 'fill-color', Constants.DefaultColor);
