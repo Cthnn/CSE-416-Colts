@@ -3,6 +3,8 @@ export const StateNames = {NONE: 'None', AL: "Alabama", FL: "Florida", VA: "Virg
 export const Districts = {AL: "AL-District", FL: "FL-District", VA: "VA-District"};
 export const Precincts = {AL: "AL-Precinct", FL: "FL-Precinct", VA: "VA-Precinct"};
 export const HeatMaps = {AL: "AL-HeatMap", FL: "FL-HeatMap", VA: "VA-HeatMap"};
+export const DistrictingType = {NONE: 'NONE', AVG: "Average", EX: "Extreme"};
+export const CurrentEnactedDistrictingJobId = 0;
 
 export const StateLayers = {AL: "AL-Layer", FL: "FL-Layer", VA: "VA-Layer"};
 export const DistrictLineLayers = {AL: "AL-Line-Layer", FL: "FL-Line-Layer", VA: "VA-Line-Layer"};
@@ -10,6 +12,8 @@ export const DistrictLayers = {AL: "AL-District-Layer", FL: "FL-District-Layer",
 export const PrecinctLayers = {AL: "AL-Precinct-Layer", FL: "FL-Precinct-Layer", VA: "VA-Precinct-Layer"};
 export const HeatMapLayers = {AL: "AL-HeatMap-Layer", FL: "FL-HeatMap-Layer", VA: "VA-HeatMap-Layer"};
 export const SelectedFeatureLayer = 'selectedFeature';
+
+export const DistrictingTypeLayers = {AVG: "Average-Districting", EX: "Extreme-Districting"};
 
 export const StateCenters = {AL: [-86.68075561523438, 32.57631501316452], FL: [-82.87845611572266, 28.40022856730028], VA: [-79.42291259765625, 38.00321033702472]};
 export const CountryCenter = [-82.994041442871, 32.99325130583]

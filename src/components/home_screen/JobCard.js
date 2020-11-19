@@ -1,5 +1,6 @@
 import React from 'react';
 import './JobCard.css';
+import * as Constants from './MapConstants.js';
 
 import { Button } from 'react-materialize';
 
@@ -15,10 +16,40 @@ class JobCard extends React.Component {
         this.props.deleteJob(this.props.job)
     }
 
-    setDistrictType = (type) => {
-        var districtType = document.getElementById('district-type');
-        districtType.value = type;
-        districtType.click()
+    handleAverageClick = (e) => {
+        let avgElement = document.getElementById('average-input');
+        let checkValue = e.target.checked;
+        let type =Constants.DistrictingType.AVG;
+        if(checkValue){
+            avgElement.value = type;
+        }
+        else{
+            avgElement.value = Constants.DistrictingType.NONE;
+        }
+        avgElement.click()
+    }
+    handleExtremeClick = (e) => {
+        let exElement = document.getElementById('extreme-input');
+        let checkValue = e.target.checked;
+        let type =Constants.DistrictingType.EX;
+        if(checkValue){
+            exElement.value = type;
+        }
+        else{
+            exElement.value = Constants.DistrictingType.NONE;
+        }
+        exElement.click()
+    }
+    setJobId = (e, type) => {
+        let jobType = document.getElementById('job-type');
+        let checkValue = e.target.checked;
+        if(checkValue){
+            jobType.value = type;
+        }
+        else{
+            jobType.value = Constants.CurrentEnactedDistrictingJobId;
+        }
+        jobType.click()
     }
 
     render() {
@@ -67,8 +98,12 @@ class JobCard extends React.Component {
                                 <td>{job.populationDeviation}</td>
                             </tr>
                         </tbody></table>
-                        <Button className="blue lighten-2" style={{ position: "absolute", top: '50px', right: '20px', cursor: 'pointer' }} onClick={() => this.setDistrictType('average')}>average</Button>
-                        <Button className="red lighten-2" style={{ position: "absolute", top: '100px', right: '20px', cursor: 'pointer' }} onClick={() => this.setDistrictType('extreme')}>extreme</Button>
+                        <label className = 'districting-label'>Average
+                            <input className = 'districting-button' onChange={(e)=>{this.setJobId(e, job.jobId); this.handleAverageClick(e)}} type = 'checkbox' />
+                        </label>
+                        <label className = 'districting-label'>Extreme
+                            <input className = 'districting-button' onChange={(e)=>{this.setJobId(e, job.jobId); this.handleExtremeClick(e, Constants.DistrictingType.EX)}}  type = 'checkbox' />
+                        </label>
                     </div>
                 </div>
             </div>

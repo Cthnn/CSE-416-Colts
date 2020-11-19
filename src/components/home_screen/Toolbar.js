@@ -16,6 +16,21 @@ class Toolbar {
             this.changeLayer(this.map);
         }
     }
+    async getJobDistrictingGeoJson(map, jobId, districtingType){
+        let layer = map.getLayer(Constants.DistrictingTypeLayers[districtingType]);
+        console.log(Constants.DistrictingTypeLayers[districtingType].toUpperCase());
+        if(layer === undefined){
+            let params = JSON.stringify({jobId: jobId, type: Constants.DistrictingType[districtingType].toUpperCase()});
+            await fetch('http://localhost:8080/jobGeo', {headers:{"Content-Type":"application/json"},method: 'POST',body:params})
+            .then(response => response.text())
+            .then(result => {
+                console.log("Recieved Districting GeoJson");
+                //Job Districting functionality
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    }
     // this is binded to MapHelper
     async getDistrictGeoJson(map, state) {
         let layer = map.getLayer(Constants.DistrictLayers[state]);
@@ -98,8 +113,14 @@ class Toolbar {
         this.heat_dropdown = document.createElement('select');
         this.setHeatMap(this.heat, this.heat_dropdown, this.heat_text, this.map);
 
-        this.districtType = document.createElement('input');
-        this.setDistrictType(this.districtType, this.map)
+        this.averageInput = document.createElement('input');
+        this.setAverageInputElement(this.averageInput, this.map)
+
+        this.extremeInput = document.createElement('input');
+        this.setExtremeInputElement(this.extremeInput, this.map)
+
+        this.jobInput = document.createElement('input');
+        this.setJobInput(this.jobInput, this.map)
 
         this.sub_container.appendChild(this.stateText);
         this.sub_container.appendChild(this.stateSelect);
@@ -111,7 +132,10 @@ class Toolbar {
         this.sub_container.appendChild(this.heat_text);
         this.sub_container.appendChild(this.heat);
         this.sub_container.appendChild(this.heat_dropdown);
-        this.sub_container.appendChild(this.districtType);
+
+        this.sub_container.appendChild(this.jobInput);
+        this.sub_container.appendChild(this.averageInput);
+        this.sub_container.appendChild(this.extremeInput);
 
         this.container.appendChild(this.sub_container);
 
@@ -160,9 +184,26 @@ class Toolbar {
         let district_button_value = document.getElementById('district-checkbox').checked;
         let precinct_button_value = document.getElementById('precinct-checkbox').checked;
         let heatmap_button_value = document.getElementById('heat-checkbox').checked;
-        let district_type_value = document.getElementById('district-type').value;
 
-        console.log(selected_state);
+        let average_value = document.getElementById('average-input').value;
+        let extreme_value = document.getElementById('extreme-input').value;
+        let job_id_value = document.getElementById('job-type').value;
+        let districtingTypes = [];
+        districtingTypes.push(average_value, extreme_value);
+
+        // console.log(average_value + " " + extreme_value + " "+ job_id_value);
+        for(var i = 0; i < districtingTypes.length; i++){
+            for(let type in Constants.DistrictingType){
+                if(Constants.DistrictingType.NONE !== districtingTypes[i]){
+                    if(Constants.DistrictingType[type] === districtingTypes[i] && district_button_value && selected_state !== Constants.States.NONE){
+                        // console.log(type +": "+districtingTypes[i]);
+                        this.getJobDistrictingGeoJson(job_id_value, type);    
+                    }
+                }
+            }
+        }
+
+        // console.log(selected_state);
         if (district_button_value)
             this.getDistrictGeoJson(selected_state).then(() => this.displayLayer(map));
         if (precinct_button_value)
@@ -240,11 +281,31 @@ class Toolbar {
         }
     }
     
-    setDistrictType(districtType, map) {
-        districtType.className = 'district-type';
-        districtType.id = 'district-type';
-        districtType.setAttribute('type', 'hidden');
-        districtType.addEventListener('click', () => {
+    setAverageInputElement(averageInput, map) {
+        averageInput.className = 'average-input';
+        averageInput.id = 'average-input';
+        averageInput.setAttribute('type', 'hidden');
+        averageInput.value = Constants.DistrictingType.NONE;
+        averageInput.addEventListener('click', () => {
+            this.changeLayer(map)
+        })
+    }
+    
+    setExtremeInputElement(extremeInput, map) {
+        extremeInput.className = 'extreme-input';
+        extremeInput.id = 'extreme-input';
+        extremeInput.setAttribute('type', 'hidden');
+        extremeInput.value = Constants.DistrictingType.NONE;
+        extremeInput.addEventListener('click', () => {
+            this.changeLayer(map)
+        })
+    }
+    setJobInput(jobType, map){
+        jobType.className = 'job-type';
+        jobType.id = 'job-type';
+        jobType.setAttribute('type', 'hidden');
+        jobType.value = Constants.CurrentEnactedDistrictingJobId;
+        jobType.addEventListener('click', () => {
             this.changeLayer(map)
         })
     }

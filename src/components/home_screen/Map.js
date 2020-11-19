@@ -191,6 +191,7 @@ const MapComponent = ({props}) => {
       toolbar.getDistrictGeoJson = toolbar.getDistrictGeoJson.bind(mapHelper, map);
       toolbar.getPrecinctGeoJson = toolbar.getPrecinctGeoJson.bind(mapHelper, map);
       toolbar.getHeatMapGeoJson = toolbar.getHeatMapGeoJson.bind(mapHelper, map);
+      toolbar.getJobDistrictingGeoJson = toolbar.getJobDistrictingGeoJson.bind(mapHelper, map);
 
       map.on('load', function () {
         // Add a source for the state polygons.
@@ -213,6 +214,8 @@ const MapComponent = ({props}) => {
           }
           else{
             let feature = features[0];
+
+            addPrecinctPopUp(feature, map);
             addSelectedFeatureLayer(feature, map);
           }
         });
@@ -222,20 +225,21 @@ const MapComponent = ({props}) => {
     return<div className="map" ref={mapContainerRef} />;
 };
 
+function addPrecinctPopUp(feature, map){
+  let demographicData = document.createElement('div');
+  ReactDOM.render(<MapPopUp features = {feature.properties}/>, demographicData);
+  let popup= new mapboxgl.Popup()
+    .setLngLat([0,0])
+    .setDOMContent(demographicData);
+  popup.id = 'precinct-popup';
+  popup.addTo(map);
+}
 function addSelectedFeatureLayer(feature, map){
   if (typeof map.getLayer(Constants.SelectedFeatureLayer) !== "undefined" ){         
     map.removeLayer(Constants.SelectedFeatureLayer);
     map.removeSource(Constants.SelectedFeatureLayer);   
   }
   
-  // console.log(feature);
-  let popup = new mapboxgl.Popup()
-    .setLngLat([0,0])
-    // .setHTML(Constants.VADemographic);
-  
-  popup.id = 'precinct-popup';
-  popup.addTo(map);
-
   map.addSource(Constants.SelectedFeatureLayer, {
     "type": "geojson",
     "data": feature.toJSON()

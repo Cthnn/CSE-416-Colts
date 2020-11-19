@@ -5,3 +5,12 @@ tr{
 th, td{
     padding: 3px;
 }
+.districting-button{
+    opacity: 1 !important;
+    padding: 8px;
+    margin: 4px;
+    position:relative !important;
+}
+.districting-label{
+    color: black;
+}
