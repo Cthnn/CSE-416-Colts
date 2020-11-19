@@ -66,7 +66,7 @@ class Generate extends React.Component {
 
     enableGeneration() {
         return this.state.state !== Constants.States.NONE 
-        && this.state.group !== Constants.EthnicGroup.NONE 
+        && this.state.group !== Constants.EthnicGroups.NONE 
         && this.state.comp !== Constants.CompactValues.NONE;
     }
 

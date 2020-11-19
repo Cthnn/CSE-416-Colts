@@ -4,10 +4,10 @@ import './JobCard.css';
 import { Button } from 'react-materialize';
 
 class JobCard extends React.Component {
-    static createJob(jobId, state, runs, compactness, populationDeviation, group, status) {
+    static createJob(jobId, state, plans, compactness, populationDeviation, group, status) {
         if (jobId === 0)
-            return { jobId, title: 'Enacted Districtings', state, runs, compactness, populationDeviation, group, status }
-        return { jobId, title: 'Job ' + jobId, state, runs, compactness, populationDeviation, group, status }
+            return { jobId, title: 'Enacted Districtings', state, plans, compactness, populationDeviation, group, status }
+        return { jobId, title: 'Job ' + jobId, state, plans, compactness, populationDeviation, group, status }
     }
 
     handleDeleteClick = (e) => {
@@ -52,7 +52,7 @@ class JobCard extends React.Component {
                             </tr>
                             <tr>
                                 <th>Plans:</th>
-                                <td>{job.runs}</td>
+                                <td>{job.plans}</td>
                             </tr>
                             <tr>
                                 <th>Racial/Ethnic Group:</th>

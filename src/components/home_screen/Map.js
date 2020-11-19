@@ -231,7 +231,7 @@ function addSelectedFeatureLayer(feature, map){
   // console.log(feature);
   let popup = new mapboxgl.Popup()
     .setLngLat([0,0])
-    .setHTML(Constants.VADemographic);
+    // .setHTML(Constants.VADemographic);
   
   popup.id = 'precinct-popup';
   popup.addTo(map);
