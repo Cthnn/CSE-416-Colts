@@ -40,7 +40,7 @@ class HomeScreen extends Component {
         }).catch(error => { console.error('Error:', error); });
 
         var params = JSON.stringify(job.jobId)
-        fetch('http://localhost:8080/genSummary', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
+        fetch('http://localhost:8080/getBoxPlot', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
         .then(response => response.text())
         .then(result => { 
             // console.log('Summary:', JSON.parse(result));
