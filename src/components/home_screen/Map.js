@@ -205,9 +205,9 @@ const MapComponent = ({props}) => {
         }
 
         map.on('click', function (e){
-          let district_button_value = document.getElementById('district-checkbox').checked;
-          let precinct_button_value = document.getElementById('precinct-checkbox').checked;
-          let features = getFeatures(precinct_button_value, district_button_value, e.point, map);
+          let districttButtonValue = document.getElementById('district-checkbox').checked;
+          let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
+          let features = getFeatures(precinctButtonValue, districttButtonValue, e.point, map);
 
           if(features === null || !features.length)
             return;
@@ -252,14 +252,14 @@ function addSelectedFeatureLayer(feature, map){
   });
 }
 
-function getFeatures(precinct_button_value, district_button_value, point, map){
+function getFeatures(precinctButtonValue, districttButtonValue, point, map){
   let features = [];
   let layers = '';
-  if(precinct_button_value){
+  if(precinctButtonValue){
     layers = queryPrecinctLayers(map);
   }
   else{
-    if(district_button_value){
+    if(districttButtonValue){
       layers = queryDistrictLayers(map);
     }
   }
