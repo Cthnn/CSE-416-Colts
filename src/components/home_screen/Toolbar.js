@@ -182,7 +182,6 @@ class Toolbar {
                 this.determineHeatLayerProperty(heatmapButtonValue, heatLayerName, selectedState, state, map);
                 this.determinePrecinctLayerProperty(precinctButtonValue, precinctLayerName, stateLayerName, selectedState, state, map);
                 this.determineDistrictLayerProperty(districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map);
-
                 if (!districtButtonValue && !precinctButtonValue) { //All states visible
                     this.determineStateLayerProperty(stateLayerName, selectedState, state, map);
                 }
