@@ -21,38 +21,7 @@ export const OutlinePrecinctColor = 'rgba(200, 100, 255, 1)';
 export const SelectedFeatureColor = 'rgba(50, 50, 210, 0.4)';
 export const OutlineSelectedFeatureColor = 'rgba(50, 50, 210, 1)';
 
-export const EthnicGroup = {NONE: "NONE",BLACK: "BLACK", ASIAN: "ASIAN", HISPANIC: "HISPANIC", PACIFIC_ISLANDER: "PACIFIC_ISLANDER", NATIVE_AMERICAN: "NATIVE_AMERICAN"};
+export const EthnicGroups = {NONE: "NONE", WHITE: "WHITE", BLACK: "BLACK", NATIVE_AMERICAN: "NATIVE_AMERICAN", ASIAN: "ASIAN", PACIFIC_ISLANDER: "PACIFIC_ISLANDER",  HISPANIC: "HISPANIC"};
+export const EthnicGroupNames = {NONE: "None", WHITE: "White American", BLACK: "Black or African American", NATIVE_AMERICAN: "Native American and Alaska Native", ASIAN: "Asian", PACIFIC_ISLANDER: "Native Hawaiian and Other Pacific Islander", HISPANIC: "Hispanic or Latino"};
+export const EthnicGroupNicknames = {NONE: "None", WHITE: "White", BLACK: "Black", NATIVE_AMERICAN: "Native American", ASIAN: "Asian", PACIFIC_ISLANDER: "Pacific Islander", HISPANIC: "Latino"};
 export const HeatMapMapping = {WHITE: "R2", BLACK: "R3",  NATIVE_AMERICAN: "R4", ASIAN: "R5", PACIFIC_ISLANDER: "R6", HISPANIC: "R8"};
-export const VADemographic = `
-<div style="text-align: center;">Precinct 2 Demographics</div>
-<table style="font-size:10px; padding: 0px !important;">
-<tr>
-  <th>Race</th>
-  <th>Population</th>
-</tr>
-<tr>
-  <td>White</td>
-  <td>12401</td>
-</tr>
-<tr>
-  <td>Black</td>
-  <td>5835</td>
-</tr>
-<tr>
-  <td>Hispanic</td>
-  <td>2551</td>
-</tr>
-<tr>
-  <td>Asian</td>
-  <td>515</td>
-</tr>
-<tr>
-  <td>American Indians</td>
-  <td>84</td>
-</tr>
-<tr>
-  <td>Pacific Islander</td>
-  <td>243</td>
-</tr>
-</table>
-`

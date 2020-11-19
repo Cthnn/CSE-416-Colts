@@ -242,6 +242,14 @@ class Toolbar {
         })
     }
 
+    creatHeatMapOption(option){
+        let mapOption = document.createElement('option');
+        mapOption.value = Constants.HeatMapMapping[option];
+        mapOption.textContent = Constants.EthnicGroupNames[option];
+
+        return mapOption;
+    }
+
     setHeatMap(heatCheckbox, heatSelect, heatText, map) {
         heatText.textContent = 'Heatmap View'
         heatText.className = 'text';
@@ -250,32 +258,9 @@ class Toolbar {
         heatCheckbox.type = 'checkbox';
         heatCheckbox.className = 'view-button';
 
-        this.option1 = document.createElement('option');
-        this.option2 = document.createElement('option');
-        this.option3 = document.createElement('option');
-        this.option4 = document.createElement('option');
-        this.option5 = document.createElement('option');
-        this.option6 = document.createElement('option');
-
-        this.option1.value = Constants.HeatMapMapping.WHITE;
-        this.option1.textContent = 'White American';
-        this.option2.value = Constants.HeatMapMapping.BLACK;
-        this.option2.textContent = 'Black or African American';
-        this.option3.value = Constants.HeatMapMapping.NATIVE_AMERICAN;
-        this.option3.textContent = 'Native American and Alaska Native';
-        this.option4.value = Constants.HeatMapMapping.ASIAN;
-        this.option4.textContent = 'Asian American';
-        this.option5.value = Constants.HeatMapMapping.PACIFIC_ISLANDER;
-        this.option5.textContent = 'Native Hawaiian and Other Pacific Islander';
-        this.option6.value = Constants.HeatMapMapping.HISPANIC;
-        this.option6.textContent = 'Hispanic or Latino';
-
-        heatSelect.appendChild(this.option1);
-        heatSelect.appendChild(this.option2);
-        heatSelect.appendChild(this.option3);
-        heatSelect.appendChild(this.option4);
-        heatSelect.appendChild(this.option5);
-        heatSelect.appendChild(this.option6);
+        for(let group in Constants.EthnicGroups)
+            if(Constants.EthnicGroups[group] !== Constants.EthnicGroups.NONE)
+                heatSelect.appendChild(this.creatHeatMapOption(group));
 
         heatCheckbox.id = 'heat-checkbox';
         heatText.addEventListener('click', () => {
@@ -323,28 +308,20 @@ class Toolbar {
             this.changeLayer(map);
         })
     }
+
+    createStateOption(option){
+        let stateOption = document.createElement('option');
+        stateOption.value = Constants.States[option];
+        stateOption.textContent = Constants.StateNames[option];
+
+        return stateOption;
+    }
+
     setStateSelect(stateSelect, stateSelectText, map) {
-        this.state_option0 = document.createElement('option');
-        this.state_option1 = document.createElement('option');
-        this.state_option2 = document.createElement('option');
-        this.state_option3 = document.createElement('option');
-
-        this.state_option0.value = Constants.States.NONE;
-        this.state_option1.value = Constants.States.AL;
-        this.state_option2.value = Constants.States.FL;
-        this.state_option3.value = Constants.States.VA;
-
-        this.state_option1.textContent = Constants.States.NONE;
-        this.state_option1.textContent = Constants.StateNames.AL;
-        this.state_option2.textContent = Constants.StateNames.FL;
-        this.state_option3.textContent = Constants.StateNames.VA;
-
         stateSelect.className = 'state-select';
 
-        stateSelect.appendChild(this.state_option0);
-        stateSelect.appendChild(this.state_option1);
-        stateSelect.appendChild(this.state_option2);
-        stateSelect.appendChild(this.state_option3);
+        for(let state in Constants.States)
+            stateSelect.appendChild(this.createStateOption(state));
 
         stateSelectText.textContent = 'State';
         stateSelectText.className = 'text';

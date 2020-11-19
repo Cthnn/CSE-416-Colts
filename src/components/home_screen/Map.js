@@ -3,6 +3,8 @@ import mapboxgl from 'mapbox-gl';
 import './Map.css';
 import * as Constants from './MapConstants.js';
 import Toolbar from './Toolbar.js';
+import MapPopUp from './MapPopUp';
+import ReactDOM from 'react-dom';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -232,10 +234,12 @@ const MapComponent = ({props}) => {
             map.removeSource('selectedFeature');   
           }
           let feature = features[0];
-          console.log(feature);
+          // console.log(feature.properties);
+          let demographicData = document.createElement('div');
+          ReactDOM.render(<MapPopUp features={feature.properties}/>, demographicData);
           let popup = new mapboxgl.Popup()
             .setLngLat(e.lngLat)
-            .setHTML(Constants.VADemographic);
+            .setDOMContent(demographicData);
           
           //Change position in CSS
           popup.id = 'precinct-popup';

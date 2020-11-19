@@ -62,7 +62,7 @@ class Generate extends React.Component {
     }
 
     enableGeneration() {
-        return this.state.state !== Constants.States.NONE && this.state.group !== Constants.EthnicGroup.NONE;
+        return this.state.state !== Constants.States.NONE && this.state.group !== Constants.EthnicGroups.NONE;
     }
 
     generatePlans(e) {
@@ -92,10 +92,10 @@ class Generate extends React.Component {
                     <label className="black-text">State</label>
                     <div className="input-field">
                         <select id = "select-state-generation" className="browser-default" onChange={e => { this.updateState(e) }}>
-                            <option value={Constants.States.NONE}>None</option>
-                            <option value={Constants.States.AL}>Alabama</option>
-                            <option value={Constants.States.FL}>Florida</option>
-                            <option value={Constants.States.VA}>Virginia</option>
+                            <option value={Constants.States.NONE}>{Constants.StateNames.NONE}</option>
+                            <option value={Constants.States.AL}>{Constants.StateNames.AL}</option>
+                            <option value={Constants.States.FL}>{Constants.StateNames.FL}</option>
+                            <option value={Constants.States.VA}>{Constants.StateNames.VA}</option>
                         </select>
                     </div>
                     <div>
@@ -116,12 +116,12 @@ class Generate extends React.Component {
                         <label className="black-text" htmlFor="minority_group">Racial/Ethnic Group</label>
                         <div className="input-field">
                             <select className="browser-default" onChange={e => { this.updateSelection(e) }}>
-                                <option value={Constants.EthnicGroup.NONE}>None</option>
-                                <option value={Constants.EthnicGroup.BLACK}>Black or African American</option>
-                                <option value={Constants.EthnicGroup.ASIAN}>Asian</option>
-                                <option value={Constants.EthnicGroup.HISPANIC}>Hispanic or Latino</option>
-                                <option value={Constants.EthnicGroup.PACIFIC_ISLANDER}>Native Hawaiian and Other Pacific Islander</option>
-                                <option value={Constants.EthnicGroup.NATIVE_AMERICAN}>Native American and Alaska Native</option>
+                                <option value={Constants.EthnicGroups.NONE}>{Constants.EthnicGroupNames.NONE}</option>
+                                <option value={Constants.EthnicGroups.BLACK}>{Constants.EthnicGroupNames.BLACK}</option>
+                                <option value={Constants.EthnicGroups.NATIVE_AMERICAN}>{Constants.EthnicGroupNames.NATIVE_AMERICAN}</option>
+                                <option value={Constants.EthnicGroups.ASIAN}>{Constants.EthnicGroupNames.ASIAN}</option>
+                                <option value={Constants.EthnicGroups.PACIFIC_ISLANDER}>{Constants.EthnicGroupNames.PACIFIC_ISLANDER}</option>
+                                <option value={Constants.EthnicGroups.HISPANIC}>{Constants.EthnicGroupNames.HISPANIC}</option>
                             </select>
                         </div>
                     </div>
