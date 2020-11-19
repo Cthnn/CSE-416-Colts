@@ -1,10 +1,21 @@
-tr{
+.card tr{
     border: none;
 }
 
-th, td{
-    padding: 3px;
+.card th, .card td{
+    border: none;
+    border-bottom: 1px solid lightblue;
+    padding: 5px 2px;
 }
+
+.card th{
+    width: 70%;
+}
+
+.card td{
+    text-align: right;
+}
+
 .districting-button{
     opacity: 1 !important;
     padding: 8px;
@@ -12,5 +23,12 @@ th, td{
     position:relative !important;
 }
 .districting-label{
+    display: inline-block;
     color: black;
+    vertical-align: baseline;
+    padding: 5px 2px;
+}
+
+.districting-label input{
+    vertical-align: middle;
 }

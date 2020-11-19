@@ -6,8 +6,6 @@ import { Button } from 'react-materialize';
 
 class JobCard extends React.Component {
     static createJob(jobId, state, plans, compactness, populationDeviation, group, status) {
-        if (jobId === 0)
-            return { jobId, title: 'Enacted Districtings', state, plans, compactness, populationDeviation, group, status }
         return { jobId, title: 'Job ' + jobId, state, plans, compactness, populationDeviation, group, status }
     }
 

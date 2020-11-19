@@ -209,15 +209,12 @@ const MapComponent = ({props}) => {
           let precinct_button_value = document.getElementById('precinct-checkbox').checked;
           let features = getFeatures(precinct_button_value, district_button_value, e.point, map);
 
-          if(features === null || !features.length){
+          if(features === null || !features.length)
             return;
-          }
-          else{
-            let feature = features[0];
 
-            addPrecinctPopUp(feature, map);
-            addSelectedFeatureLayer(feature, map);
-          }
+          let feature = features[0];
+          addPrecinctPopUp(feature, map);
+          addSelectedFeatureLayer(feature, map);
         });
       });
       return () => map.remove();
