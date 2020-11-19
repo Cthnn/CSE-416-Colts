@@ -4,50 +4,59 @@ import * as Constants from './MapConstants.js';
 class Toolbar {
     setState(state) {
         if (state !== Constants.States.NONE) {
-            let params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            fetch('http://localhost:8080/state', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
-            .then(response => response.text())
-            .then(result => {
-                console.log('Success:', result);
-                this.changeLayer(this.map);
-            }).catch(error => { console.error('Error:', error); });
+            fetch('http://localhost:8080/state', {
+                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                body: JSON.stringify(Constants.StateNames[state].toUpperCase())
+            })
+                .then(response => response.text())
+                .then(result => {
+                    console.log('Success:', result);
+                    this.changeLayer(this.map);
+                }).catch(error => { console.error('Error:', error); });
         }
         else {
             this.changeLayer(this.map);
         }
     }
-    async getJobDistrictingGeoJson(map, jobId, districtingType){
+    async getJobDistrictingGeoJson(map, jobId, districtingType) {
         let layer = map.getLayer(Constants.DistrictingTypeLayers[districtingType]);
         console.log(Constants.DistrictingTypeLayers[districtingType].toUpperCase());
-        if(layer === undefined){
-            let params = JSON.stringify({jobId: jobId, type: Constants.DistrictingType[districtingType].toUpperCase()});
-            await fetch('http://localhost:8080/jobGeo', {headers:{"Content-Type":"application/json"},method: 'POST',body:params})
-            .then(response => response.text())
-            .then(result => {
-                console.log("Recieved Districting GeoJson");
-                //Job Districting functionality
-            }).catch(error => {
-                console.error('Error:', error);
-            });
+        if (layer === undefined) {
+            await fetch('http://localhost:8080/jobGeo', {
+                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                body: JSON.stringify({ jobId: jobId, type: Constants.DistrictingType[districtingType].toUpperCase() })
+            })
+                .then(response => response.text())
+                .then(result => {
+                    console.log("Recieved Districting GeoJson");
+                    //Job Districting functionality
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
         }
     }
     // this is binded to MapHelper
     async getDistrictGeoJson(map, state) {
         let layer = map.getLayer(Constants.DistrictLayers[state]);
         if (layer === undefined && state !== Constants.States.NONE) {
-            let params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            await fetch('http://localhost:8080/district', {headers:{"Content-Type":"application/json"},method: 'POST',body:params})
-            .then(response => response.text())
-            .then(result => {
-                console.log("recieved district data");
-                this.addDistrictSource(map, state, JSON.parse(result));
-                this.addDistrictLayer(map,state);
-            }).catch(error => {
-                console.error('Error:', error);
-                // For debugging when server is offline
-                // this.addPrecinctSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson');
-                // this.addPrecinctLayer(map,state);
-            });
+            await fetch('http://localhost:8080/district', {
+                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                body: JSON.stringify(Constants.StateNames[state].toUpperCase())
+            })
+                .then(response => response.text())
+                .then(result => {
+                    console.log("recieved district data");
+                    this.addDistrictSource(map, state, JSON.parse(result));
+                    this.addDistrictLayer(map, state);
+                }).catch(error => {
+                    console.error('Error:', error);
+                    // For debugging when server is offline
+                    // this.addPrecinctSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson');
+                    // this.addPrecinctLayer(map,state);
+                });
         }
     }
     // this is binded to MapHelper
@@ -55,45 +64,51 @@ class Toolbar {
     async getPrecinctGeoJson(map, state) {
         let layer = map.getLayer(Constants.PrecinctLayers[state]);
         if (layer === undefined && state !== Constants.States.NONE) {
-            let params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            await fetch('http://localhost:8080/precinct', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
-            .then(response => response.text())
-            .then(result => {
-                console.log("recieved precinct data");
-                this.addPrecinctSource(map, state, JSON.parse(result));
-                this.addPrecinctLayer(map, state);
-            }).catch(error => {
-                console.error('Error:', error);
-                // For debugging when server is offline
-                // this.addPrecinctSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson');
-                // this.addPrecinctLayer(map,state);
-            });
+            await fetch('http://localhost:8080/precinct', {
+                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                body: JSON.stringify(Constants.StateNames[state].toUpperCase())
+            })
+                .then(response => response.text())
+                .then(result => {
+                    console.log("recieved precinct data");
+                    this.addPrecinctSource(map, state, JSON.parse(result));
+                    this.addPrecinctLayer(map, state);
+                }).catch(error => {
+                    console.error('Error:', error);
+                    // For debugging when server is offline
+                    // this.addPrecinctSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson');
+                    // this.addPrecinctLayer(map,state);
+                });
         }
     }
     // this is binded to MapHelper
     async getHeatMapGeoJson(map, state) {
         let layer = map.getLayer(Constants.HeatMapLayers[state]);
         if (layer === undefined && state !== Constants.States.NONE) {
-            let params = JSON.stringify(Constants.StateNames[state].toUpperCase());
-            await fetch('http://localhost:8080/heatmap', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
-            .then(response => response.text())
-            .then(result => {
-                console.log("recieved heatmap data");
-                this.addHeatMapSource(map, state, JSON.parse(result));
-                this.addHeatMapLayer(map, state);
-            }).catch(error => {
-                console.error('Error:', error);
-                // For debugging when server is offline
-                // this.addHeatMapSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'_heatmap.geojson');
-                // this.addHeatMapLayer(map,state);
-            });
+            await fetch('http://localhost:8080/heatmap', {
+                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                body: JSON.stringify(Constants.StateNames[state].toUpperCase())
+            })
+                .then(response => response.text())
+                .then(result => {
+                    console.log("recieved heatmap data");
+                    this.addHeatMapSource(map, state, JSON.parse(result));
+                    this.addHeatMapLayer(map, state);
+                }).catch(error => {
+                    console.error('Error:', error);
+                    // For debugging when server is offline
+                    // this.addHeatMapSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'_heatmap.geojson');
+                    // this.addHeatMapLayer(map,state);
+                });
         }
     }
 
     onAdd(map) {
         this.map = map;
         this.container = document.createElement('div');
-        this.sub_container = document.createElement('form');
+        this.subContainer = document.createElement('form');
         this.container.className = 'toolbar';
 
         this.stateText = document.createElement('p');
@@ -108,10 +123,10 @@ class Toolbar {
         this.precinctCheckbox = document.createElement('input');
         this.setPrecinctCheckbox(this.precinctCheckbox, this.precinctText, this.map);
 
-        this.heat_text = document.createElement('p');
+        this.heatText = document.createElement('p');
         this.heat = document.createElement('input');
-        this.heat_dropdown = document.createElement('select');
-        this.setHeatMap(this.heat, this.heat_dropdown, this.heat_text, this.map);
+        this.heatDropdown = document.createElement('select');
+        this.setHeatMap(this.heat, this.heatDropdown, this.heatText, this.map);
 
         this.averageInput = document.createElement('input');
         this.setAverageInputElement(this.averageInput, this.map)
@@ -122,22 +137,22 @@ class Toolbar {
         this.jobInput = document.createElement('input');
         this.setJobInput(this.jobInput, this.map)
 
-        this.sub_container.appendChild(this.stateText);
-        this.sub_container.appendChild(this.stateSelect);
-        this.sub_container.appendChild(this.districtText);
-        this.sub_container.appendChild(this.districtCheckbox);
-        this.sub_container.appendChild(this.precinctText);
-        this.sub_container.appendChild(this.precinctCheckbox);
+        this.subContainer.appendChild(this.stateText);
+        this.subContainer.appendChild(this.stateSelect);
+        this.subContainer.appendChild(this.districtText);
+        this.subContainer.appendChild(this.districtCheckbox);
+        this.subContainer.appendChild(this.precinctText);
+        this.subContainer.appendChild(this.precinctCheckbox);
 
-        this.sub_container.appendChild(this.heat_text);
-        this.sub_container.appendChild(this.heat);
-        this.sub_container.appendChild(this.heat_dropdown);
+        this.subContainer.appendChild(this.heatText);
+        this.subContainer.appendChild(this.heat);
+        this.subContainer.appendChild(this.heatDropdown);
 
-        this.sub_container.appendChild(this.jobInput);
-        this.sub_container.appendChild(this.averageInput);
-        this.sub_container.appendChild(this.extremeInput);
+        this.subContainer.appendChild(this.jobInput);
+        this.subContainer.appendChild(this.averageInput);
+        this.subContainer.appendChild(this.extremeInput);
 
-        this.container.appendChild(this.sub_container);
+        this.container.appendChild(this.subContainer);
 
         return this.container;
     }
@@ -147,100 +162,100 @@ class Toolbar {
     }
 
     displayLayer = (map) => {
-        let selected_state = document.getElementById('state-selection').value;
-        let district_button_value = document.getElementById('district-checkbox').checked;
-        let precinct_button_value = document.getElementById('precinct-checkbox').checked;
-        let heatmap_button_value = document.getElementById('heat-checkbox').checked;
+        let selectedState = document.getElementById('state-selection').value;
+        let districtButtonValue = document.getElementById('district-checkbox').checked;
+        let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
+        let heatmapButtonValue = document.getElementById('heat-checkbox').checked;
 
         for (let state in Constants.States) {
-            let district_layer_name = Constants.DistrictLayers[state];
-            let district_line_layer_name = Constants.DistrictLineLayers[state];
-            let precinct_layer_name = Constants.PrecinctLayers[state];
-            let heat_layer_name = Constants.HeatMapLayers[state];
-            let state_layer_name = Constants.StateLayers[state];
+            let districtLayerName = Constants.DistrictLayers[state];
+            let districtLayerLineName = Constants.DistrictLineLayers[state];
+            let precinctLayerName = Constants.PrecinctLayers[state];
+            let heatLayerName = Constants.HeatMapLayers[state];
+            let stateLayerName = Constants.StateLayers[state];
 
-            if(map.getLayer(state_layer_name) !== undefined){
-                map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-                map.setPaintProperty(state_layer_name, 'fill-color', Constants.DefaultColor);
+            if (map.getLayer(stateLayerName) !== undefined) {
+                map.setLayoutProperty(stateLayerName, 'visibility', 'visible');
+                map.setPaintProperty(stateLayerName, 'fill-color', Constants.DefaultColor);
             }
-            if (selected_state !== Constants.States.NONE) {
-                this.determineHeatLayerProperty(heatmap_button_value, heat_layer_name, selected_state, state, map);
-                this.determinePrecinctLayerProperty(precinct_button_value, precinct_layer_name, state_layer_name, selected_state, state, map);
-                this.determineDistrictLayerProperty(district_button_value, district_layer_name, district_line_layer_name, state_layer_name, selected_state, state, map);
-                
-                if (!district_button_value && !precinct_button_value) { //All states visible
-                    this.determineStateLayerProperty(state_layer_name, selected_state, state, map);
+            if (selectedState !== Constants.States.NONE) {
+                this.determineHeatLayerProperty(heatmapButtonValue, heatLayerName, selectedState, state, map);
+                this.determinePrecinctLayerProperty(precinctButtonValue, precinctLayerName, stateLayerName, selectedState, state, map);
+                this.determineDistrictLayerProperty(districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map);
+
+                if (!districtButtonValue && !precinctButtonValue) { //All states visible
+                    this.determineStateLayerProperty(stateLayerName, selectedState, state, map);
                 }
             }
             else { //Show just states now
-                this.setToStateOnlyView(state_layer_name, district_layer_name, district_line_layer_name, precinct_layer_name, map);
+                this.setToStateOnlyView(stateLayerName, districtLayerName, districtLayerLineName, precinctLayerName, map);
             }
         }
         this.removeSelectedFeatureLayer(map);
     }
-    
+
     changeLayer = (map) => {
-        let selected_state = document.getElementById('state-selection').value;
-        let district_button_value = document.getElementById('district-checkbox').checked;
-        let precinct_button_value = document.getElementById('precinct-checkbox').checked;
-        let heatmap_button_value = document.getElementById('heat-checkbox').checked;
+        let selectedState = document.getElementById('state-selection').value;
+        let districtButtonValue = document.getElementById('district-checkbox').checked;
+        let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
+        let heatmapButtonValue = document.getElementById('heat-checkbox').checked;
 
-        let average_value = document.getElementById('average-input').value;
-        let extreme_value = document.getElementById('extreme-input').value;
-        let job_id_value = document.getElementById('job-type').value;
+        let averageValue = document.getElementById('average-input').value;
+        let extremeValue = document.getElementById('extreme-input').value;
+        let jobIdValue = document.getElementById('job-type').value;
         let districtingTypes = [];
-        districtingTypes.push(average_value, extreme_value);
+        districtingTypes.push(averageValue, extremeValue);
 
-        // console.log(average_value + " " + extreme_value + " "+ job_id_value);
-        for(var i = 0; i < districtingTypes.length; i++){
-            for(let type in Constants.DistrictingType){
-                if(Constants.DistrictingType.NONE !== districtingTypes[i]){
-                    if(Constants.DistrictingType[type] === districtingTypes[i] && district_button_value && selected_state !== Constants.States.NONE){
+        // console.log(averageValue + " " + extremeValue + " "+ jobIdValue);
+        for (var i = 0; i < districtingTypes.length; i++) {
+            for (let type in Constants.DistrictingType) {
+                if (Constants.DistrictingType.NONE !== districtingTypes[i]) {
+                    if (Constants.DistrictingType[type] === districtingTypes[i] && districtButtonValue && selectedState !== Constants.States.NONE) {
                         // console.log(type +": "+districtingTypes[i]);
-                        this.getJobDistrictingGeoJson(job_id_value, type);    
+                        this.getJobDistrictingGeoJson(jobIdValue, type);
                     }
                 }
             }
         }
 
-        // console.log(selected_state);
-        if (district_button_value)
-            this.getDistrictGeoJson(selected_state).then(() => this.displayLayer(map));
-        if (precinct_button_value)
-            this.getPrecinctGeoJson(selected_state).then(() => this.displayLayer(map));
-        if (heatmap_button_value)
-            this.getHeatMapGeoJson(selected_state).then(() => this.displayLayer(map));
+        // console.log(selectedState);
+        if (districtButtonValue)
+            this.getDistrictGeoJson(selectedState).then(() => this.displayLayer(map));
+        if (precinctButtonValue)
+            this.getPrecinctGeoJson(selectedState).then(() => this.displayLayer(map));
+        if (heatmapButtonValue)
+            this.getHeatMapGeoJson(selectedState).then(() => this.displayLayer(map));
 
-        // if(!district_button_value && !precinct_button_value && !heatmap_button_value)
-        if (selected_state === Constants.States.NONE || (!district_button_value && !precinct_button_value && !heatmap_button_value)) {
+        // if(!districtButtonValue && !precinctButtonValue && !heatmapButtonValue)
+        if (selectedState === Constants.States.NONE || (!districtButtonValue && !precinctButtonValue && !heatmapButtonValue)) {
             this.displayLayer(map);
         }
     }
-    determineDistrictLayerProperty = (district_button_value, district_layer_name, district_line_layer_name, state_layer_name, selected_state, state, map) => {
-        if (district_button_value && selected_state === state && map.getLayer(district_layer_name) !== undefined && map.getLayer(district_line_layer_name) !== undefined) {
-            map.setLayoutProperty(district_layer_name, 'visibility', 'visible');
-            map.setLayoutProperty(district_line_layer_name, 'visibility', 'visible');
-            map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+    determineDistrictLayerProperty = (districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map) => {
+        if (districtButtonValue && selectedState === state && map.getLayer(districtLayerName) !== undefined && map.getLayer(districtLayerLineName) !== undefined) {
+            map.setLayoutProperty(districtLayerName, 'visibility', 'visible');
+            map.setLayoutProperty(districtLayerLineName, 'visibility', 'visible');
+            map.setLayoutProperty(stateLayerName, 'visibility', 'none');
         } else {
-            if (map.getLayer(district_layer_name) !== undefined && map.getLayer(district_line_layer_name) !== undefined){
-                map.setLayoutProperty(district_layer_name, 'visibility', 'none');
-                map.setLayoutProperty(district_line_layer_name, 'visibility', 'none');
-            } 
+            if (map.getLayer(districtLayerName) !== undefined && map.getLayer(districtLayerLineName) !== undefined) {
+                map.setLayoutProperty(districtLayerName, 'visibility', 'none');
+                map.setLayoutProperty(districtLayerLineName, 'visibility', 'none');
+            }
         }
     }
-    determinePrecinctLayerProperty = (precinct_button_value, precinct_layer_name, state_layer_name, selected_state, state, map) => {
-        if (precinct_button_value && selected_state === state && map.getLayer(precinct_layer_name) !== undefined) {
-            map.setLayoutProperty(precinct_layer_name, 'visibility', 'visible');
-            map.setLayoutProperty(state_layer_name, 'visibility', 'none');
+    determinePrecinctLayerProperty = (precinctButtonValue, precinctLayerName, stateLayerName, selectedState, state, map) => {
+        if (precinctButtonValue && selectedState === state && map.getLayer(precinctLayerName) !== undefined) {
+            map.setLayoutProperty(precinctLayerName, 'visibility', 'visible');
+            map.setLayoutProperty(stateLayerName, 'visibility', 'none');
         } else {
-            if (map.getLayer(precinct_layer_name) !== undefined)
-                map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+            if (map.getLayer(precinctLayerName) !== undefined)
+                map.setLayoutProperty(precinctLayerName, 'visibility', 'none');
         }
     }
-    determineHeatLayerProperty = (heatmap_button_value, heat_layer_name, selected_state, state, map) => {
-        if (heatmap_button_value && selected_state === state && map.getLayer(heat_layer_name) !== undefined) {
+    determineHeatLayerProperty = (heatmapButtonValue, heatLayerName, selectedState, state, map) => {
+        if (heatmapButtonValue && selectedState === state && map.getLayer(heatLayerName) !== undefined) {
             let race = document.getElementById("heatmap-select").value;
-            map.setPaintProperty(heat_layer_name, 'heatmap-weight', {
+            map.setPaintProperty(heatLayerName, 'heatmap-weight', {
                 property: race,
                 type: 'exponential',
                 stops: [
@@ -248,39 +263,39 @@ class Toolbar {
                     [62, 1]
                 ]
             });
-            map.setLayoutProperty(heat_layer_name, 'visibility', 'visible');
+            map.setLayoutProperty(heatLayerName, 'visibility', 'visible');
         } else {
-            if (map.getLayer(heat_layer_name) !== undefined)
-                map.setLayoutProperty(heat_layer_name, 'visibility', 'none');
+            if (map.getLayer(heatLayerName) !== undefined)
+                map.setLayoutProperty(heatLayerName, 'visibility', 'none');
         }
     }
-    determineStateLayerProperty = (state_layer_name, selected_state, state, map) => {
-        if(map.getLayer(state_layer_name) !== undefined){
-            map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-            if (selected_state === state)
-                map.setPaintProperty(state_layer_name, 'fill-color', Constants.SelectedColor);
+    determineStateLayerProperty = (stateLayerName, selectedState, state, map) => {
+        if (map.getLayer(stateLayerName) !== undefined) {
+            map.setLayoutProperty(stateLayerName, 'visibility', 'visible');
+            if (selectedState === state)
+                map.setPaintProperty(stateLayerName, 'fill-color', Constants.SelectedColor);
             else
-                map.setPaintProperty(state_layer_name, 'fill-color', Constants.DefaultColor);
+                map.setPaintProperty(stateLayerName, 'fill-color', Constants.DefaultColor);
         }
     }
 
-    setToStateOnlyView = (state_layer_name, district_layer_name, district_line_layer_name, precinct_layer_name, map) => {
-        if (map.getLayer(state_layer_name) !== undefined)
-            map.setLayoutProperty(state_layer_name, 'visibility', 'visible');
-        if (map.getLayer(district_layer_name) !== undefined && map.getLayer(district_line_layer_name) !== undefined){
-            map.setLayoutProperty(district_layer_name, 'visibility', 'none');
-            map.setLayoutProperty(district_line_layer_name, 'visibility', 'none');
+    setToStateOnlyView = (stateLayerName, districtLayerName, districtLayerLineName, precinctLayerName, map) => {
+        if (map.getLayer(stateLayerName) !== undefined)
+            map.setLayoutProperty(stateLayerName, 'visibility', 'visible');
+        if (map.getLayer(districtLayerName) !== undefined && map.getLayer(districtLayerLineName) !== undefined) {
+            map.setLayoutProperty(districtLayerName, 'visibility', 'none');
+            map.setLayoutProperty(districtLayerLineName, 'visibility', 'none');
         }
-        if (map.getLayer(precinct_layer_name) !== undefined)
-            map.setLayoutProperty(precinct_layer_name, 'visibility', 'none');
+        if (map.getLayer(precinctLayerName) !== undefined)
+            map.setLayoutProperty(precinctLayerName, 'visibility', 'none');
     }
     removeSelectedFeatureLayer = (map) => {
-        if (map.getLayer(Constants.SelectedFeatureLayer) !== undefined){
+        if (map.getLayer(Constants.SelectedFeatureLayer) !== undefined) {
             map.removeLayer(Constants.SelectedFeatureLayer);
             map.removeSource(Constants.SelectedFeatureLayer);
         }
     }
-    
+
     setAverageInputElement(averageInput, map) {
         averageInput.className = 'average-input';
         averageInput.id = 'average-input';
@@ -290,7 +305,7 @@ class Toolbar {
             this.changeLayer(map)
         })
     }
-    
+
     setExtremeInputElement(extremeInput, map) {
         extremeInput.className = 'extreme-input';
         extremeInput.id = 'extreme-input';
@@ -300,7 +315,7 @@ class Toolbar {
             this.changeLayer(map)
         })
     }
-    setJobInput(jobType, map){
+    setJobInput(jobType, map) {
         jobType.className = 'job-type';
         jobType.id = 'job-type';
         jobType.setAttribute('type', 'hidden');
@@ -310,7 +325,7 @@ class Toolbar {
         })
     }
 
-    creatHeatMapOption(option){
+    creatHeatMapOption(option) {
         let mapOption = document.createElement('option');
         mapOption.value = Constants.HeatMapMapping[option];
         mapOption.textContent = Constants.EthnicGroupNames[option];
@@ -326,8 +341,8 @@ class Toolbar {
         heatCheckbox.type = 'checkbox';
         heatCheckbox.className = 'view-button';
 
-        for(let group in Constants.EthnicGroups)
-            if(Constants.EthnicGroups[group] !== Constants.EthnicGroups.NONE)
+        for (let group in Constants.EthnicGroups)
+            if (Constants.EthnicGroups[group] !== Constants.EthnicGroups.NONE)
                 heatSelect.appendChild(this.creatHeatMapOption(group));
 
         heatCheckbox.id = 'heat-checkbox';
@@ -377,7 +392,7 @@ class Toolbar {
         })
     }
 
-    createStateOption(option){
+    createStateOption(option) {
         let stateOption = document.createElement('option');
         stateOption.value = Constants.States[option];
         stateOption.textContent = Constants.StateNames[option];
@@ -388,7 +403,7 @@ class Toolbar {
     setStateSelect(stateSelect, stateSelectText, map) {
         stateSelect.className = 'state-select';
 
-        for(let state in Constants.States)
+        for (let state in Constants.States)
             stateSelect.appendChild(this.createStateOption(state));
 
         stateSelectText.textContent = 'State';
@@ -415,7 +430,7 @@ class Toolbar {
             this.setState(state);
         })
     }
-    
+
 }
 
 export default Toolbar;

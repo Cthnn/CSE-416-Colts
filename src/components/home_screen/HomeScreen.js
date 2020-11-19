@@ -12,40 +12,35 @@ import { Modal } from 'react-materialize';
 
 class HomeScreen extends Component {
     state = {
-        // activeJob: { id: '1', title: 'Job 1', content: 'blah blah blah' }
         activeJob: null,
         summary: [],
         showMap: true,
-        // jobs: [
-        //     JobCard.createJob(0, '', 0, 0, 0, '0', ''),
-        //     JobCard.createJob(1, 'Texas', 2000, 10, 0.5, 'Asian', 'Complete'),
-        //     JobCard.createJob(2, 'Texas', 4000, 10, 0.4, 'Black', 'Complete'),
-        //     JobCard.createJob(3, 'Alabama', 5000, 80, 1, 'Black', 'InProgress'),
-        //     JobCard.createJob(4, 'Florida', 400, 30, 0.2, 'Hispanic', 'Aborted'),
-        // ],
         jobs: []
     }
 
     loadJob = (job) => {
         this.setState({ activeJob: job });
         this.displaySummaryButton();
-        var params = JSON.stringify({
-            'jobId': job.jobId,
-            'DistrictingType': 'AVERAGE'
+        fetch('http://localhost:8080/jobGeo', {
+            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            body: JSON.stringify({
+                'jobId': job.jobId,
+                'DistrictingType': 'AVERAGE'
+            })
         })
-        fetch('http://localhost:8080/jobGeo', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
-        .then(response => response.text())
-        .then(result => { 
-            // console.log('Job Geo:', result); 
-        }).catch(error => { console.error('Error:', error); });
+            .then(response => response.text())
+            .then(result => {
+                // console.log('Job Geo:', result); 
+            }).catch(error => { console.error('Error:', error); });
 
         var params = JSON.stringify(job.jobId)
         fetch('http://localhost:8080/genSummary', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
-        .then(response => response.text())
-        .then(result => { 
-            // console.log('Summary:', JSON.parse(result));
-            this.setState({'summary' : JSON.parse(result)}) 
-        }).catch(error => { console.error('Error:', error); });
+            .then(response => response.text())
+            .then(result => {
+                // console.log('Summary:', JSON.parse(result));
+                this.setState({ 'summary': JSON.parse(result) })
+            }).catch(error => { console.error('Error:', error); });
     }
 
     unloadJob = () => {
@@ -56,23 +51,29 @@ class HomeScreen extends Component {
     deleteJob = (job) => {
         const id = job.jobId;
         this.setState({ jobs: [...this.state.jobs.filter(job => job.jobId != id)] })
-        var params = JSON.stringify(id)
-        fetch('http://localhost:8080/cancel', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
-        .then(response => response.text())
-        .then(result => { 
-            console.log('Success:', result); 
-            M.Modal.getInstance(document.getElementById("modal2")).open();
-        }).catch(error => { console.error('Error:', error); });
+        fetch('http://localhost:8080/cancel', {
+            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            body: JSON.stringify(id)
+        })
+            .then(response => response.text())
+            .then(result => {
+                console.log('Success:', result);
+                M.Modal.getInstance(document.getElementById("modal2")).open();
+            }).catch(error => { console.error('Error:', error); });
     }
 
     getHistory = () => {
-        fetch('http://localhost:8080/History', { headers: { "Content-Type": "application/json" }, method: 'GET' })
-        .then(response => response.text())
-        .then(result => {
-            // console.log('History:', JSON.parse(result));
-            // console.log(this.state.jobs);
-            this.setState({jobs: JSON.parse(result)})
-        }).catch(error => { console.error('Error:', error); });
+        fetch('http://localhost:8080/History', {
+            headers: { "Content-Type": "application/json" },
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(result => {
+                // console.log('History:', JSON.parse(result));
+                // console.log(this.state.jobs);
+                this.setState({ jobs: JSON.parse(result) })
+            }).catch(error => { console.error('Error:', error); });
     }
 
     displaySummaryButton = () => {
@@ -117,7 +118,7 @@ class HomeScreen extends Component {
                     <div>
                         {(this.state.activeJob && !this.state.showMap) &&
                             <div className="grey lighten-4" style={containerStyle}>
-                                <Summary unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary}/>
+                                <Summary unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary} />
                             </div>
                         }
                         {(!this.state.activeJob || this.state.showMap) &&
