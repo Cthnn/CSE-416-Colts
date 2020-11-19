@@ -11,14 +11,13 @@ class Generate extends React.Component {
         this.populationTip = "<div>Explain what population deviation is.</div><div> Valid inputs [0,1].</div>"
         this.minMax = {
             plans: [100, 10000],
-            comp: [0, 100],
             pop: [0, 1]
         }
 
         this.state = {
             state: Constants.States.NONE,
             plans: this.minMax['plans'][0],
-            comp: this.minMax['comp'][0],
+            comp: Constants.CompactValues.NONE,
             pop: this.minMax['pop'][0],
             group: Constants.States.NONE,
             batchNumber: 0
@@ -52,6 +51,10 @@ class Generate extends React.Component {
         let input = {group: e.target.value}
         this.setState(input)
     }
+    updateCompactness(e){
+        let input = {comp: e.target.value}
+        this.setState(input)
+    }
     updateState(e){
         let input = {state: e.target.value}
         this.setState(input)
@@ -62,7 +65,9 @@ class Generate extends React.Component {
     }
 
     enableGeneration() {
-        return this.state.state !== Constants.States.NONE && this.state.group !== Constants.EthnicGroups.NONE;
+        return this.state.state !== Constants.States.NONE 
+        && this.state.group !== Constants.EthnicGroup.NONE 
+        && this.state.comp !== Constants.CompactValues.NONE;
     }
 
     generatePlans(e) {
@@ -103,14 +108,20 @@ class Generate extends React.Component {
                         <input className="active" type="number" min={minMax['plans'][0]} max={minMax['plans'][1]} id='plans' onBlur={e => { this.inputValidation(e, 'plans') }} onChange={this.handleChangeDimensions} defaultValue={minMax['plans'][0]} />
                     </div>
                     <div>
-                        <label className="black-text" htmlFor="compactness">Compactness</label>
-                        <i className="tooltipped tiny material-icons grey-text" data-position="top" data-html="true" data-tooltip={this.compactnessTip}>info_outline</i>
-                        <input className="active" type="number" min={minMax['comp'][0]} max={minMax['comp'][1]} id='comp' onBlur={e => { this.inputValidation(e, 'comp') }} onChange={this.handleChangeDimensions} defaultValue={minMax['comp'][0]} />
-                    </div>
-                    <div>
                         <label className="black-text" htmlFor="population_deviation">Population Deviation</label>
                         <i className="tooltipped tiny material-icons grey-text" data-position="top" data-html="true" data-tooltip={this.populationTip}>info_outline</i>
                         <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='pop' onBlur={e => { this.inputValidation(e, 'pop') }} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
+                    </div>
+                    <div>
+                        <label className="black-text" htmlFor="compactness">Compactness</label>
+                        <div className="input-field">
+                            <select className="browser-default" onChange={e => { this.updateCompactness(e) }}>
+                                <option value={Constants.CompactValues.NONE}>None</option>
+                                <option value={Constants.CompactValues.SLIGHT}>Slightly Compact</option>
+                                <option value={Constants.CompactValues.MODERATE}>Moderately Compact</option>
+                                <option value={Constants.CompactValues.VERY}>Very Compact</option>
+                            </select>
+                        </div>
                     </div>
                     <div>
                         <label className="black-text" htmlFor="minority_group">Racial/Ethnic Group</label>

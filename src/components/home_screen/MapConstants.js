@@ -9,6 +9,7 @@ export const DistrictLineLayers = {AL: "AL-Line-Layer", FL: "FL-Line-Layer", VA:
 export const DistrictLayers = {AL: "AL-District-Layer", FL: "FL-District-Layer", VA: "VA-District-Layer"};
 export const PrecinctLayers = {AL: "AL-Precinct-Layer", FL: "FL-Precinct-Layer", VA: "VA-Precinct-Layer"};
 export const HeatMapLayers = {AL: "AL-HeatMap-Layer", FL: "FL-HeatMap-Layer", VA: "VA-HeatMap-Layer"};
+export const SelectedFeatureLayer = 'selectedFeature';
 
 export const StateCenters = {AL: [-86.68075561523438, 32.57631501316452], FL: [-82.87845611572266, 28.40022856730028], VA: [-79.42291259765625, 38.00321033702472]};
 export const CountryCenter = [-82.994041442871, 32.99325130583]
@@ -25,3 +26,5 @@ export const EthnicGroups = {NONE: "NONE", WHITE: "WHITE", BLACK: "BLACK", NATIV
 export const EthnicGroupNames = {NONE: "None", WHITE: "White American", BLACK: "Black or African American", NATIVE_AMERICAN: "Native American and Alaska Native", ASIAN: "Asian", PACIFIC_ISLANDER: "Native Hawaiian and Other Pacific Islander", HISPANIC: "Hispanic or Latino"};
 export const EthnicGroupNicknames = {NONE: "None", WHITE: "White", BLACK: "Black", NATIVE_AMERICAN: "Native American", ASIAN: "Asian", PACIFIC_ISLANDER: "Pacific Islander", HISPANIC: "Latino"};
 export const HeatMapMapping = {WHITE: "R2", BLACK: "R3",  NATIVE_AMERICAN: "R4", ASIAN: "R5", PACIFIC_ISLANDER: "R6", HISPANIC: "R8"};
+
+export const CompactValues = {NONE: "0", SLIGHT: ".25", MODERATE: ".5", VERY: ".75"};
