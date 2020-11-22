@@ -21,21 +21,21 @@ class HomeScreen extends Component {
     loadJob = (job) => {
         this.setState({ activeJob: job });
         this.displaySummaryButton();
-        fetch('http://localhost:8080/jobGeo', {
-            headers: { "Content-Type": "application/json" },
-            method: 'POST',
-            body: JSON.stringify({
-                'jobId': job.jobId,
-                'DistrictingType': 'AVERAGE'
-            })
-        })
-            .then(response => response.text())
-            .then(result => {
-                // console.log('Job Geo:', result); 
-            }).catch(error => { console.error('Error:', error); });
+        // fetch('http://localhost:8080/jobGeo', {
+        //     headers: { "Content-Type": "application/json" },
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         'jobId': job.jobId,
+        //         'DistrictingType': 'AVERAGE'
+        //     })
+        // })
+        //     .then(response => response.text())
+        //     .then(result => {
+        //         // console.log('Job Geo:', result); 
+        //     }).catch(error => { console.error('Error:', error); });
 
         var params = JSON.stringify(job.jobId)
-        fetch('http://localhost:8080/genSummary', {
+        fetch('http://localhost:8080/getBoxPlot', {
             headers: { "Content-Type": "application/json" },
             method: 'POST',
             body: params

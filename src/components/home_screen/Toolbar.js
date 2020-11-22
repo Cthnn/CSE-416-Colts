@@ -12,12 +12,9 @@ class Toolbar {
                 .then(response => response.text())
                 .then(result => {
                     console.log('Success:', result);
-                    this.changeLayer(this.map);
                 }).catch(error => { console.error('Error:', error); });
         }
-        else {
-            this.changeLayer(this.map);
-        }
+        this.changeLayer(this.map);
     }
     async getJobDistrictingGeoJson(map, jobId, districtingType) {
         let layer = map.getLayer(Constants.DistrictingTypeLayers[districtingType]);
