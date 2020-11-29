@@ -9,13 +9,15 @@ import Summary from './Summary'
 import JobCard from './JobCard';
 import M from 'materialize-css';
 import { Modal } from 'react-materialize';
+import * as Constants from './MapConstants.js';
 
 class HomeScreen extends Component {
     state = {
         activeJob: null,
         summary: [],
         showMap: true,
-        jobs: []
+        jobs: [],
+        map: null
     }
 
     loadJob = (job) => {
@@ -50,6 +52,13 @@ class HomeScreen extends Component {
     unloadJob = () => {
         this.setState({ activeJob: null });
         document.getElementById("summaryToggle").style.visibility = "hidden";
+
+        for(let type in Constants.DistrictingTypeLayers){
+            if(this.state.map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined){
+                this.state.map.removeLayer(Constants.DistrictingTypeLayers[type]);
+                this.state.map.removeSource(Constants.DistrictingTypeLayers[type]);
+            }
+        }
     }
 
     deleteJob = (job) => {
@@ -79,17 +88,40 @@ class HomeScreen extends Component {
                 this.setState({ jobs: JSON.parse(result) })
             }).catch(error => { console.error('Error:', error); });
     }
-
+    changeJobLayer = (value, type) => {
+        let state = document.getElementById('state-selection').value;
+        let job = this.state.activeJob;
+        if(job.status === Constants.Completed && value
+            && Constants.StateNames[state].toUpperCase() === job.state){
+            let params = JSON.stringify({jobId: job.jobId, districtingType: type.toUpperCase()});
+            fetch('http://localhost:8080/jobGeo', {
+                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                body: params
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log("recieved districting geojson");
+                console.log(JSON.parse(result));
+            }).catch(error => { console.error('Error:', error); });
+        }
+    }
     displaySummaryButton = () => {
         document.getElementById("summaryToggle").style.visibility = "visible";
     }
-
+    
     toggleShowMap = () => {
         this.setState({ showMap: !this.state.showMap })
     }
 
     unshowMap = () => {
         this.setState({ showMap: false })
+    }
+
+    getMapObject = (data) => {
+        this.setState({ map: data}, () => {
+            console.log(this.state.map);
+        })
     }
 
     render() {
@@ -115,7 +147,7 @@ class HomeScreen extends Component {
                                 <Generator jobs={jobs} />
                             </TabPanel>
                             <TabPanel>
-                                <JobLinks loadJob={this.loadJob.bind(this)} unloadJob={this.unloadJob} deleteJob={this.deleteJob} jobs={jobs} />
+                                <JobLinks changeJobLayer={this.changeJobLayer} loadJob={this.loadJob.bind(this)} unloadJob={this.unloadJob} deleteJob={this.deleteJob} jobs={jobs} />
                             </TabPanel>
                         </Tabs>
                     </div>
@@ -126,7 +158,7 @@ class HomeScreen extends Component {
                             </div>
                         }
                         {(!this.state.activeJob || this.state.showMap) &&
-                            <Map className="col s6 m9 offset-s6 offset-m3"></Map>
+                            <Map passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>
                         }
                         <div id="summaryToggle" style={{ top: "100px" }}>
                             <a className="blue lighten-2 waves-effect waves-light btn" onClick={this.toggleShowMap}>

@@ -5,6 +5,7 @@ export const Precincts = {AL: "AL-Precinct", FL: "FL-Precinct", VA: "VA-Precinct
 export const HeatMaps = {AL: "AL-HeatMap", FL: "FL-HeatMap", VA: "VA-HeatMap"};
 export const DistrictingType = {NONE: 'NONE', AVG: "Average", EX: "Extreme"};
 export const CurrentEnactedDistrictingJobId = 0;
+export const Completed = "COMPLETED";
 
 export const StateLayers = {AL: "AL-Layer", FL: "FL-Layer", VA: "VA-Layer"};
 export const DistrictLineLayers = {AL: "AL-Line-Layer", FL: "FL-Line-Layer", VA: "VA-Line-Layer"};

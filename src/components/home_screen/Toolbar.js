@@ -125,15 +125,6 @@ class Toolbar {
         this.heatDropdown = document.createElement('select');
         this.setHeatMap(this.heat, this.heatDropdown, this.heatText, this.map);
 
-        this.averageInput = document.createElement('input');
-        this.setAverageInputElement(this.averageInput, this.map)
-
-        this.extremeInput = document.createElement('input');
-        this.setExtremeInputElement(this.extremeInput, this.map)
-
-        this.jobInput = document.createElement('input');
-        this.setJobInput(this.jobInput, this.map)
-
         this.subContainer.appendChild(this.stateText);
         this.subContainer.appendChild(this.stateSelect);
         this.subContainer.appendChild(this.districtText);
@@ -144,10 +135,6 @@ class Toolbar {
         this.subContainer.appendChild(this.heatText);
         this.subContainer.appendChild(this.heat);
         this.subContainer.appendChild(this.heatDropdown);
-
-        this.subContainer.appendChild(this.jobInput);
-        this.subContainer.appendChild(this.averageInput);
-        this.subContainer.appendChild(this.extremeInput);
 
         this.container.appendChild(this.subContainer);
 
@@ -195,24 +182,6 @@ class Toolbar {
         let districtButtonValue = document.getElementById('district-checkbox').checked;
         let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
         let heatmapButtonValue = document.getElementById('heat-checkbox').checked;
-
-        let averageValue = document.getElementById('average-input').value;
-        let extremeValue = document.getElementById('extreme-input').value;
-        let jobIdValue = document.getElementById('job-type').value;
-        let districtingTypes = [];
-        districtingTypes.push(averageValue, extremeValue);
-
-        // console.log(averageValue + " " + extremeValue + " "+ jobIdValue);
-        for (var i = 0; i < districtingTypes.length; i++) {
-            for (let type in Constants.DistrictingType) {
-                if (Constants.DistrictingType.NONE !== districtingTypes[i]) {
-                    if (Constants.DistrictingType[type] === districtingTypes[i] && districtButtonValue && selectedState !== Constants.States.NONE) {
-                        // console.log(type +": "+districtingTypes[i]);
-                        this.getJobDistrictingGeoJson(jobIdValue, type);
-                    }
-                }
-            }
-        }
 
         // console.log(selectedState);
         if (districtButtonValue)
@@ -290,35 +259,6 @@ class Toolbar {
             map.removeLayer(Constants.SelectedFeatureLayer);
             map.removeSource(Constants.SelectedFeatureLayer);
         }
-    }
-
-    setAverageInputElement(averageInput, map) {
-        averageInput.className = 'average-input';
-        averageInput.id = 'average-input';
-        averageInput.setAttribute('type', 'hidden');
-        averageInput.value = Constants.DistrictingType.NONE;
-        averageInput.addEventListener('click', () => {
-            this.changeLayer(map)
-        })
-    }
-
-    setExtremeInputElement(extremeInput, map) {
-        extremeInput.className = 'extreme-input';
-        extremeInput.id = 'extreme-input';
-        extremeInput.setAttribute('type', 'hidden');
-        extremeInput.value = Constants.DistrictingType.NONE;
-        extremeInput.addEventListener('click', () => {
-            this.changeLayer(map)
-        })
-    }
-    setJobInput(jobType, map) {
-        jobType.className = 'job-type';
-        jobType.id = 'job-type';
-        jobType.setAttribute('type', 'hidden');
-        jobType.value = Constants.CurrentEnactedDistrictingJobId;
-        jobType.addEventListener('click', () => {
-            this.changeLayer(map)
-        })
     }
 
     creatHeatMapOption(option) {

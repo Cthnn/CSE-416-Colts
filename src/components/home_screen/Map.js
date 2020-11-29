@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
 import * as Constants from './MapConstants.js';
@@ -170,35 +170,32 @@ class MapHelper {
     }, 'waterway-label');
   }
 }
-
-const MapComponent = ({props}) => {
-    const mapContainerRef = useRef(null);
+class MapComponent extends React.Component{
+  componentDidMount(){
     const toolbar = new Toolbar();
     const mapHelper = new MapHelper();
+    this.map = new mapboxgl.Map({
+      container: 'mapContainer',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: Constants.CountryCenter,
+      zoom: 5
+    });
+    this.map.addControl(toolbar, 'top-left');
+    this.map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-    useEffect(() => {
-      const map = new mapboxgl.Map({
-        container: mapContainerRef.current,
-        // See style options here: https://docs.mapbox.com/api/maps/#styles
-        style: 'mapbox://styles/mapbox/light-v10',
-        center: Constants.CountryCenter,
-        zoom: 5
-      });
-
-      map.addControl(toolbar, 'top-left');
-      map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
-      toolbar.getDistrictGeoJson = toolbar.getDistrictGeoJson.bind(mapHelper, map);
-      toolbar.getPrecinctGeoJson = toolbar.getPrecinctGeoJson.bind(mapHelper, map);
-      toolbar.getHeatMapGeoJson = toolbar.getHeatMapGeoJson.bind(mapHelper, map);
-      toolbar.getJobDistrictingGeoJson = toolbar.getJobDistrictingGeoJson.bind(mapHelper, map);
+    toolbar.getDistrictGeoJson = toolbar.getDistrictGeoJson.bind(mapHelper, this.map);
+    toolbar.getPrecinctGeoJson = toolbar.getPrecinctGeoJson.bind(mapHelper, this.map);
+    toolbar.getHeatMapGeoJson = toolbar.getHeatMapGeoJson.bind(mapHelper, this.map);
+    toolbar.getJobDistrictingGeoJson = toolbar.getJobDistrictingGeoJson.bind(mapHelper, this.map);
+    if(this.map){
+      const map = this.map;
+      this.props.passMap(map);
 
       map.on('load', function () {
-        // Add a source for the state polygons.
         map.resize();
 
         for(let state in Constants.States) {
-          if(Constants.States[state] != Constants.States.NONE){
+          if(Constants.States[state] !== Constants.States.NONE){
             mapHelper.addStateSource(map, state);
             mapHelper.addStateLayer(map, state, toolbar);
           }
@@ -217,10 +214,18 @@ const MapComponent = ({props}) => {
           addSelectedFeatureLayer(feature, map);
         });
       });
-      return () => map.remove();
-    }, []); 
-    return<div className="map" ref={mapContainerRef} />;
-};
+    }
+  }
+
+  componentWillUnmount() {
+    this.map.remove();
+  }
+  
+
+  render(){
+    return <div id='mapContainer'></div>
+  }
+}
 
 function addPrecinctPopUp(feature, map){
   let demographicData = document.createElement('div');
@@ -263,7 +268,7 @@ function getFeatures(precinctButtonValue, districttButtonValue, point, map){
       layers = queryDistrictLayers(map);
     }
   }
-  if(layers.length != 0){
+  if(layers.length !== 0){
     features = map.queryRenderedFeatures(point, {layers: layers});
   }
   return features;

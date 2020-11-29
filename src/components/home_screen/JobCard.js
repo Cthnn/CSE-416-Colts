@@ -14,46 +14,12 @@ class JobCard extends React.Component {
         this.props.deleteJob(this.props.job)
     }
 
-    handleAverageClick = (e) => {
-        let avgElement = document.getElementById('average-input');
-        let checkValue = e.target.checked;
-        let type =Constants.DistrictingType.AVG;
-        if(checkValue){
-            avgElement.value = type;
-        }
-        else{
-            avgElement.value = Constants.DistrictingType.NONE;
-        }
-        avgElement.click()
-    }
-    handleExtremeClick = (e) => {
-        let exElement = document.getElementById('extreme-input');
-        let checkValue = e.target.checked;
-        let type =Constants.DistrictingType.EX;
-        if(checkValue){
-            exElement.value = type;
-        }
-        else{
-            exElement.value = Constants.DistrictingType.NONE;
-        }
-        exElement.click()
-    }
-    setJobId = (e, type) => {
-        let jobType = document.getElementById('job-type');
-        let checkValue = e.target.checked;
-        if(checkValue){
-            jobType.value = type;
-        }
-        else{
-            jobType.value = Constants.CurrentEnactedDistrictingJobId;
-        }
-        jobType.click()
+    handleDistrictingClick = (e) => {
+        this.props.changeJobLayer(e.target.checked, e.target.value);
     }
 
     render() {
         const { job } = this.props
-        // console.log(job)
-
         const statusStyles = {
             COMPLETED: "badge green-text",
             ABORTED: "badge red-text",
@@ -97,10 +63,10 @@ class JobCard extends React.Component {
                             </tr>
                         </tbody></table>
                         <label className = 'districting-label'>Average
-                            <input className = 'districting-button' onChange={(e)=>{this.setJobId(e, job.jobId); this.handleAverageClick(e)}} type = 'checkbox' />
+                            <input id='avg' value={Constants.DistrictingType.AVG} className = 'districting-button' onChange={this.handleDistrictingClick} type = 'checkbox' />
                         </label>
                         <label className = 'districting-label'>Extreme
-                            <input className = 'districting-button' onChange={(e)=>{this.setJobId(e, job.jobId); this.handleExtremeClick(e, Constants.DistrictingType.EX)}}  type = 'checkbox' />
+                            <input id='ex' value={Constants.DistrictingType.EX} className = 'districting-button'  onChange={this.handleDistrictingClick} type = 'checkbox' />
                         </label>
                     </div>
                 </div>
