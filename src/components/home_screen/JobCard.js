@@ -43,7 +43,7 @@ class JobCard extends React.Component {
                         <table><tbody style={{ fontSize: "12px", padding: "0px !important" }}>
                             <tr>
                                 <th>State:</th>
-                                <td>{job.state}</td>
+                                <td>{Constants.StateIds[job.stateId]}</td>
                             </tr>
                             <tr>
                                 <th>Plans:</th>

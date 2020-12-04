@@ -1,4 +1,5 @@
 export const States = {NONE: 'NONE', AL: "AL", FL: "FL", VA: "VA"};
+export const StateIds = {1: "Alabama", 12: "Florida", 51: "Virginia"};
 export const StateNames = {NONE: 'None', AL: "Alabama", FL: "Florida", VA: "Virginia"};
 export const Districts = {AL: "AL-District", FL: "FL-District", VA: "VA-District"};
 export const Precincts = {AL: "AL-Precinct", FL: "FL-Precinct", VA: "VA-Precinct"};
