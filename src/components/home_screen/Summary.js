@@ -19,7 +19,7 @@ class Summary extends React.Component {
             <div className="summary_container" style={containerStyle}>
                 <div className="summary_content" style={contentStyle}>
                     <h1 className="center">{job.title} Summary</h1>
-                    <div style={{display:'block', width:'1000px',height:'1000px'}}><Plot summary={this.props.summary}></Plot></div>
+                    <div style={{display:'block', width:'1000px',height:'1000px'}}><Plot avg={this.props.avg} ex={this.props.ex}summary={this.props.summary}></Plot></div>
 
                 </div>
             </div>

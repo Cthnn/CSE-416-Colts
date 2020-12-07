@@ -17,7 +17,9 @@ class HomeScreen extends Component {
         summary: [],
         showMap: true,
         jobs: [],
-        map: null
+        map: null,
+        average: false,
+        extreme: false
     }
 
     loadJob = (job) => {
@@ -88,22 +90,31 @@ class HomeScreen extends Component {
                 this.setState({ jobs: JSON.parse(result) })
             }).catch(error => { console.error('Error:', error); });
     }
-    changeJobLayer = (value, type) => {
-        let state = document.getElementById('state-selection').value;
-        let job = this.state.activeJob;
-        if(job.status === Constants.Completed && value
-            && Constants.StateNames[state].toUpperCase() === job.state){
-            let params = JSON.stringify({jobId: job.jobId, districtingType: type.toUpperCase()});
-            fetch('http://localhost:8080/jobGeo', {
-                headers: { "Content-Type": "application/json" },
-                method: 'POST',
-                body: params
-            })
-            .then(response => response.text())
-            .then(result => {
-                console.log("recieved districting geojson");
-                console.log(JSON.parse(result));
-            }).catch(error => { console.error('Error:', error); });
+    handleDistrictingClick = (value, type) => {
+        console.log(value + " " + type);
+        if(type === Constants.DistrictingType.AVG){
+            this.setState({average: value});
+        }
+        if(type === Constants.DistrictingType.EX){
+            this.setState({extreme: value});
+        }
+        if(this.state.showMap){ //Can move to loadJob(better logically)
+            let state = document.getElementById('state-selection').value;
+            let job = this.state.activeJob;
+            if(job.status === Constants.Completed && value
+                && Constants.StateNames[state].toUpperCase() === job.state){
+                let params = JSON.stringify({jobId: job.jobId, districtingType: type.toUpperCase()});
+                fetch('http://localhost:8080/jobGeo', {
+                    headers: { "Content-Type": "application/json" },
+                    method: 'POST',
+                    body: params
+                })
+                .then(response => response.text())
+                .then(result => {
+                    console.log("recieved districting geojson");
+                    console.log(JSON.parse(result));
+                }).catch(error => { console.error('Error:', error); });
+            }
         }
     }
     displaySummaryButton = () => {
@@ -120,7 +131,7 @@ class HomeScreen extends Component {
 
     getMapObject = (data) => {
         this.setState({ map: data}, () => {
-            console.log(this.state.map);
+            // console.log(this.state.map);
         })
     }
 
@@ -147,18 +158,18 @@ class HomeScreen extends Component {
                                 <Generator jobs={jobs} />
                             </TabPanel>
                             <TabPanel>
-                                <JobLinks changeJobLayer={this.changeJobLayer} loadJob={this.loadJob.bind(this)} unloadJob={this.unloadJob} deleteJob={this.deleteJob} jobs={jobs} />
+                                <JobLinks handleDistrictingClick={this.handleDistrictingClick} loadJob={this.loadJob.bind(this)} unloadJob={this.unloadJob} deleteJob={this.deleteJob} jobs={jobs} />
                             </TabPanel>
                         </Tabs>
                     </div>
                     <div>
                         {(this.state.activeJob && !this.state.showMap) &&
                             <div className="grey lighten-4" style={containerStyle}>
-                                <Summary unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary} />
+                                <Summary avg={this.state.average} ex={this.state.extreme}unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary} />
                             </div>
                         }
                         {(!this.state.activeJob || this.state.showMap) &&
-                            <Map passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>
+                            <Map forceRender passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>
                         }
                         <div id="summaryToggle" style={{ top: "100px" }}>
                             <a className="blue lighten-2 waves-effect waves-light btn" onClick={this.toggleShowMap}>

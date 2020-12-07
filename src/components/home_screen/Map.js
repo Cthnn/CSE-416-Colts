@@ -98,18 +98,18 @@ class MapHelper {
   }
 
   addPrecinctLayer = (map, state) => {
-    map.addLayer({
-      'id': Constants.PrecinctLayers[state],
-      'type': 'fill',
-      'source': Constants.Precincts[state], 
-      'layout':{
-        'visibility':'none'
-      },
-      'paint': {
-        'fill-color': Constants.DefaultColor,
-        'fill-outline-color': Constants.OutlinePrecinctColor
-      }
-    });
+      map.addLayer({
+        'id': Constants.PrecinctLayers[state],
+        'type': 'fill',
+        'source': Constants.Precincts[state], 
+        'layout':{
+          'visibility':'none'
+        },
+        'paint': {
+          'fill-color': Constants.DefaultColor,
+          'fill-outline-color': Constants.OutlinePrecinctColor
+        }
+      });
   }
 
   addHeatMapLayer = (map, state) => {

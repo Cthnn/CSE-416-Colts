@@ -92,7 +92,37 @@ class Toolbar {
                 .then(result => {
                     console.log("recieved heatmap data");
                     this.addHeatMapSource(map, state, JSON.parse(result));
-                    this.addHeatMapLayer(map, state);
+                    // console.log(JSON.parse(result).features[0].properties);
+
+                    let features = JSON.parse(result).features;
+                    let found_features = undefined;
+                    // for(var i = 0; i < features.length; i++){
+                    //     let temp = features[i];
+                    //     found_features = map.querySourceFeatures('AL-Precinct', {
+                    //         sourceLayer: 'AL-Heatmap',
+                    //         filter: ['==', ['get', "ID"], temp.properties.ID]
+                    //     })
+                    //     if(found_features !== undefined){
+                    //         let feature = found_features[0];
+                    //         if(feature !== undefined){
+                    //             map.addSource(temp.properties.ID, {
+                    //                 "type": "geojson",
+                    //                 "data": feature.toJSON()
+                    //             });
+                    //             map.addLayer({
+                    //             'id': temp.properties.ID,
+                    //             'type': 'fill',
+                    //             'source': temp.properties.ID,
+                    //             'paint': {
+                    //                 'fill-color': 'rgba(214,57,4,.4)',
+                    //                 'fill-outline-color': 'rgba(0,0,0,1)'
+                    //             }
+                    //             });
+                    //         }
+                    //     }
+                    // }
+                    
+                    // this.addHeatMapLayer(map, state);
                 }).catch(error => {
                     console.error('Error:', error);
                     // For debugging when server is offline
@@ -163,8 +193,8 @@ class Toolbar {
                 map.setPaintProperty(stateLayerName, 'fill-color', Constants.DefaultColor);
             }
             if (selectedState !== Constants.States.NONE) {
-                this.determineHeatLayerProperty(heatmapButtonValue, heatLayerName, selectedState, state, map);
-                this.determinePrecinctLayerProperty(precinctButtonValue, precinctLayerName, stateLayerName, selectedState, state, map);
+                // this.determineHeatLayerProperty(heatmapButtonValue, heatLayerName, selectedState, state, map);
+                this.determinePrecinctLayerProperty(precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map);
                 this.determineDistrictLayerProperty(districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map);
                 if (!districtButtonValue && !precinctButtonValue) { //All states visible
                     this.determineStateLayerProperty(stateLayerName, selectedState, state, map);
@@ -183,15 +213,13 @@ class Toolbar {
         let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
         let heatmapButtonValue = document.getElementById('heat-checkbox').checked;
 
-        // console.log(selectedState);
         if (districtButtonValue)
             this.getDistrictGeoJson(selectedState).then(() => this.displayLayer(map));
         if (precinctButtonValue)
             this.getPrecinctGeoJson(selectedState).then(() => this.displayLayer(map));
-        if (heatmapButtonValue)
-            this.getHeatMapGeoJson(selectedState).then(() => this.displayLayer(map));
+        // if (heatmapButtonValue)
+        //     this.getHeatMapGeoJson(selectedState).then(() => this.displayLayer(map));
 
-        // if(!districtButtonValue && !precinctButtonValue && !heatmapButtonValue)
         if (selectedState === Constants.States.NONE || (!districtButtonValue && !precinctButtonValue && !heatmapButtonValue)) {
             this.displayLayer(map);
         }
@@ -208,31 +236,44 @@ class Toolbar {
             }
         }
     }
-    determinePrecinctLayerProperty = (precinctButtonValue, precinctLayerName, stateLayerName, selectedState, state, map) => {
+    determinePrecinctLayerProperty = (precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map) => {
         if (precinctButtonValue && selectedState === state && map.getLayer(precinctLayerName) !== undefined) {
             map.setLayoutProperty(precinctLayerName, 'visibility', 'visible');
             map.setLayoutProperty(stateLayerName, 'visibility', 'none');
+
+            let race = document.getElementById("heatmap-select").value;
+            this.setHeatMapColor(heatmapButtonValue, precinctLayerName, race, map);
         } else {
             if (map.getLayer(precinctLayerName) !== undefined)
                 map.setLayoutProperty(precinctLayerName, 'visibility', 'none');
         }
     }
-    determineHeatLayerProperty = (heatmapButtonValue, heatLayerName, selectedState, state, map) => {
-        if (heatmapButtonValue && selectedState === state && map.getLayer(heatLayerName) !== undefined) {
-            let race = document.getElementById("heatmap-select").value;
-            map.setPaintProperty(heatLayerName, 'heatmap-weight', {
-                property: race,
-                type: 'exponential',
-                stops: [
-                    [1, 0],
-                    [62, 1]
-                ]
-            });
-            map.setLayoutProperty(heatLayerName, 'visibility', 'visible');
-        } else {
-            if (map.getLayer(heatLayerName) !== undefined)
-                map.setLayoutProperty(heatLayerName, 'visibility', 'none');
+    setHeatMapColor = (heatButtonValue, precinctLayerName, race, map) => {
+        if(!heatButtonValue){
+            map.setPaintProperty(precinctLayerName, 'fill-color', Constants.DefaultColor);
         }
+        else{
+            map.setPaintProperty(precinctLayerName, 'fill-color', ['let','percentage',['/', ['to-number',['get', race]], ['to-number',['get', 'VAP_TOTAL']]],
+                      [
+                        'interpolate',
+                        ['linear'],
+                        ['var','percentage'],
+                        0,
+                        'rgb(33,102,172)',
+                        0.2,
+                        'rgb(103,169,207)',
+                        0.4,
+                        'rgb(209,229,240)',
+                        0.6,
+                        'rgb(253,219,199)',
+                        0.8,
+                        'rgb(239,138,98)',
+                        1,
+                        'rgb(178,24,43)'
+                      ]
+                    ])
+        }
+
     }
     determineStateLayerProperty = (stateLayerName, selectedState, state, map) => {
         if (map.getLayer(stateLayerName) !== undefined) {

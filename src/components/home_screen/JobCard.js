@@ -15,7 +15,7 @@ class JobCard extends React.Component {
     }
 
     handleDistrictingClick = (e) => {
-        this.props.changeJobLayer(e.target.checked, e.target.value);
+        this.props.handleDistrictingClick(e.target.checked, e.target.value);
     }
 
     render() {
@@ -62,12 +62,14 @@ class JobCard extends React.Component {
                                 <td>{job.populationDeviation}</td>
                             </tr>
                         </tbody></table>
-                        <label className = 'districting-label'>Average
-                            <input id='avg' value={Constants.DistrictingType.AVG} className = 'districting-button' onChange={this.handleDistrictingClick} type = 'checkbox' />
-                        </label>
-                        <label className = 'districting-label'>Extreme
-                            <input id='ex' value={Constants.DistrictingType.EX} className = 'districting-button'  onChange={this.handleDistrictingClick} type = 'checkbox' />
-                        </label>
+                        <div style={job.status === "COMPLETED" ?{display:"block"} : {display: "none"}}>
+                            <label className = 'districting-label'>Average
+                                <input id='avg' value={Constants.DistrictingType.AVG} className = 'districting-button' onChange={this.handleDistrictingClick} type = 'checkbox' />
+                            </label>
+                            <label className = 'districting-label'>Extreme
+                                <input id='ex' value={Constants.DistrictingType.EX} className = 'districting-button'  onChange={this.handleDistrictingClick} type = 'checkbox' />
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
