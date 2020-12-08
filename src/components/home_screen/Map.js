@@ -151,9 +151,7 @@ class MapComponent extends React.Component{
             return;
 
           let feature = features[0];
-          if(precinctButtonValue){
-            addPrecinctPopUp(feature, map);
-          }
+          addFeaturePopup(feature, map);
           addSelectedFeatureLayer(feature, map);
         });
       });
@@ -170,7 +168,7 @@ class MapComponent extends React.Component{
   }
 }
 
-function addPrecinctPopUp(feature, map){
+function addFeaturePopup(feature, map){
   let demographicData = document.createElement('div');
   ReactDOM.render(<MapPopUp features = {feature.properties}/>, demographicData);
   let popup= new mapboxgl.Popup()
