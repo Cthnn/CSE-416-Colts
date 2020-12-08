@@ -111,64 +111,6 @@ class MapHelper {
         }
       });
   }
-
-  addHeatMapLayer = (map, state) => {
-    map.addLayer({
-      id: Constants.HeatMapLayers[state],
-      type: 'heatmap',
-      source: Constants.HeatMaps[state],
-      layout:{
-        visibility:'none'
-      },
-      maxzoom: 15,
-      paint: {
-        // increase weight as diameter breast height increases
-        'heatmap-weight': {
-          property: 'T2',
-          type: 'exponential',
-          stops: [
-            [1, 0],
-            [62, 1]
-          ]
-        },
-        // increase intensity as zoom level increases
-        'heatmap-intensity': {
-          stops: [
-            [3, 0.1],
-            [6, 1],
-            [10, 3]
-          ]
-        },
-        // assign color values be applied to points depending on their density
-        'heatmap-color': [
-          'interpolate',
-          ['linear'],
-          ['heatmap-density'],
-          0,
-          'rgba(33,102,172,0)',
-          0.2,
-          'rgb(103,169,207)',
-          0.4,
-          'rgb(209,229,240)',
-          0.6,
-          'rgb(253,219,199)',
-          0.8,
-          'rgb(239,138,98)',
-          1,
-          'rgb(178,24,43)'
-          ],
-        // increase radius as zoom increases
-        'heatmap-radius': {
-          stops: [
-            [3, 1],
-            [6, 10],
-            [11, 50],
-            [12, 200]
-          ]
-        },
-      }
-    }, 'waterway-label');
-  }
 }
 class MapComponent extends React.Component{
   componentDidMount(){
@@ -185,7 +127,6 @@ class MapComponent extends React.Component{
 
     toolbar.getDistrictGeoJson = toolbar.getDistrictGeoJson.bind(mapHelper, this.map);
     toolbar.getPrecinctGeoJson = toolbar.getPrecinctGeoJson.bind(mapHelper, this.map);
-    toolbar.getHeatMapGeoJson = toolbar.getHeatMapGeoJson.bind(mapHelper, this.map);
     toolbar.getJobDistrictingGeoJson = toolbar.getJobDistrictingGeoJson.bind(mapHelper, this.map);
     if(this.map){
       const map = this.map;
@@ -202,15 +143,17 @@ class MapComponent extends React.Component{
         }
 
         map.on('click', function (e){
-          let districttButtonValue = document.getElementById('district-checkbox').checked;
+          let districtButtonValue = document.getElementById('district-checkbox').checked;
           let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
-          let features = getFeatures(precinctButtonValue, districttButtonValue, e.point, map);
+          let features = getFeatures(precinctButtonValue, districtButtonValue, e.point, map);
 
           if(features === null || !features.length)
             return;
 
           let feature = features[0];
-          addPrecinctPopUp(feature, map);
+          if(precinctButtonValue){
+            addPrecinctPopUp(feature, map);
+          }
           addSelectedFeatureLayer(feature, map);
         });
       });

@@ -1,7 +1,12 @@
-import './Toolbar.css';
+    import './Toolbar.css';
 import * as Constants from './MapConstants.js';
+import { ContinuousColorLegend } from 'react-vis';
 
 class Toolbar {
+    constructor(){
+        this.total_VAP = this.initializeTotalVAP();
+        this.generateTotalVAP();
+    }
     setState(state) {
         if (state !== Constants.States.NONE) {
             fetch('http://localhost:8080/state', {
@@ -18,7 +23,6 @@ class Toolbar {
     }
     async getJobDistrictingGeoJson(map, jobId, districtingType) {
         let layer = map.getLayer(Constants.DistrictingTypeLayers[districtingType]);
-        console.log(Constants.DistrictingTypeLayers[districtingType].toUpperCase());
         if (layer === undefined) {
             await fetch('http://localhost:8080/jobGeo', {
                 headers: { "Content-Type": "application/json" },
@@ -71,63 +75,12 @@ class Toolbar {
                     console.log("recieved precinct data");
                     this.addPrecinctSource(map, state, JSON.parse(result));
                     this.addPrecinctLayer(map, state);
+                    this.precinct_amount = JSON.parse(result).features.length;
                 }).catch(error => {
                     console.error('Error:', error);
                     // For debugging when server is offline
                     // this.addPrecinctSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'-precincts.geojson');
                     // this.addPrecinctLayer(map,state);
-                });
-        }
-    }
-    // this is binded to MapHelper
-    async getHeatMapGeoJson(map, state) {
-        let layer = map.getLayer(Constants.HeatMapLayers[state]);
-        if (layer === undefined && state !== Constants.States.NONE) {
-            await fetch('http://localhost:8080/heatmap', {
-                headers: { "Content-Type": "application/json" },
-                method: 'POST',
-                body: JSON.stringify(Constants.StateNames[state].toUpperCase())
-            })
-                .then(response => response.text())
-                .then(result => {
-                    console.log("recieved heatmap data");
-                    this.addHeatMapSource(map, state, JSON.parse(result));
-                    // console.log(JSON.parse(result).features[0].properties);
-
-                    let features = JSON.parse(result).features;
-                    let found_features = undefined;
-                    // for(var i = 0; i < features.length; i++){
-                    //     let temp = features[i];
-                    //     found_features = map.querySourceFeatures('AL-Precinct', {
-                    //         sourceLayer: 'AL-Heatmap',
-                    //         filter: ['==', ['get', "ID"], temp.properties.ID]
-                    //     })
-                    //     if(found_features !== undefined){
-                    //         let feature = found_features[0];
-                    //         if(feature !== undefined){
-                    //             map.addSource(temp.properties.ID, {
-                    //                 "type": "geojson",
-                    //                 "data": feature.toJSON()
-                    //             });
-                    //             map.addLayer({
-                    //             'id': temp.properties.ID,
-                    //             'type': 'fill',
-                    //             'source': temp.properties.ID,
-                    //             'paint': {
-                    //                 'fill-color': 'rgba(214,57,4,.4)',
-                    //                 'fill-outline-color': 'rgba(0,0,0,1)'
-                    //             }
-                    //             });
-                    //         }
-                    //     }
-                    // }
-                    
-                    // this.addHeatMapLayer(map, state);
-                }).catch(error => {
-                    console.error('Error:', error);
-                    // For debugging when server is offline
-                    // this.addHeatMapSource(map, state, './'+Constants.StateNames[state].toLowerCase()+'_heatmap.geojson');
-                    // this.addHeatMapLayer(map,state);
                 });
         }
     }
@@ -211,16 +164,13 @@ class Toolbar {
         let selectedState = document.getElementById('state-selection').value;
         let districtButtonValue = document.getElementById('district-checkbox').checked;
         let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
-        let heatmapButtonValue = document.getElementById('heat-checkbox').checked;
 
         if (districtButtonValue)
             this.getDistrictGeoJson(selectedState).then(() => this.displayLayer(map));
         if (precinctButtonValue)
             this.getPrecinctGeoJson(selectedState).then(() => this.displayLayer(map));
-        // if (heatmapButtonValue)
-        //     this.getHeatMapGeoJson(selectedState).then(() => this.displayLayer(map));
 
-        if (selectedState === Constants.States.NONE || (!districtButtonValue && !precinctButtonValue && !heatmapButtonValue)) {
+        if (selectedState === Constants.States.NONE || (!districtButtonValue && !precinctButtonValue)) {
             this.displayLayer(map);
         }
     }
@@ -242,35 +192,44 @@ class Toolbar {
             map.setLayoutProperty(stateLayerName, 'visibility', 'none');
 
             let race = document.getElementById("heatmap-select").value;
-            this.setHeatMapColor(heatmapButtonValue, precinctLayerName, race, map);
+            this.setHeatMapColor(heatmapButtonValue, precinctLayerName, selectedState, race, map);
         } else {
-            if (map.getLayer(precinctLayerName) !== undefined)
+            if (map.getLayer(precinctLayerName) !== undefined){
                 map.setLayoutProperty(precinctLayerName, 'visibility', 'none');
+            }
         }
     }
-    setHeatMapColor = (heatButtonValue, precinctLayerName, race, map) => {
+    setHeatMapColor = (heatButtonValue, precinctLayerName, selectedState, race, map) => {
         if(!heatButtonValue){
             map.setPaintProperty(precinctLayerName, 'fill-color', Constants.DefaultColor);
         }
         else{
-            map.setPaintProperty(precinctLayerName, 'fill-color', ['let','percentage',['/', ['to-number',['get', race]], ['to-number',['get', 'VAP_TOTAL']]],
-                      [
-                        'interpolate',
-                        ['linear'],
-                        ['var','percentage'],
-                        0,
-                        'rgb(33,102,172)',
-                        0.2,
-                        'rgb(103,169,207)',
-                        0.4,
-                        'rgb(209,229,240)',
-                        0.6,
-                        'rgb(253,219,199)',
-                        0.8,
-                        'rgb(239,138,98)',
-                        1,
-                        'rgb(178,24,43)'
-                      ]
+            let total = this.total_VAP[selectedState][race];
+            map.setPaintProperty(precinctLayerName, 'fill-color', ['let','percentage',
+            ['/', ['to-number',['get', race], 0], ['to-number', total/Constants.PrecinctAmounts[selectedState], 1]],
+                    [
+                    'interpolate',
+                    ['linear'],
+                    ['to-number',['var','percentage'], 0],
+                    0,
+                    '#ffffcc',
+                    0.5,
+                    '#ffeda0',
+                    1.0,
+                    '#fed976',
+                    1.5,
+                    '#feb24c',
+                    2.0,
+                    '#fd8d3c',
+                    2.5,
+                    '#fc4e2a',
+                    3.0,
+                    '#e31a1c',
+                    3.5,
+                    '#bd0026',
+                    4.0,
+                    '#800026'
+                    ]
                     ])
         }
 
@@ -406,6 +365,52 @@ class Toolbar {
             elem.selectedIndex = Object.keys(Constants.States).indexOf(state);
             this.setState(state);
         })
+    }
+    async generateTotalVAP(){
+        for(let state in Constants.States){
+            if(state !== Constants.States.NONE){
+                this.getDistrictInfo(state);
+            }
+        }
+    }
+    initializeTotalVAP(){
+        var object = {};
+        for(let state in Constants.States){
+            if(state !== Constants.States.NONE){
+                object[state] = {
+                    'R2': 0,
+                    'R3': 0,
+                    'R4': 0,
+                    'R5': 0,
+                    'R6': 0,
+                    'R7': 0,
+                    'R8': 0,
+                }
+            }
+        }
+        return object;
+    }
+    getDistrictInfo = (state) => {
+        fetch('http://localhost:8080/district', {
+            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            body: JSON.stringify(Constants.StateNames[state].toUpperCase())
+        })
+        .then(response => response.text())
+        .then(result => {
+            let data = JSON.parse(result).features;
+            for(var i = 0; i < data.length; i++){
+                this.total_VAP[state].R2 += data[i].properties.R2;
+                this.total_VAP[state].R3 += data[i].properties.R3;
+                this.total_VAP[state].R4 += data[i].properties.R4;
+                this.total_VAP[state].R5 += data[i].properties.R5;
+                this.total_VAP[state].R6 += data[i].properties.R6;
+                this.total_VAP[state].R7 += data[i].properties.R7;
+                this.total_VAP[state].R8 += data[i].properties.R8;
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
     }
 
 }

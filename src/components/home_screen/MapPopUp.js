@@ -43,7 +43,7 @@ class MapPopUp extends React.Component {
                             <td>{this.props.features.T5}</td>
                         </tr>
                         <tr>
-                            <td>{Constants.EthnicGroupNicknames.NATIVE_AMERICAN}</td>
+                            <td>{Constants.EthnicGroupNicknames.PACIFIC_ISLANDER}</td>
                             <td>{this.props.features.R6}</td>
                             <td>{this.props.features.T6}</td>
                         </tr>
