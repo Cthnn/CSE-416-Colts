@@ -34,4 +34,5 @@ export const EthnicGroupNicknames = {NONE: "None", WHITE: "White", BLACK: "Black
 export const HeatMapMapping = {WHITE: "R2", BLACK: "R3",  NATIVE_AMERICAN: "R4", ASIAN: "R5", PACIFIC_ISLANDER: "R6", HISPANIC: "R8"};
 
 export const CompactValues = {NONE: "0", SLIGHT: ".25", MODERATE: ".5", VERY: ".75"};
-export const BoxPlotLabels = {ENACTED: "Enacted", AVG: "Average", EX: "Extreme"}
+export const BoxPlotLabels = {ENACTED: "Enacted", AVG: "Average", EX: "Extreme"};
+export const PrecinctAmounts = {AL: 1975, FL: 9435, VA: 2373};

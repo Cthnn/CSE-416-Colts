@@ -170,6 +170,7 @@ class HomeScreen extends Component {
                         }
                         {(!this.state.activeJob || this.state.showMap) &&
                             <Map forceRender passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>
+
                         }
                         <div id="summaryToggle" style={{ top: "100px" }}>
                             <a className="blue lighten-2 waves-effect waves-light btn" onClick={this.toggleShowMap}>
