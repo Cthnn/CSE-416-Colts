@@ -1,7 +1,7 @@
 .toolbar{
     color: white;
     background: #64B5F6;
-    padding: 1px 8px 1px 4px;
+    padding: 2px 8px 2px 4px;
     border-radius: 4px;
     margin: 8px;
     cursor: default !important;
@@ -11,6 +11,7 @@
     padding-left: 5px;
     display:inline-block;
     margin:0px;
+    display:none;
 }
 .view-button{
     opacity:1 !important;
@@ -19,7 +20,7 @@
     pointer-events:auto !important;
     position:relative !important;
     vertical-align: bottom;
-    /* float:left; */
+    display:none;
 }
 
 select{
@@ -32,7 +33,14 @@ select{
 .state-select{
     width: 90px;
     margin-left:4px;
+    display: inline-block !important;
+}
+.state-text{
+    padding-left: 5px;
+    display:inline-block;
+    margin:0px;
 }
 .heatmap-select{
     width: 270px;
+    display: none;
 }

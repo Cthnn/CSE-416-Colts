@@ -165,12 +165,13 @@ class Toolbar {
         let selectedState = document.getElementById('state-selection').value;
         let districtButtonValue = document.getElementById('district-checkbox').checked;
         let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
-
+        
         if (districtButtonValue)
             this.getDistrictGeoJson(selectedState).then(() => this.displayLayer(map));
         if (precinctButtonValue)
             this.getPrecinctGeoJson(selectedState).then(() => this.displayLayer(map));
 
+        this.determineToolbarVisibility(selectedState);
         if (selectedState === Constants.States.NONE || (!districtButtonValue && !precinctButtonValue)) {
             this.displayLayer(map);
         }
@@ -220,7 +221,6 @@ class Toolbar {
         }
     }
     determinePrecinctLayerProperty = (precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map) => {
- 
         if (precinctButtonValue && selectedState === state && map.getLayer(precinctLayerName) !== undefined) {
             map.setLayoutProperty(precinctLayerName, 'visibility', 'visible');
             map.setLayoutProperty(stateLayerName, 'visibility', 'none');
@@ -292,8 +292,34 @@ class Toolbar {
             map.removeSource(Constants.SelectedFeatureLayer);
         }
     }
-
-    creatHeatMapOption(option) {
+    determineToolbarVisibility = (selectedState) => {
+        let heatmapButton = document.getElementById('heat-checkbox');
+        let districtButton = document.getElementById('district-checkbox');
+        let precinctButton = document.getElementById('precinct-checkbox');
+        let heatText = document.getElementById('heat-text');
+        let districtText = document.getElementById('district-text');
+        let precinctText = document.getElementById('precinct-text');
+        let heatSelect = document.getElementById('heatmap-select');
+        if(selectedState === Constants.States.NONE){
+            heatmapButton.style.display = 'none';
+            districtButton.style.display = 'none';
+            precinctButton.style.display = 'none';
+            heatText.style.display = 'none';
+            districtText.style.display = 'none';
+            precinctText.style.display = 'none';
+            heatSelect.style.display = 'none';
+        }
+        else{
+            heatmapButton.style.display = 'inline-block';
+            districtButton.style.display = 'inline-block';
+            precinctButton.style.display = 'inline-block';
+            heatText.style.display = 'inline-block';
+            districtText.style.display = 'inline-block';
+            precinctText.style.display = 'inline-block';
+            heatSelect.style.display = 'inline-block';
+        }
+    }
+    createHeatMapOption(option) {
         let mapOption = document.createElement('option');
         mapOption.value = Constants.HeatMapMapping[option];
         mapOption.textContent = Constants.EthnicGroupNames[option];
@@ -304,6 +330,7 @@ class Toolbar {
     setHeatMap(heatCheckbox, heatSelect, heatText, map) {
         heatText.textContent = 'Heatmap View'
         heatText.className = 'text';
+        heatText.id = 'heat-text';
         heatSelect.className = 'heatmap-select';
         heatSelect.id = 'heatmap-select';
         heatCheckbox.type = 'checkbox';
@@ -311,7 +338,7 @@ class Toolbar {
 
         for (let group in Constants.EthnicGroups)
             if (Constants.EthnicGroups[group] !== Constants.EthnicGroups.NONE)
-                heatSelect.appendChild(this.creatHeatMapOption(group));
+                heatSelect.appendChild(this.createHeatMapOption(group));
 
         heatCheckbox.id = 'heat-checkbox';
         heatText.addEventListener('click', () => {
@@ -330,6 +357,7 @@ class Toolbar {
     setPrecinctCheckbox(precinctCheckbox, precinctText, map) {
         precinctText.className = 'text';
         precinctText.textContent = 'Precinct';
+        precinctText.id = 'precinct-text';
         precinctCheckbox.type = 'checkbox';
         precinctCheckbox.className = 'view-button';
         precinctCheckbox.name = 'view-choice';
@@ -348,6 +376,7 @@ class Toolbar {
         districtCheckbox.id = 'district-checkbox';
         districtText.textContent = 'Districts';
         districtText.className = 'text';
+        districtText.id='district-text';
         districtCheckbox.type = 'checkbox';
         districtCheckbox.className = 'view-button';
 
@@ -375,7 +404,7 @@ class Toolbar {
             stateSelect.appendChild(this.createStateOption(state));
 
         stateSelectText.textContent = 'State';
-        stateSelectText.className = 'text';
+        stateSelectText.className = 'state-text';
         stateSelect.name = 'view-choice';
         stateSelect.id = 'state-selection';
 

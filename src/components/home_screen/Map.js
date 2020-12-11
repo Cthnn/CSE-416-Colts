@@ -123,7 +123,7 @@ class MapComponent extends React.Component{
       zoom: 5
     });
     this.map.addControl(toolbar, 'top-left');
-
+    this.map.addControl(new mapboxgl.NavigationControl(), "bottom-left");
     toolbar.getDistrictGeoJson = toolbar.getDistrictGeoJson.bind(mapHelper, this.map);
     toolbar.getPrecinctGeoJson = toolbar.getPrecinctGeoJson.bind(mapHelper, this.map);
     toolbar.getJobDistrictingGeoJson = toolbar.getJobDistrictingGeoJson.bind(mapHelper, this.map);
