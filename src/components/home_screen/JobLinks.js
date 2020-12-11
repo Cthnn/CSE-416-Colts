@@ -25,7 +25,7 @@ class JobLinks extends React.Component {
                     {jobs && jobs.map(job => {
                         return (
                             <div style={this.state.active === job.jobId? cardStyleOn : cardStyleOff} key={job.jobId} onClick={() => {this.setActive(job.jobId)}}>
-                                 <JobCard handleDistrictingClick ={this.props.handleDistrictingClick} loadJob={this.props.loadJob} unloadJob={this.props.unloadJob} deleteJob={this.props.deleteJob} job={job} active={this.state.active === job.jobId}/>
+                                 <JobCard handleDistrictingClick ={this.props.handleDistrictingClick} loadJob={this.props.loadJob} unloadJob={this.props.unloadJob} deleteJob={this.props.deleteJob} job={job} avg={this.props.avg} ex={this.props.avg} active={this.state.active === job.jobId} summary={this.props.summary}/>
                             </div>
                         )
                     })}

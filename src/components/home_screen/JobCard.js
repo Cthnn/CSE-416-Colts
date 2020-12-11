@@ -1,8 +1,9 @@
 import React from 'react';
 import './JobCard.css';
 import * as Constants from './MapConstants.js';
+import Summary from './Summary'
 
-import { Button } from 'react-materialize';
+import { Modal, Button } from 'react-materialize';
 
 class JobCard extends React.Component {
     static createJob(jobId, state, plans, compactness, populationDeviation, group, status) {
@@ -18,11 +19,21 @@ class JobCard extends React.Component {
         this.props.handleDistrictingClick(e.target.checked, e.target.value);
     }
 
+    handleToggle = (e) => {
+        console.log('hi')
+        // document.getElementById('summary-button').click()
+    }
+
     render() {
         const { job } = this.props
         const statusStyles = {
             COMPLETED: "badge green-text",
             ABORTED: "badge red-text",
+        }
+
+        const modalStyle = {
+            height: '600px',
+            width: '1200px'
         }
 
         return (
@@ -62,13 +73,19 @@ class JobCard extends React.Component {
                                 <td>{job.populationDeviation}</td>
                             </tr>
                         </tbody></table>
-                        <div style={job.status === "COMPLETED" ?{display:"block"} : {display: "none"}}>
-                            <label className = 'districting-label'>Average
-                                <input id='avg' value={Constants.DistrictingType.AVG} className = 'districting-button' onChange={this.handleDistrictingClick} type = 'checkbox' />
+                        <div style={job.status === "COMPLETED" ? { display: "block" } : { display: "none" }}>
+                            <label className='districting-label'>Average
+                                <input id='avg' value={Constants.DistrictingType.AVG} className='districting-button' onChange={this.handleDistrictingClick} type='checkbox' />
                             </label>
-                            <label className = 'districting-label'>Extreme
-                                <input id='ex' value={Constants.DistrictingType.EX} className = 'districting-button'  onChange={this.handleDistrictingClick} type = 'checkbox' />
+                            <label className='districting-label'>Extreme
+                                <input id='ex' value={Constants.DistrictingType.EX} className='districting-button' onChange={this.handleDistrictingClick} type='checkbox' />
                             </label>
+                            <a className="blue lighten-2 waves-effect waves-light btn modal-trigger" href="#plot-modal" style={{ position: 'absolute', right: '20px' }}>
+                                <i className="material-icons" onClick={this.handleToggle()}>insert_chart</i>
+                            </a>
+                            <Modal id="plot-modal" className="modal" style={modalStyle}>
+                                <Summary avg={this.props.avg} ex={this.props.ex} unloadJob={this.unloadJob} job={this.props.job} summary={this.props.summary} />
+                            </Modal>
                         </div>
                     </div>
                 </div>

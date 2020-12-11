@@ -48,45 +48,48 @@ class Generate extends React.Component {
     }
 
     updateSelection(e) {
-        let input = {group: e.target.value}
+        let input = { group: e.target.value }
         this.setState(input)
     }
-    updateCompactness(e){
-        let input = {comp: e.target.value}
+    updateCompactness(e) {
+        let input = { comp: e.target.value }
         this.setState(input)
     }
-    updateState(e){
-        let input = {state: e.target.value}
+    updateState(e) {
+        let input = { state: e.target.value }
         this.setState(input)
 
         var element = document.getElementById('state-selection');
-            element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
-            element.dispatchEvent(new Event('change'));
+        element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
+        element.dispatchEvent(new Event('change'));
     }
 
     enableGeneration() {
-        return this.state.state !== Constants.States.NONE 
-        && this.state.group !== Constants.EthnicGroups.NONE 
-        && this.state.comp !== Constants.CompactValues.NONE;
+        return this.state.state !== Constants.States.NONE
+            && this.state.group !== Constants.EthnicGroups.NONE
+            && this.state.comp !== Constants.CompactValues.NONE;
     }
 
     generatePlans(e) {
         e.preventDefault();
         //send request to server
-        var params = JSON.stringify({
-            state: Constants.StateNames[this.state.state].toUpperCase(),
-            plans: this.state.plans,
-            comp: this.state.comp,
-            pop: this.state.pop,
-            group: this.state.group
+        fetch('http://localhost:8080/createJob', {
+            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            body: JSON.stringify({
+                state: Constants.StateNames[this.state.state].toUpperCase(),
+                plans: this.state.plans,
+                comp: this.state.comp,
+                pop: this.state.pop,
+                group: this.state.group
+            })
         })
-        fetch('http://localhost:8080/createJob', { headers: { "Content-Type": "application/json" }, method: 'POST', body: params })
-        .then(response => response.text())
-        .then(result => { 
-            console.log('Success:', result); 
-            this.setState({batchNumber: result});
-            M.Modal.getInstance(document.getElementById("modal1")).open();
-        }).catch(error => { console.error('Error:', error); });
+            .then(response => response.text())
+            .then(result => {
+                console.log('Success:', result);
+                this.setState({ batchNumber: result });
+                M.Modal.getInstance(document.getElementById("modal1")).open();
+            }).catch(error => { console.error('Error:', error); });
     }
 
     render() {
@@ -96,7 +99,7 @@ class Generate extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <label className="black-text">State</label>
                     <div className="input-field">
-                        <select id = "select-state-generation" className="browser-default" onChange={e => { this.updateState(e) }}>
+                        <select id="select-state-generation" className="browser-default" onChange={e => { this.updateState(e) }}>
                             <option value={Constants.States.NONE}>{Constants.StateNames.NONE}</option>
                             <option value={Constants.States.AL}>{Constants.StateNames.AL}</option>
                             <option value={Constants.States.FL}>{Constants.StateNames.FL}</option>
