@@ -129,6 +129,7 @@ class Toolbar {
     }
 
     displayLayer = (map) => {
+        // console.log(map.style);
         let selectedState = document.getElementById('state-selection').value;
         let districtButtonValue = document.getElementById('district-checkbox').checked;
         let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
@@ -195,7 +196,7 @@ class Toolbar {
         let precinct_amount = Constants.PrecinctAmounts[selectedState];
         let percentages = [.5, .7, .9, 1, 1.5, 2, 2.5];
         let average = total/precinct_amount;
-        console.log(legend.childNodes) // 8, 0 index is title
+
         if(precinctButtonValue && heatmapButtonValue && selectedState !== Constants.States.NONE){
             for(var i = 1; i < legend.childNodes.length;i++){
                 var current_percentage = percentages[i-1];
@@ -238,6 +239,8 @@ class Toolbar {
             map.setPaintProperty(precinctLayerName, 'fill-color', Constants.DefaultColor);
         }
         else{
+            // let districtLayerLineName = Constants.DistrictLineLayers[state];
+            // console.log(map.getStyle());
             let total = this.total_VAP[selectedState][race];
             map.setPaintProperty(precinctLayerName, 'fill-color', ['let','percentage',
             ['/', ['to-number',['get', race], 0], ['to-number', total/Constants.PrecinctAmounts[selectedState], 1]],
@@ -261,6 +264,10 @@ class Toolbar {
                     '#a50f15'
                     ]
                     ])
+            let districtLayerLineName = Constants.DistrictLineLayers[selectedState];
+            if(map.getLayer(districtLayerLineName) !== undefined){
+                map.moveLayer(districtLayerLineName);
+            }
         }
 
     }
