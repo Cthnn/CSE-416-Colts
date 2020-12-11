@@ -188,8 +188,31 @@ class Toolbar {
         }
     }
     determineHeatMapLegendDisplay = (precinctButtonValue, heatmapButtonValue, selectedState) => {
+        let race = document.getElementById("heatmap-select").value;
         let legend = document.getElementById('heatmap-legend');
+        let total = this.total_VAP[selectedState][race];
+        let precinct_amount = Constants.PrecinctAmounts[selectedState];
+        let percentages = [.5, .7, .9, 1, 1.5, 2, 2.5];
+        let average = total/precinct_amount;
+        console.log(legend.childNodes) // 8, 0 index is title
         if(precinctButtonValue && heatmapButtonValue && selectedState !== Constants.States.NONE){
+            for(var i = 1; i < legend.childNodes.length;i++){
+                var current_percentage = percentages[i-1];
+                var calculation = Math.trunc(current_percentage*average);
+                if(i == 1){
+                    legend.childNodes[i].childNodes[1].innerText = '< ' + calculation.toString();
+                }
+                else if(i == legend.childNodes.length-1){
+                    var previous = Math.trunc(percentages[i-2]*average);
+                    legend.childNodes[i].childNodes[1].innerText = '> ' + previous.toString();
+                }
+                else{
+                    // console.log(current_percentage[i-2]);
+                    var previous = Math.trunc(percentages[i-2]*average);
+                    legend.childNodes[i].childNodes[1].innerText = previous.toString() + '-' + calculation.toString();
+                }
+                
+            }
             legend.style.display = 'block';
         }  
         else{
@@ -230,9 +253,9 @@ class Toolbar {
                     '#fc9272',
                     1.0,
                     '#fb6a4a',
-                    1.5,
+                    1.1,
                     '#ef3b2c',
-                    2.0,
+                    1.7,
                     '#cb181d',
                     2.5,
                     '#a50f15'

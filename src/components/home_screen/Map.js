@@ -137,6 +137,10 @@ class MapComponent extends React.Component{
         var layers = ['< 50%', '70%', '90%', '100%', '150%', '200%', '> 250%'];
         var colors = ['#fee0d2', '#fcbba1', '#fc9272', '#fb6a4a', '#ef3b2c', '#cb181d', '#a50f15'];
         var legend = document.getElementById('heatmap-legend');
+        var title = document.createElement('div');
+        title.innerText = 'Population Range';
+        title.style.fontWeight = 7
+        legend.appendChild(title);
         for (var i = 0; i < layers.length; i++) {
           var layer = layers[i];
           var color = colors[i];

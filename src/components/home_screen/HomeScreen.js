@@ -178,7 +178,6 @@ class HomeScreen extends Component {
                         </div>
                     </div>
                     <div className = 'map-overlay' id='heatmap-legend'>
-
                     </div>
                 </div>
                 <Modal id="modal2" className="modal">
