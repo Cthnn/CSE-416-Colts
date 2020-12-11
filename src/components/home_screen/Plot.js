@@ -77,6 +77,12 @@ class Plot extends React.Component {
         },
         
         options:{
+          legend:{
+            
+            labels: {
+              usePointStyle: true
+            }
+          },
           tooltips:{
             callbacks:{
               label: function(tooltipsItem, data){

@@ -25,18 +25,18 @@ class HomeScreen extends Component {
     loadJob = (job) => {
         this.setState({ activeJob: job });
         this.displaySummaryButton();
-        // fetch('http://localhost:8080/jobGeo', {
-        //     headers: { "Content-Type": "application/json" },
-        //     method: 'POST',
-        //     body: JSON.stringify({
-        //         'jobId': job.jobId,
-        //         'DistrictingType': 'AVERAGE'
-        //     })
-        // })
-        //     .then(response => response.text())
-        //     .then(result => {
-        //         // console.log('Job Geo:', result); 
-        //     }).catch(error => { console.error('Error:', error); });
+        fetch('http://localhost:8080/jobGeo', {
+            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            body: JSON.stringify({
+                'jobId': job.jobId,
+                'DistrictingType': 'AVERAGE'
+            })
+        })
+            .then(response => response.text())
+            .then(result => {
+                console.log('Job Geo:', JSON.parse(result)); 
+            }).catch(error => { console.error('Error:', error); });
 
         var params = JSON.stringify(job.jobId)
         fetch('http://localhost:8080/getBoxPlot', {
@@ -56,7 +56,7 @@ class HomeScreen extends Component {
         document.getElementById("summaryToggle").style.visibility = "hidden";
 
         for(let type in Constants.DistrictingTypeLayers){
-            if(this.state.map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined){
+            if(this.state.map != null && this.state.map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined){
                 this.state.map.removeLayer(Constants.DistrictingTypeLayers[type]);
                 this.state.map.removeSource(Constants.DistrictingTypeLayers[type]);
             }
@@ -170,13 +170,15 @@ class HomeScreen extends Component {
                         }
                         {(!this.state.activeJob || this.state.showMap) &&
                             <Map forceRender passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>
-
                         }
                         <div id="summaryToggle" style={{ top: "100px" }}>
                             <a className="blue lighten-2 waves-effect waves-light btn" onClick={this.toggleShowMap}>
                                 <i className="material-icons">{this.state.showMap ? "insert_chart" : "map"}</i>
                             </a>
                         </div>
+                    </div>
+                    <div className = 'map-overlay' id='heatmap-legend'>
+
                     </div>
                 </div>
                 <Modal id="modal2" className="modal">

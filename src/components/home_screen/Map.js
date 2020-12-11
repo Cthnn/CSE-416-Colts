@@ -123,7 +123,6 @@ class MapComponent extends React.Component{
       zoom: 5
     });
     this.map.addControl(toolbar, 'top-left');
-    this.map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
     toolbar.getDistrictGeoJson = toolbar.getDistrictGeoJson.bind(mapHelper, this.map);
     toolbar.getPrecinctGeoJson = toolbar.getPrecinctGeoJson.bind(mapHelper, this.map);
@@ -134,6 +133,24 @@ class MapComponent extends React.Component{
 
       map.on('load', function () {
         map.resize();
+
+        var layers = ['< 50%', '70%', '90%', '100%', '150%', '200%', '> 250%'];
+        var colors = ['#fee0d2', '#fcbba1', '#fc9272', '#fb6a4a', '#ef3b2c', '#cb181d', '#a50f15'];
+        var legend = document.getElementById('heatmap-legend');
+        for (var i = 0; i < layers.length; i++) {
+          var layer = layers[i];
+          var color = colors[i];
+          var item = document.createElement('div');
+          var key = document.createElement('span');
+          key.className = 'legend-key';
+          key.style.backgroundColor = color;
+        
+          var value = document.createElement('span');
+          value.innerHTML = layer;
+          item.appendChild(key);
+          item.appendChild(value);
+          legend.appendChild(item);
+        }
 
         for(let state in Constants.States) {
           if(Constants.States[state] !== Constants.States.NONE){

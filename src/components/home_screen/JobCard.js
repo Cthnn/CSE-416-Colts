@@ -47,15 +47,15 @@ class JobCard extends React.Component {
                             </tr>
                             <tr>
                                 <th>Plans:</th>
-                                <td>{job.plans}</td>
+                                <td>{job.plans.toLocaleString()}</td>
                             </tr>
                             <tr>
                                 <th>Racial/Ethnic Group:</th>
-                                <td>{job.ethnicGroup}</td>
+                                <td>{Constants.EthnicGroupNames[job.ethnicGroup]}</td>
                             </tr>
                             <tr>
                                 <th>Compactness:</th>
-                                <td>{job.compactness}</td>
+                                <td>{Constants.CompactNames[job.compactness]}</td>
                             </tr>
                             <tr>
                                 <th>Population Deviation:</th>

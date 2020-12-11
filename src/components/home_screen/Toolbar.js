@@ -149,6 +149,7 @@ class Toolbar {
                 // this.determineHeatLayerProperty(heatmapButtonValue, heatLayerName, selectedState, state, map);
                 this.determinePrecinctLayerProperty(precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map);
                 this.determineDistrictLayerProperty(districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map);
+                this.determineHeatMapLegendDisplay(precinctButtonValue, heatmapButtonValue, selectedState);
                 if (!districtButtonValue && !precinctButtonValue) { //All states visible
                     this.determineStateLayerProperty(stateLayerName, selectedState, state, map);
                 }
@@ -186,7 +187,17 @@ class Toolbar {
             }
         }
     }
+    determineHeatMapLegendDisplay = (precinctButtonValue, heatmapButtonValue, selectedState) => {
+        let legend = document.getElementById('heatmap-legend');
+        if(precinctButtonValue && heatmapButtonValue && selectedState !== Constants.States.NONE){
+            legend.style.display = 'block';
+        }  
+        else{
+            legend.style.display = 'none';
+        }
+    }
     determinePrecinctLayerProperty = (precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map) => {
+ 
         if (precinctButtonValue && selectedState === state && map.getLayer(precinctLayerName) !== undefined) {
             map.setLayoutProperty(precinctLayerName, 'visibility', 'visible');
             map.setLayoutProperty(stateLayerName, 'visibility', 'none');
@@ -211,24 +222,20 @@ class Toolbar {
                     'interpolate',
                     ['linear'],
                     ['to-number',['var','percentage'], 0],
-                    0,
-                    '#ffffcc',
                     0.5,
-                    '#ffeda0',
+                    '#fee0d2',
+                    0.7,
+                    '#fcbba1',
+                    0.9,
+                    '#fc9272',
                     1.0,
-                    '#fed976',
+                    '#fb6a4a',
                     1.5,
-                    '#feb24c',
+                    '#ef3b2c',
                     2.0,
-                    '#fd8d3c',
+                    '#cb181d',
                     2.5,
-                    '#fc4e2a',
-                    3.0,
-                    '#e31a1c',
-                    3.5,
-                    '#bd0026',
-                    4.0,
-                    '#800026'
+                    '#a50f15'
                     ]
                     ])
         }
@@ -245,6 +252,8 @@ class Toolbar {
     }
 
     setToStateOnlyView = (stateLayerName, districtLayerName, districtLayerLineName, precinctLayerName, map) => {
+        let legend = document.getElementById('heatmap-legend');
+        legend.style.display = 'none';
         if (map.getLayer(stateLayerName) !== undefined)
             map.setLayoutProperty(stateLayerName, 'visibility', 'visible');
         if (map.getLayer(districtLayerName) !== undefined && map.getLayer(districtLayerLineName) !== undefined) {
