@@ -7,8 +7,7 @@ import * as Constants from './MapConstants.js';
 class Generate extends React.Component {
     constructor(props) {
         super(props)
-        this.compactnessTip = "<div>Explain what compactness is.</div><div> Valid inputs [0,100]</div>"
-        this.populationTip = "<div>Explain what population deviation is.</div><div> Valid inputs between 1% and 50%.</div>"
+        this.populationTip = "<div>Valid inputs between 1% and 50%.</div>"
         this.minMax = {
             plans: [1, 1000],
             pop: [1, 50]
@@ -80,7 +79,7 @@ class Generate extends React.Component {
                 state: Constants.StateNames[this.state.state].toUpperCase(),
                 plans: this.state.plans,
                 comp: this.state.comp,
-                pop: this.state.pop,
+                pop: this.state.pop/100,
                 group: this.state.group
             })
         })
