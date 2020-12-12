@@ -32,7 +32,9 @@ class JobCard extends React.Component {
         // this.props.handleDistrictingClick(e.target.checked, e.target.value);
         // this.setToolbarJob(this.props.map, this.props.job, ()=>{
         // })
-        this.props.map._controls[2].changeLayer(this.props.map);
+        let job = this.props.job;
+        this.props.map._controls[2].changeState(this.props.job, this.props.map);
+        // this.props.map._controls[2].changeLayer(this.props.map);
     }
     setToolbarJob(map, job){
 
@@ -41,7 +43,9 @@ class JobCard extends React.Component {
         // console.log('hi')
         // document.getElementById('summary-button').click()
     }
-
+    setTitlecase(string){
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
     render() {
         let state = document.getElementById('state-selection').value;
         const { job } = this.props
@@ -61,7 +65,7 @@ class JobCard extends React.Component {
                 <div style={{ padding: "20px" }} className="card-content black-text">
                     <span className="blue-text">
                         <h4 style={{ display: 'inline-block', margin: "0px" }}>Job {job.jobId}</h4>
-                        <span className={statusStyles[job.status] ? statusStyles[job.status] : "badge"}>{job.status}</span>
+                        <span className={statusStyles[job.status] ? statusStyles[job.status] : "badge"}>{this.setTitlecase(job.status)}</span>
                     </span>
                     {job.jobId !== 0 &&
                         <div onClick={this.handleDeleteClick} style={{ position: "absolute", top: '0px', right: '0px', color: '#f44336', cursor: 'pointer' }}>
