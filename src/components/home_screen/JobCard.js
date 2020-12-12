@@ -32,7 +32,8 @@ class JobCard extends React.Component {
         }
 
         const modalStyle = {
-            height: '600px',
+            overflow: 'hidden',
+            height: '700px',
             width: '1200px'
         }
 
