@@ -1,5 +1,6 @@
 export const States = {NONE: 'NONE', AL: "AL", FL: "FL", VA: "VA"};
 export const StateIds = {1: "Alabama", 12: "Florida", 51: "Virginia"};
+export const StateIdKeys = {1: "AL", 12: "FL", 51: "VA"};
 export const StateNames = {NONE: 'None', AL: "Alabama", FL: "Florida", VA: "Virginia"};
 export const Districts = {AL: "AL-District", FL: "FL-District", VA: "VA-District"};
 export const Precincts = {AL: "AL-Precinct", FL: "FL-Precinct", VA: "VA-Precinct"};
@@ -15,8 +16,13 @@ export const PrecinctLayers = {AL: "AL-Precinct-Layer", FL: "FL-Precinct-Layer",
 export const HeatMapLayers = {AL: "AL-HeatMap-Layer", FL: "FL-HeatMap-Layer", VA: "VA-HeatMap-Layer"};
 export const SelectedFeatureLayer = 'selectedFeature';
 
+export const DistrictingKey = {AVG: 'AVG', EX: 'EX'};
+export const DistrictingSource = {AVG: "Average-Source", EX: "Extreme-Source"};
 export const DistrictingTypeLayers = {AVG: "Average-Districting", EX: "Extreme-Districting"};
-
+export const DistrictingLineLayers = {AVG: "Average-Line-Layer", EX: "Extreme-Line-Layer"};
+export const DistrictingTypeColors = {AVG: 'rgba(33, 156, 84, .4)', EX: 'rgba(34, 55, 214, .4)'};
+// export const DistrictingOutlineColors = {AVG: 'rgba(245, 84, 66, 1)', EX: 'rgba(0, 255, 140, 1)'};
+export const DistrictingOutlineColors = {AVG: 'rgba(33, 156, 84, 1)', EX: 'rgba(34, 55, 214, 1)'};
 export const StateCenters = {AL: [-86.68075561523438, 32.57631501316452], FL: [-82.87845611572266, 28.40022856730028], VA: [-79.42291259765625, 38.00321033702472]};
 export const CountryCenter = [-82.994041442871, 32.99325130583]
 
@@ -27,6 +33,9 @@ export const OutlineDistrictColor = 'rgba(0, 0, 0, 1)';
 export const OutlinePrecinctColor = 'rgba(200, 100, 255, 1)';
 export const SelectedFeatureColor = 'rgba(50, 50, 210, 0.4)';
 export const OutlineSelectedFeatureColor = 'rgba(50, 50, 210, 1)';
+export const AverageColor = 'rgba(66, 245, 141, .4)';
+export const ExtremeColor = 'rgba(255, 38, 0, .4)';
+
 
 export const EthnicGroups = {NONE: "NONE", WHITE: "WHITE", BLACK: "BLACK", NATIVE_AMERICAN: "NATIVE_AMERICAN", ASIAN: "ASIAN", PACIFIC_ISLANDER: "PACIFIC_ISLANDER",  HISPANIC: "HISPANIC"};
 export const EthnicGroupNames = {NONE: "None", WHITE: "White American", BLACK: "Black or African American", NATIVE_AMERICAN: "Native American and Alaska Native", ASIAN: "Asian", PACIFIC_ISLANDER: "Native Hawaiian and Other Pacific Islander", HISPANIC: "Hispanic or Latino"};

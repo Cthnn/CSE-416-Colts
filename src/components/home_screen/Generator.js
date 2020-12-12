@@ -8,10 +8,10 @@ class Generate extends React.Component {
     constructor(props) {
         super(props)
         this.compactnessTip = "<div>Explain what compactness is.</div><div> Valid inputs [0,100]</div>"
-        this.populationTip = "<div>Explain what population deviation is.</div><div> Valid inputs [0,1].</div>"
+        this.populationTip = "<div>Explain what population deviation is.</div><div> Valid inputs between 1% and 50%.</div>"
         this.minMax = {
-            plans: [100, 10000],
-            pop: [0, 1]
+            plans: [1, 1000],
+            pop: [1, 50]
         }
 
         this.state = {
@@ -111,7 +111,7 @@ class Generate extends React.Component {
                         <input className="active" type="number" min={minMax['plans'][0]} max={minMax['plans'][1]} id='plans' onBlur={e => { this.inputValidation(e, 'plans') }} onChange={this.handleChangeDimensions} defaultValue={minMax['plans'][0]} />
                     </div>
                     <div>
-                        <label className="black-text" htmlFor="population_deviation">Population Deviation</label>
+                        <label className="black-text" htmlFor="population_deviation">Population Deviation (%)</label>
                         <i className="tooltipped tiny material-icons grey-text" data-position="top" data-html="true" data-tooltip={this.populationTip}>info_outline</i>
                         <input className="active" type="number" step="0.01" min={minMax['pop'][0]} max={minMax['pop'][1]} id='pop' onBlur={e => { this.inputValidation(e, 'pop') }} onChange={this.handleChangeDimensions} defaultValue={minMax['pop'][0]} />
                     </div>

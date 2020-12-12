@@ -30,6 +30,15 @@ class MapHelper {
       'data': data
     });
   }
+  addDistrictingSource = (map, type, data) => {
+    let source = map.getSource(Constants.DistrictingSource[type]);
+    if(source === undefined){
+      map.addSource(Constants.DistrictingSource[type], {
+        'type': 'geojson',
+        'data': data
+      })
+    }
+  }
 
   addHeatMapSource = (map, state, data) => {
     map.addSource(Constants.HeatMaps[state], {
@@ -37,7 +46,34 @@ class MapHelper {
       'data': data
     });
   }
-
+  addDistrictingLayer = (map, type) => {
+    let layer = map.getLayer(Constants.DistrictingTypeLayers[type]);
+    if(layer === undefined){
+      map.addLayer({
+        'id': Constants.DistrictingTypeLayers[type],
+        'type': 'fill',
+        'source': Constants.DistrictingSource[type],
+        // 'layout':{
+        //   'visibility':'none'
+        // },
+        'paint': {
+          'fill-color': Constants.DistrictingTypeColors[type],
+          'fill-outline-color': Constants.DistrictingOutlineColors[type]
+        }
+      });
+    }
+    map.addLayer({
+      'id': Constants.DistrictingLineLayers[type],
+      'type': 'line',
+      'source': Constants.DistrictingSource[type],
+      'paint': {
+        'line-color': Constants.DistrictingOutlineColors[type],
+        'line-width': 2
+      }
+    });
+  }
+    
+  
   addStateLayer = (map, state, toolbar) => {
     let layer = Constants.StateLayers[state];
     map.addLayer({
@@ -65,7 +101,9 @@ class MapHelper {
         center: Constants.StateCenters[state],
         zoom: 6
       })
-      toolbar.setState(state);
+      console.log("in map.js")
+      // console.log(map);
+      toolbar.setState(state, map);
     });
   }
 
@@ -126,7 +164,9 @@ class MapComponent extends React.Component{
     this.map.addControl(new mapboxgl.NavigationControl(), "bottom-left");
     toolbar.getDistrictGeoJson = toolbar.getDistrictGeoJson.bind(mapHelper, this.map);
     toolbar.getPrecinctGeoJson = toolbar.getPrecinctGeoJson.bind(mapHelper, this.map);
+    toolbar.getDistrictingGeoJson = toolbar.getDistrictingGeoJson.bind(mapHelper, this.map);
     toolbar.getJobDistrictingGeoJson = toolbar.getJobDistrictingGeoJson.bind(mapHelper, this.map);
+
     if(this.map){
       const map = this.map;
       this.props.passMap(map);
@@ -229,8 +269,11 @@ function getFeatures(precinctButtonValue, districttButtonValue, point, map){
     if(districttButtonValue){
       layers = queryDistrictLayers(map);
     }
+    else{
+      layers = queryDistrictingLayers(map);
+    }
   }
-  if(layers.length !== 0){
+  if(layers !== undefined && layers.length !== 0){
     features = map.queryRenderedFeatures(point, {layers: layers});
   }
   return features;
@@ -248,6 +291,15 @@ function queryDistrictLayers(map){
   for(let layer in Constants.DistrictLayers){
     if(map.getLayer(Constants.DistrictLayers[layer]) !== undefined)
       layers.push(Constants.DistrictLayers[layer]);
+  }
+  return layers;
+}
+function queryDistrictingLayers(map){
+  let layers = [];
+  for(let layer in Constants.DistrictingTypeLayers){
+    if(map.getLayer(Constants.DistrictingTypeLayers[layer]) !== undefined){
+      layers.push(Constants.DistrictingTypeLayers[layer]);
+    }
   }
   return layers;
 }

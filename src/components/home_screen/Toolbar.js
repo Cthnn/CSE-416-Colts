@@ -6,8 +6,12 @@ class Toolbar {
     constructor(){
         this.total_VAP = this.initializeTotalVAP();
         this.generateTotalVAP();
+        
+        this.job = null;
+        this.average = false;
+        this.extreme = false;
     }
-    setState(state) {
+    setState(state, map) {
         if (state !== Constants.States.NONE) {
             fetch('http://localhost:8080/state', {
                 headers: { "Content-Type": "application/json" },
@@ -18,6 +22,16 @@ class Toolbar {
                 .then(result => {
                     console.log('Success:', result);
                 }).catch(error => { console.error('Error:', error); });
+        }
+        // console.log(map);
+        if(map !== undefined){
+            this.removeAllDistrictingLayers(map);
+            // for(let type in Constants.DistrictingTypeLayers){
+            //     if(map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined && map.getSource(Constants.DistrictingSource[type]) !== undefined){
+            //         map.removeLayer(Constants.DistrictingTypeLayers[type]);
+            //         map.removeSource(Constants.DistrictingSource[type]);
+            //     }
+            // }
         }
         this.changeLayer(this.map);
     }
@@ -84,7 +98,28 @@ class Toolbar {
                 });
         }
     }
-
+    async getDistrictingGeoJson(map, job, state, type, key){
+        let layer = map.getLayer(Constants.DistrictingTypeLayers[type]);
+        let src = map.getSource(Constants.DistrictingSource[key]);
+        // console.log(layer);
+        // console.log(src);
+        if(src === undefined && layer === undefined && job.status === Constants.Completed && Constants.StateNames[state].toUpperCase() === job.state.stateName){
+            let params = JSON.stringify({jobId: job.jobId, type: type.toUpperCase()});
+            await fetch('http://localhost:8080/jobGeo', {
+                    headers: { "Content-Type": "application/json" },
+                    method: 'POST',
+                    body: params
+                })
+                .then(response => response.text())
+                .then(result => {
+                    console.log("recieved jobGeo districting geojson");
+                    // console.log(JSON.parse(result));
+                    this.addDistrictingSource(map, key, JSON.parse(result));
+                    this.addDistrictingLayer(map, key);
+                    
+                }).catch(error => { console.error('Error:', error); });
+        }
+    }
     onAdd(map) {
         this.map = map;
         this.container = document.createElement('div');
@@ -128,53 +163,112 @@ class Toolbar {
         this.map = undefined;
     }
 
-    displayLayer = (map) => {
+    displayLayer = (map, job) => {
         // console.log(map.style);
         let selectedState = document.getElementById('state-selection').value;
         let districtButtonValue = document.getElementById('district-checkbox').checked;
         let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
         let heatmapButtonValue = document.getElementById('heat-checkbox').checked;
+        let averageButtonValue = false;
+        let extremeButtonValue = false;
+        if(job !== null){
+            averageButtonValue = document.getElementById('avg'+job.jobId).checked;
+            extremeButtonValue = document.getElementById('ex'+job.jobId).checked;
+            var temp = '';
+            let averageLayer = Constants.DistrictingTypeLayers.AVG;
+            let extremeLayer = Constants.DistrictingTypeLayers.EX;
+            let averageLine = Constants.DistrictingLineLayers.AVG;
+            let extremeLine = Constants.DistrictingLineLayers.EX;
+            // console.log(job);
+            // console.log(selectedState);
+            // this.determineDistrictingLayerProperty(averageButtonValue, averageLayer, job, 'ALABAMA', map);
+            // this.determineDistrictingLayerProperty(extremeButtonValue, extremeLayer, job, 'ALABAMA', map);
+            let stateLayerName = Constants.StateLayers[selectedState];
+            this.determineDistrictingLayerProperty(averageButtonValue, averageLayer, averageLine, stateLayerName, job, selectedState, map);
+            this.determineDistrictingLayerProperty(extremeButtonValue, extremeLayer, extremeLine, stateLayerName, job, selectedState, map);
+        }
 
         for (let state in Constants.States) {
             let districtLayerName = Constants.DistrictLayers[state];
             let districtLayerLineName = Constants.DistrictLineLayers[state];
             let precinctLayerName = Constants.PrecinctLayers[state];
-            let heatLayerName = Constants.HeatMapLayers[state];
             let stateLayerName = Constants.StateLayers[state];
-
-            if (map.getLayer(stateLayerName) !== undefined) {
+            // console.log(selectedState + " " + state);
+            
+            if (selectedState !== state && map.getLayer(stateLayerName) !== undefined) {
                 map.setLayoutProperty(stateLayerName, 'visibility', 'visible');
                 map.setPaintProperty(stateLayerName, 'fill-color', Constants.DefaultColor);
             }
             if (selectedState !== Constants.States.NONE) {
-                // this.determineHeatLayerProperty(heatmapButtonValue, heatLayerName, selectedState, state, map);
                 this.determinePrecinctLayerProperty(precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map);
                 this.determineDistrictLayerProperty(districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map);
                 this.determineHeatMapLegendDisplay(precinctButtonValue, heatmapButtonValue, selectedState);
-                if (!districtButtonValue && !precinctButtonValue) { //All states visible
+                if (!districtButtonValue && !precinctButtonValue && !(averageButtonValue || extremeButtonValue)) { //All states visible
                     this.determineStateLayerProperty(stateLayerName, selectedState, state, map);
                 }
             }
             else { //Show just states now
                 this.setToStateOnlyView(stateLayerName, districtLayerName, districtLayerLineName, precinctLayerName, map);
+                this.removeAllDistrictingLayers(map);
             }
+            
+        }
+        let averageLine = map.getLayer(Constants.DistrictingLineLayers.AVG);
+        let extremeLine = map.getLayer(Constants.DistrictingLineLayers.EX);
+        // console.log(averageLine);
+        // console.log(extremeLine);
+        if(map.getLayer(averageLine) !== undefined){
+            map.moveLayer(averageLine);
+        }
+        if(map.getLayer(extremeLine) !== undefined){
+            map.moveLayer(extremeLine);
         }
         this.removeSelectedFeatureLayer(map);
     }
 
     changeLayer = (map) => {
+        // console.log("Changing...");
         let selectedState = document.getElementById('state-selection').value;
         let districtButtonValue = document.getElementById('district-checkbox').checked;
         let precinctButtonValue = document.getElementById('precinct-checkbox').checked;
-        
+        let averageButtonValue = null;
+        let extremeButtonValue = null;
+
+        let job = this.job;
+        if(this.job !== null){
+            averageButtonValue = document.getElementById('avg'+this.job.jobId).checked;
+            extremeButtonValue = document.getElementById('ex'+this.job.jobId).checked;
+        }        
+        // console.log(averageButtonValue);
+        if(averageButtonValue !== null && averageButtonValue && selectedState !== Constants.States.NONE){
+            this.getDistrictingGeoJson(job, selectedState, Constants.DistrictingType.AVG, Constants.DistrictingKey.AVG).then(() =>this.displayLayer(map,job));
+        }
+        if(extremeButtonValue !== null && extremeButtonValue && selectedState !==Constants.States.NONE){
+            this.getDistrictingGeoJson(job, selectedState, Constants.DistrictingType.EX, Constants.DistrictingKey.EX).then(() =>this.displayLayer(map,job));
+        }
         if (districtButtonValue)
-            this.getDistrictGeoJson(selectedState).then(() => this.displayLayer(map));
+            this.getDistrictGeoJson(selectedState).then(() => this.displayLayer(map, job));
         if (precinctButtonValue)
-            this.getPrecinctGeoJson(selectedState).then(() => this.displayLayer(map));
+            this.getPrecinctGeoJson(selectedState).then(() => this.displayLayer(map, job));
 
         this.determineToolbarVisibility(selectedState);
         if (selectedState === Constants.States.NONE || (!districtButtonValue && !precinctButtonValue)) {
-            this.displayLayer(map);
+            this.displayLayer(map, job);
+        }
+        
+    }
+    determineDistrictingLayerProperty = (buttonValue, layer, lineLayer, stateLayer, job, selectedState, map) => {
+        if(buttonValue && selectedState === Constants.StateIdKeys[job.state.stateId] && map.getLayer(layer) !==undefined){
+            map.setLayoutProperty(layer, 'visibility', 'visible');
+            map.setLayoutProperty(lineLayer, 'visibility', 'visible');
+            map.setLayoutProperty(stateLayer, 'visibility', 'none');
+        }
+        else{
+            if(map.getLayer(layer) !== undefined){
+                // console.log(map.getLayer(layer));
+                map.setLayoutProperty(layer,'visibility', 'none');
+                map.setLayoutProperty(lineLayer, 'visibility', 'none');
+            }
         }
     }
     determineDistrictLayerProperty = (districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map) => {
@@ -280,7 +374,6 @@ class Toolbar {
                 map.setPaintProperty(stateLayerName, 'fill-color', Constants.DefaultColor);
         }
     }
-
     setToStateOnlyView = (stateLayerName, districtLayerName, districtLayerLineName, precinctLayerName, map) => {
         let legend = document.getElementById('heatmap-legend');
         legend.style.display = 'none';
@@ -297,6 +390,15 @@ class Toolbar {
         if (map.getLayer(Constants.SelectedFeatureLayer) !== undefined) {
             map.removeLayer(Constants.SelectedFeatureLayer);
             map.removeSource(Constants.SelectedFeatureLayer);
+        }
+    }
+    removeAllDistrictingLayers(map){
+        for(let type in Constants.DistrictingTypeLayers){
+            if(map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined && map.getSource(Constants.DistrictingSource[type]) !== undefined){
+                map.removeLayer(Constants.DistrictingTypeLayers[type]);
+                map.removeLayer(Constants.DistrictingLineLayers[type]);
+                map.removeSource(Constants.DistrictingSource[type]);
+            }
         }
     }
     determineToolbarVisibility = (selectedState) => {
@@ -432,6 +534,8 @@ class Toolbar {
             }
             elem.selectedIndex = Object.keys(Constants.States).indexOf(state);
             this.setState(state);
+
+
         })
     }
     async generateTotalVAP(){
@@ -479,6 +583,12 @@ class Toolbar {
         }).catch(error => {
             console.error('Error:', error);
         });
+    }
+    setJob = (job) => {
+        this.assignJob(job)
+    }
+    assignJob(job){
+        this.job = job;
     }
 
 }

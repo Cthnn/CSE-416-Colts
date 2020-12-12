@@ -10,21 +10,40 @@ class JobCard extends React.Component {
         return { jobId, title: 'Job ' + jobId, state, plans, compactness, populationDeviation, group, status }
     }
 
+    handleUnloadJob = () =>{
+        this.props.unloadJob();
+        let job = this.props.job;
+        let avgElement = document.getElementById('avg'+job.jobId);
+        let exElement = document.getElementById('ex'+job.jobId);
+        avgElement.checked = false;
+        exElement.checked = false;
+    }
     handleDeleteClick = (e) => {
         e.stopPropagation();
         this.props.deleteJob(this.props.job)
     }
 
     handleDistrictingClick = (e) => {
-        this.props.handleDistrictingClick(e.target.checked, e.target.value);
+        // this.props.map._controls[2].setJob(this.props, () => {
+        //     console.log('testing');
+        //     this.props.map._controls[2].changeLayer(this.props.map);
+        // })
+        // this.setToolbarJob(this.props.map, )        
+        // this.props.handleDistrictingClick(e.target.checked, e.target.value);
+        // this.setToolbarJob(this.props.map, this.props.job, ()=>{
+        // })
+        this.props.map._controls[2].changeLayer(this.props.map);
     }
+    setToolbarJob(map, job){
 
+    }
     handleToggle = (e) => {
-        console.log('hi')
+        // console.log('hi')
         // document.getElementById('summary-button').click()
     }
 
     render() {
+        let state = document.getElementById('state-selection').value;
         const { job } = this.props
         const statusStyles = {
             COMPLETED: "badge green-text",
@@ -37,7 +56,7 @@ class JobCard extends React.Component {
         }
 
         return (
-            <div className="card z-depth-1 todo-list-link white" onClick={job.status === "COMPLETED" ? this.props.loadJob.bind(this, job) : () => { this.props.unloadJob() }}>
+            <div className="card z-depth-1 todo-list-link white" onClick={job.status === "COMPLETED" ? this.props.loadJob.bind(this, job) : this.handleUnloadJob}>
                 <div style={{ padding: "20px" }} className="card-content black-text">
                     <span className="blue-text">
                         <h4 style={{ display: 'inline-block', margin: "0px" }}>Job {job.jobId}</h4>
@@ -75,10 +94,10 @@ class JobCard extends React.Component {
                         </tbody></table>
                         <div style={job.status === "COMPLETED" ? { display: "block" } : { display: "none" }}>
                             <label className='districting-label'>Average
-                                <input id='avg' value={Constants.DistrictingType.AVG} className='districting-button' onChange={this.handleDistrictingClick} type='checkbox' />
+                                <input id={'avg'+job.jobId} value={Constants.DistrictingType.AVG} className='districting-button' onChange={this.handleDistrictingClick}type='checkbox' />
                             </label>
                             <label className='districting-label'>Extreme
-                                <input id='ex' value={Constants.DistrictingType.EX} className='districting-button' onChange={this.handleDistrictingClick} type='checkbox' />
+                                <input id={'ex'+job.jobId} value={Constants.DistrictingType.EX} className='districting-button' onChange={this.handleDistrictingClick} type='checkbox' />
                             </label>
                             <a className="blue lighten-2 waves-effect waves-light btn modal-trigger" href="#plot-modal" style={{ position: 'absolute', right: '20px' }}>
                                 <i className="material-icons" onClick={this.handleToggle()}>insert_chart</i>
