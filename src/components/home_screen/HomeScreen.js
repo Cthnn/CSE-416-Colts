@@ -30,17 +30,18 @@ class HomeScreen extends Component {
             oldAvgButton.checked=false;
             oldExButton.checked=false;
             this.state.map._controls[2].changeLayer(this.state.map);
+            this.state.map._controls[2].removeAllDistrictingLayers();
         }
         this.setState({ activeJob: job }, () => {
             this.state.map._controls[2].setJob(this.state.activeJob);
         });
-        console.log('Loading...')
+        // console.log('Loading...')
         var params = JSON.stringify(job.jobId)
         fetch('http://localhost:8080/getBoxPlot', {
             headers: { "Content-Type": "application/json" },
             method: 'POST',
             body: params
-        })
+        })  
             .then(response => response.text())
             .then(result => {
                 this.setState({ 'summary': JSON.parse(result) })
@@ -50,8 +51,9 @@ class HomeScreen extends Component {
 
     unloadJob = () => {
         this.setState({ activeJob: null });
-        this.state.map._controls[2].removeAllDistrictingLayers(this.state.map);
+        // this.state.map._controls[2].removeAllDistrictingLayers(this.state.map);
         this.state.map._controls[2].setJob(null);
+        this.state.map._controls[2].removeAllDistrictingLayers();
         this.state.map._controls[2].changeLayer(this.state.map);
     }
 

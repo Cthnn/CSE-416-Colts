@@ -7,11 +7,16 @@ class Toolbar {
         this.total_VAP = this.initializeTotalVAP();
         this.generateTotalVAP();
         
+        this.map = null;
         this.job = null;
         this.average = false;
         this.extreme = false;
     }
     setState(state, map) {
+        // console.log(map);
+        if(map !== undefined){
+            this.removeAllDistrictingLayers();
+        }
         if (state !== Constants.States.NONE) {
             fetch('http://localhost:8080/state', {
                 headers: { "Content-Type": "application/json" },
@@ -24,15 +29,6 @@ class Toolbar {
                 }).catch(error => { console.error('Error:', error); });
         }
         // console.log(map);
-        if(map !== undefined){
-            this.removeAllDistrictingLayers(map);
-            // for(let type in Constants.DistrictingTypeLayers){
-            //     if(map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined && map.getSource(Constants.DistrictingSource[type]) !== undefined){
-            //         map.removeLayer(Constants.DistrictingTypeLayers[type]);
-            //         map.removeSource(Constants.DistrictingSource[type]);
-            //     }
-            // }
-        }
         this.changeLayer(this.map);
     }
     async getJobDistrictingGeoJson(map, jobId, districtingType) {
@@ -101,8 +97,12 @@ class Toolbar {
     async getDistrictingGeoJson(map, job, state, type, key){
         let layer = map.getLayer(Constants.DistrictingTypeLayers[type]);
         let src = map.getSource(Constants.DistrictingSource[key]);
-        // console.log(layer);
         // console.log(src);
+        // console.log(layer);
+        // console.log(job.status);
+        // console.log(Constants.Completed)
+        // console.log(Constants.StateNames[state].toUpperCase())
+        // console.log(job.state.stateName);
         if(src === undefined && layer === undefined && job.status === Constants.Completed && Constants.StateNames[state].toUpperCase() === job.state.stateName){
             let params = JSON.stringify({jobId: job.jobId, type: type.toUpperCase()});
             await fetch('http://localhost:8080/jobGeo', {
@@ -113,7 +113,7 @@ class Toolbar {
                 .then(response => response.text())
                 .then(result => {
                     console.log("recieved jobGeo districting geojson");
-                    // console.log(JSON.parse(result));
+                    console.log(JSON.parse(result));
                     this.addDistrictingSource(map, key, JSON.parse(result));
                     this.addDistrictingLayer(map, key);
                     
@@ -214,7 +214,7 @@ class Toolbar {
             }
             else { //Show just states now
                 this.setToStateOnlyView(stateLayerName, districtLayerName, districtLayerLineName, precinctLayerName, map);
-                this.removeAllDistrictingLayers(map);
+                this.removeAllDistrictingLayers();
             }
             
         }
@@ -420,11 +420,17 @@ class Toolbar {
             map.removeSource(Constants.SelectedFeatureLayer);
         }
     }
-    removeAllDistrictingLayers(map){
+    removeAllDistrictingLayers(){
+        let map = this.map;
+        // console.log("Removing all layers and sources");
         for(let type in Constants.DistrictingTypeLayers){
-            if(map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined && map.getSource(Constants.DistrictingSource[type]) !== undefined){
+            // console.log(map.getLayer(Constants.DistrictingTypeLayers[type]))
+            // console.log(map.getSource(Constants.DistrictingSource[type]))
+            if(map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined){
                 map.removeLayer(Constants.DistrictingTypeLayers[type]);
                 map.removeLayer(Constants.DistrictingLineLayers[type]);
+            }
+            if(map.getSource(Constants.DistrictingSource[type]) !== undefined){
                 map.removeSource(Constants.DistrictingSource[type]);
             }
         }
