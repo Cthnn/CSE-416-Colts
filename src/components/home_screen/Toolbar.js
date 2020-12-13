@@ -207,6 +207,7 @@ class Toolbar {
                 this.determinePrecinctLayerProperty(precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map);
                 this.determineDistrictLayerProperty(districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map);
                 this.determineHeatMapLegendDisplay(precinctButtonValue, heatmapButtonValue, selectedState);
+                this.determineDistrictingLegendDisplay(districtButtonValue, averageButtonValue, extremeButtonValue);
                 if (!districtButtonValue && !precinctButtonValue && !(averageButtonValue || extremeButtonValue)) { //All states visible
                     this.determineStateLayerProperty(stateLayerName, selectedState, state, map);
                 }
@@ -297,6 +298,15 @@ class Toolbar {
                 map.setLayoutProperty(districtLayerName, 'visibility', 'none');
                 map.setLayoutProperty(districtLayerLineName, 'visibility', 'none');
             }
+        }
+    }
+    determineDistrictingLegendDisplay = (districtButtonValue, averageButtonValue, extremeButtonValue) => {
+        let districtingLegend = document.getElementById('districting-legend');
+        if(districtButtonValue || (averageButtonValue !== null && averageButtonValue) || (extremeButtonValue !== null && extremeButtonValue)){
+            districtingLegend.style.display = 'block';
+        }
+        else{
+            districtingLegend.style.display = 'none';
         }
     }
     determineHeatMapLegendDisplay = (precinctButtonValue, heatmapButtonValue, selectedState) => {
@@ -618,9 +628,9 @@ class Toolbar {
         this.job = job;
     }
     moveDistrictingLayer(map){
-        let averageDistricting = map.getLayer(Constants.DistrictLayers.AVG); 
+        let averageDistricting = map.getLayer(Constants.DistrictingTypeLayers.AVG); 
         let averageLine = map.getLayer(Constants.DistrictingLineLayers.AVG);
-        let extremeDistricting = map.getLayer(Constants.DistrictLayers.EX); 
+        let extremeDistricting = map.getLayer(Constants.DistrictingTypeLayers.EX); 
         let extremeLine = map.getLayer(Constants.DistrictingLineLayers.EX);
         if(map.getLayer(averageLine) !== undefined){
             map.moveLayer(averageLine);
