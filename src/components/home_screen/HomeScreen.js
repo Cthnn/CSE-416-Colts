@@ -34,7 +34,7 @@ class HomeScreen extends Component {
         this.setState({ activeJob: job }, () => {
             this.state.map._controls[2].setJob(this.state.activeJob);
         });
-
+        console.log('Loading...')
         var params = JSON.stringify(job.jobId)
         fetch('http://localhost:8080/getBoxPlot', {
             headers: { "Content-Type": "application/json" },
@@ -77,6 +77,8 @@ class HomeScreen extends Component {
                 // console.log('History:', JSON.parse(result));
                 // console.log(this.state.jobs);
                 this.setState({ jobs: JSON.parse(result) })
+
+
             }).catch(error => { console.error('Error:', error); });
     }
     handleDistrictingClick = (value, type) => {
@@ -159,8 +161,9 @@ class HomeScreen extends Component {
                             </a>
                         </div> */}
                     </div>
-                    <div className = 'map-overlay' id='heatmap-legend'>
-                    </div>
+                    <div className = 'map-overlay' id='heatmap-legend'></div>
+
+                    <div className = 'map-overlay' id='districting-legend'></div>
                 </div>
                 <Modal id="modal2" className="modal">
                     <div className="modal-content center-align">

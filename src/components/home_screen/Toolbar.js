@@ -171,7 +171,7 @@ class Toolbar {
         let heatmapButtonValue = document.getElementById('heat-checkbox').checked;
         let averageButtonValue = false;
         let extremeButtonValue = false;
-        if(job !== null){
+        if(job !== null && Constants.StateIdKeys[job.state.stateId]){
             averageButtonValue = document.getElementById('avg'+job.jobId).checked;
             extremeButtonValue = document.getElementById('ex'+job.jobId).checked;
             var temp = '';
@@ -290,9 +290,11 @@ class Toolbar {
         let precinct_amount = Constants.PrecinctAmounts[selectedState];
         let percentages = [.5, .7, .9, 1, 1.5, 2, 2.5];
         let average = total/precinct_amount;
-
+        // console.log(legend.childNodes[0]);
         if(precinctButtonValue && heatmapButtonValue && selectedState !== Constants.States.NONE){
+            // console.log(legend.childNodes);
             for(var i = 1; i < legend.childNodes.length;i++){
+                // console.log(legend.childNodes[i].childNodes);
                 var current_percentage = percentages[i-1];
                 var calculation = Math.trunc(current_percentage*average);
                 if(i == 1){
@@ -400,6 +402,18 @@ class Toolbar {
                 map.removeSource(Constants.DistrictingSource[type]);
             }
         }
+    }
+    changeState(job, map){
+        // console.log(job);
+        // console.log(map);
+        let state = Constants.StateIdKeys[job.state.stateId];
+        document.getElementById('state-selection').value = Constants.States[state];
+        document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state);
+        map.flyTo({
+            center: Constants.StateCenters[state],
+            zoom: 6
+        })
+        this.changeLayer(map);
     }
     determineToolbarVisibility = (selectedState) => {
         let heatmapButton = document.getElementById('heat-checkbox');

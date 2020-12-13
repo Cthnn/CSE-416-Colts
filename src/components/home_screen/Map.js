@@ -173,28 +173,8 @@ class MapComponent extends React.Component{
 
       map.on('load', function () {
         map.resize();
-
-        var layers = ['< 50%', '70%', '90%', '100%', '150%', '200%', '> 250%'];
-        var colors = ['#fee0d2', '#fcbba1', '#fc9272', '#fb6a4a', '#ef3b2c', '#cb181d', '#a50f15'];
-        var legend = document.getElementById('heatmap-legend');
-        var title = document.createElement('div');
-        title.innerText = 'Population Range';
-        title.style.fontWeight = 7
-        legend.appendChild(title);
-        for (var i = 0; i < layers.length; i++) {
-          var layer = layers[i];
-          var color = colors[i];
-          var item = document.createElement('div');
-          var key = document.createElement('span');
-          key.className = 'legend-key';
-          key.style.backgroundColor = color;
-        
-          var value = document.createElement('span');
-          value.innerHTML = layer;
-          item.appendChild(key);
-          item.appendChild(value);
-          legend.appendChild(item);
-        }
+        addHeatmapLegend();
+        addDistrictingLegend();
 
         for(let state in Constants.States) {
           if(Constants.States[state] !== Constants.States.NONE){
@@ -258,7 +238,51 @@ function addSelectedFeatureLayer(feature, map){
     }
   });
 }
+function addHeatmapLegend(){
+  var layers = ['< 50%', '70%', '90%', '100%', '150%', '200%', '> 250%'];
+  var colors = ['#fee0d2', '#fcbba1', '#fc9272', '#fb6a4a', '#ef3b2c', '#cb181d', '#a50f15'];
+  var legend = document.getElementById('heatmap-legend');
+  var title = document.createElement('div');
+  title.innerText = 'Population Range';
+  title.style.fontWeight = 7
+  legend.appendChild(title);
+  for (var i = 0; i < layers.length; i++) {
+    var layer = layers[i];
+    var color = colors[i];
+    var item = document.createElement('div');
+    var key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
+  
+    var value = document.createElement('span');
+    value.innerHTML = layer;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+  }
+}
+function addDistrictingLegend(){
+  var layer_types = ['Enacted', 'Average', 'Extreme'];
+  var colors = [Constants.DistrictingLegendColor.ENACTED, Constants.DistrictingLegendColor.AVG, Constants.DistrictingOutlineColors.EX];
+  var districtingLegend = document.getElementById('districting-legend');
+  var title = document.createElement('div');
+  title.innerText = 'Districting Colors';
+  districtingLegend.appendChild(title);
+  for(var i = 0; i < layer_types.length; i++){
+    var layer = layer_types[i];
+    var color = colors[i];
+    var item = document.createElement('div');
+    var key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
 
+    var value = document.createElement('span');
+    value.innerHTML = layer;
+    item.appendChild(key);
+    item.appendChild(value);
+    districtingLegend.appendChild(item);
+  }
+}
 function getFeatures(precinctButtonValue, districttButtonValue, point, map){
   let features = [];
   let layers = '';
