@@ -40,14 +40,12 @@ class JobCard extends React.Component {
 
     }
     handleToggle = (e) => {
-        // console.log('hi')
-        // document.getElementById('summary-button').click()
+        this.props.toggle();
     }
     setTitlecase(string){
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
     render() {
-        let state = document.getElementById('state-selection').value;
         const { job } = this.props
         const statusStyles = {
             COMPLETED: "badge green-text",
@@ -104,12 +102,12 @@ class JobCard extends React.Component {
                             <label className='districting-label'>Extreme
                                 <input id={'ex'+job.jobId} value={Constants.DistrictingType.EX} className='districting-button' onChange={this.handleDistrictingClick} type='checkbox' />
                             </label>
-                            <a className="blue lighten-2 waves-effect waves-light btn modal-trigger" href="#plot-modal" style={{ position: 'absolute', right: '20px' }}>
-                                <i className="material-icons" onClick={this.handleToggle()}>insert_chart</i>
+                            <a className="blue lighten-2 waves-effect waves-light btn-small" style={{ position: 'absolute', right: '20px' }}>
+                                <i className="material-icons" onClick={this.handleToggle}>insert_chart</i>
                             </a>
-                            <Modal id="plot-modal" className="modal" style={modalStyle}>
+                            {/* <Modal id="plot-modal" className="modal" style={modalStyle}>
                                 <Summary avg={this.props.avg} ex={this.props.ex} unloadJob={this.unloadJob} job={this.props.job} summary={this.props.summary} />
-                            </Modal>
+                            </Modal> */}
                         </div>
                     </div>
                 </div>
