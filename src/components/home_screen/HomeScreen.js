@@ -16,13 +16,27 @@ class HomeScreen extends Component {
     state = {
         activeJob: null,
         summary: [],
-        showMap: true,
+        showSummary: false,
         jobs: [],
         map: null,
         average: false,
         extreme: false
     }
 
+    handleGetBoxPlot = (job) => {
+        console.log('Loading...')
+        var params = JSON.stringify(job.jobId)
+        fetch('http://localhost:8080/getBoxPlot', {
+            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            body: params
+        })
+            .then(response => response.text())
+            .then(result => {
+                this.setState({ 'summary': JSON.parse(result) });
+                
+            }).catch(error => { console.error('Error:', error); });
+    }
     loadJob = (job) => {
         if(this.state.activeJob !== null && this.state.activeJob.jobId !== job.jobId){
             let oldAvgButton = document.getElementById("avg"+this.state.activeJob.jobId);
@@ -35,18 +49,8 @@ class HomeScreen extends Component {
         this.setState({ activeJob: job }, () => {
             this.state.map._controls[2].setJob(this.state.activeJob);
         });
-        // console.log('Loading...')
-        var params = JSON.stringify(job.jobId)
-        fetch('http://localhost:8080/getBoxPlot', {
-            headers: { "Content-Type": "application/json" },
-            method: 'POST',
-            body: params
-        })  
-            .then(response => response.text())
-            .then(result => {
-                this.setState({ 'summary': JSON.parse(result) })
-            }).catch(error => { console.error('Error:', error); });
-        
+        if(this.state.showSummary && job.status == "COMPLETED")
+            this.handleGetBoxPlot(job);
     }
 
     unloadJob = () => {
@@ -93,8 +97,13 @@ class HomeScreen extends Component {
         document.getElementById("summaryToggle").style.visibility = "visible";
     }
     
-    toggleShowMap = () => {
-        this.setState({ showMap: !this.state.showMap })
+    toggleSummary = () => {
+        if(!this.state.showSummary){
+            this.handleGetBoxPlot(this.state.activeJob);
+            this.setState({ showSummary: true });
+        }else{
+            this.setState({summary: [], showSummary: false});
+        }
     }
 
     unshowMap = () => {
@@ -135,7 +144,7 @@ class HomeScreen extends Component {
         return (
             <div className="HomeComponentComponents">
                 <div className="row white" onKeyDown={this.handleKeyDown}>
-                    <div className="col s6 m3 white user_input" style={containerStyle}>
+                    <div className="col s5 m2 white user_input" style={containerStyle}>
 
                         <Tabs>
                             <TabList>
@@ -147,24 +156,15 @@ class HomeScreen extends Component {
                                 <Generator jobs={jobs} />
                             </TabPanel>
                             <TabPanel>
-                                <JobLinks map={this.state.map} handleDistrictingClick={this.handleDistrictingClick} loadJob={this.loadJob.bind(this)} unloadJob={this.unloadJob} deleteJob={this.deleteJob} jobs={jobs} avg={this.state.average} ex={this.state.extreme} summary={this.state.summary}/>
+                                <JobLinks map={this.state.map} handleDistrictingClick={this.handleDistrictingClick} loadJob={this.loadJob.bind(this)} unloadJob={this.unloadJob} deleteJob={this.deleteJob} jobs={jobs} avg={this.state.average} ex={this.state.extreme} toggle={this.toggleSummary}/>
                             </TabPanel>
                         </Tabs>
                     </div>
                     <div>
-                        {/* {(this.state.activeJob && !this.state.showMap) &&
-                            <div className="grey lighten-4" style={containerStyle}>
-                                <Summary avg={this.state.average} ex={this.state.extreme} unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary} />
-                            </div>
-                        } */}
-                      
-                            <Map forceRender passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>
-
-                        {/* <div id="summaryToggle" style={{ top: "100px" }}>
-                            <a className="blue lighten-2 waves-effect waves-light btn" onClick={this.toggleShowMap}>
-                                <i className="material-icons">{this.state.showMap ? "insert_chart" : "map"}</i>
-                            </a>
-                        </div> */}
+                        <div style={{display:(this.state.showSummary)?'block':'none'}}>
+                            <Summary avg={this.state.average} ex={this.state.extreme} unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary}/>
+                        </div>
+                        <Map forceRender passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>
                     </div>
                     <div className = 'map-overlay' id='heatmap-legend'></div>
 

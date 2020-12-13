@@ -43,8 +43,8 @@ class Plot extends React.Component {
       dataset.push(enactedData);
       return dataset;
     }
-    componentDidMount() {
-      console.log(this.props);
+
+    createChart() {
       let districtNames = this.generateDistrictNames();
       let tempScatter = this.generateScatter();
       this.myChart = new Chart(this.chartRef.current, {
@@ -131,7 +131,13 @@ class Plot extends React.Component {
       });
     }
     render() {
-      return <canvas ref={this.chartRef}/>
+      //console.log(this.props.summary);
+      if(this.myChart)
+        this.myChart.destroy();
+      if(this.props.summary != null && this.props.summary.length > 0)
+        this.createChart();
+      return <canvas style = {{height: "500px"}}id = "chartCanvas" ref={this.chartRef}/>
+
     }
 }
 export default Plot;
