@@ -50,6 +50,9 @@ class HomeScreen extends Component {
 
     unloadJob = () => {
         this.setState({ activeJob: null });
+        this.state.map._controls[2].removeAllDistrictingLayers(this.state.map);
+        this.state.map._controls[2].setJob(null);
+        this.state.map._controls[2].changeLayer(this.state.map);
     }
 
     deleteJob = (job) => {

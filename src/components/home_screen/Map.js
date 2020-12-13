@@ -244,7 +244,7 @@ function addHeatmapLegend(){
   var legend = document.getElementById('heatmap-legend');
   var title = document.createElement('div');
   title.innerText = 'Population Range';
-  title.style.fontWeight = 7
+  title.style.fontWeight = 'bold';
   legend.appendChild(title);
   for (var i = 0; i < layers.length; i++) {
     var layer = layers[i];
@@ -263,10 +263,11 @@ function addHeatmapLegend(){
 }
 function addDistrictingLegend(){
   var layer_types = ['Enacted', 'Average', 'Extreme'];
-  var colors = [Constants.DistrictingLegendColor.ENACTED, Constants.DistrictingLegendColor.AVG, Constants.DistrictingOutlineColors.EX];
+  var colors = [Constants.OutlineDistrictColor, Constants.DistrictingLegendColor.AVG, Constants.DistrictingOutlineColors.EX];
   var districtingLegend = document.getElementById('districting-legend');
   var title = document.createElement('div');
   title.innerText = 'Districting Colors';
+  title.style.fontWeight = 'bold';
   districtingLegend.appendChild(title);
   for(var i = 0; i < layer_types.length; i++){
     var layer = layer_types[i];

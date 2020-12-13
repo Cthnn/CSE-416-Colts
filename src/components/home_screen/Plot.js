@@ -44,6 +44,7 @@ class Plot extends React.Component {
       return dataset;
     }
     componentDidMount() {
+      console.log(this.props);
       let districtNames = this.generateDistrictNames();
       let tempScatter = this.generateScatter();
       this.myChart = new Chart(this.chartRef.current, {

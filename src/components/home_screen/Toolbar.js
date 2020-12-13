@@ -172,20 +172,24 @@ class Toolbar {
         let averageButtonValue = false;
         let extremeButtonValue = false;
         if(job !== null && Constants.StateIdKeys[job.state.stateId]){
-            averageButtonValue = document.getElementById('avg'+job.jobId).checked;
-            extremeButtonValue = document.getElementById('ex'+job.jobId).checked;
-            var temp = '';
-            let averageLayer = Constants.DistrictingTypeLayers.AVG;
-            let extremeLayer = Constants.DistrictingTypeLayers.EX;
-            let averageLine = Constants.DistrictingLineLayers.AVG;
-            let extremeLine = Constants.DistrictingLineLayers.EX;
-            // console.log(job);
-            // console.log(selectedState);
-            // this.determineDistrictingLayerProperty(averageButtonValue, averageLayer, job, 'ALABAMA', map);
-            // this.determineDistrictingLayerProperty(extremeButtonValue, extremeLayer, job, 'ALABAMA', map);
-            let stateLayerName = Constants.StateLayers[selectedState];
-            this.determineDistrictingLayerProperty(averageButtonValue, averageLayer, averageLine, stateLayerName, job, selectedState, map);
-            this.determineDistrictingLayerProperty(extremeButtonValue, extremeLayer, extremeLine, stateLayerName, job, selectedState, map);
+            let averageButton = document.getElementById('avg'+job.jobId);
+            let extremeButton = document.getElementById('ex'+job.jobId);
+            if(averageButton !== null &&  extremeButton !== null){
+                averageButtonValue = document.getElementById('avg'+job.jobId).checked;
+                extremeButtonValue = document.getElementById('ex'+job.jobId).checked;
+                var temp = '';
+                let averageLayer = Constants.DistrictingTypeLayers.AVG;
+                let extremeLayer = Constants.DistrictingTypeLayers.EX;
+                let averageLine = Constants.DistrictingLineLayers.AVG;
+                let extremeLine = Constants.DistrictingLineLayers.EX;
+                // console.log(job);
+                // console.log(selectedState);
+                // this.determineDistrictingLayerProperty(averageButtonValue, averageLayer, job, 'ALABAMA', map);
+                // this.determineDistrictingLayerProperty(extremeButtonValue, extremeLayer, job, 'ALABAMA', map);
+                let stateLayerName = Constants.StateLayers[selectedState];
+                this.determineDistrictingLayerProperty(averageButtonValue, averageLayer, averageLine, stateLayerName, job, selectedState, map);
+                this.determineDistrictingLayerProperty(extremeButtonValue, extremeLayer, extremeLine, stateLayerName, job, selectedState, map);
+            }
         }
 
         for (let state in Constants.States) {
@@ -236,8 +240,12 @@ class Toolbar {
 
         let job = this.job;
         if(this.job !== null){
-            averageButtonValue = document.getElementById('avg'+this.job.jobId).checked;
-            extremeButtonValue = document.getElementById('ex'+this.job.jobId).checked;
+            let averageButton = document.getElementById('avg'+job.jobId);
+            let extremeButton = document.getElementById('ex'+job.jobId);
+            if(averageButton !== null && extremeButton !== null){
+                averageButtonValue = averageButton.checked;
+                extremeButtonValue = extremeButton.checked;
+            }
         }        
         // console.log(averageButtonValue);
         if(averageButtonValue !== null && averageButtonValue && selectedState !== Constants.States.NONE){
@@ -599,9 +607,6 @@ class Toolbar {
         });
     }
     setJob = (job) => {
-        this.assignJob(job)
-    }
-    assignJob(job){
         this.job = job;
     }
 
