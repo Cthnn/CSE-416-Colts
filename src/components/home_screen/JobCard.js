@@ -89,15 +89,15 @@ class JobCard extends React.Component {
                             </tr>
                         </tbody></table>
                         <div style={job.status === "COMPLETED" ? { display: "block" } : { display: "none" }}>
+                            <a className="blue lighten-2 waves-effect waves-light btn-small" style={{ position: 'absolute', right: '20px', padding: "0px 14px"}} onClick={this.handleToggle}>
+                                <i className="material-icons" >insert_chart</i>
+                            </a>
                             <label className='districting-label'>Average
                                 <input id={'avg'+job.jobId} value={Constants.DistrictingType.AVG} className='districting-button' onChange={this.handleDistrictingClick}type='checkbox' />
                             </label>
                             <label className='districting-label'>Extreme
                                 <input id={'ex'+job.jobId} value={Constants.DistrictingType.EX} className='districting-button' onChange={this.handleDistrictingClick} type='checkbox' />
                             </label>
-                            <a className="blue lighten-2 waves-effect waves-light btn-small" style={{ position: 'absolute', right: '20px' }} onClick={this.handleToggle}>
-                                <i className="material-icons">insert_chart</i>
-                            </a>
                             {/* <Modal id="plot-modal" className="modal" style={modalStyle}>
                                 <Summary avg={this.props.avg} ex={this.props.ex} unloadJob={this.unloadJob} job={this.props.job} summary={this.props.summary} />
                             </Modal> */}

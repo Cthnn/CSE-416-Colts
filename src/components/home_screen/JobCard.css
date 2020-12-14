@@ -23,12 +23,15 @@
     position:relative !important;
 }
 .districting-label{
+    font-size: 12px;
     display: inline-block;
     color: black;
     vertical-align: baseline;
-    padding: 5px 2px;
+    width:100%;
+    padding: 0px 2px;
 }
 
 .districting-label input{
     vertical-align: middle;
+    margin-left: 4px;
 }

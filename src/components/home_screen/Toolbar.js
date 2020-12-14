@@ -311,7 +311,15 @@ class Toolbar {
         enactedsLegend.style.display = "none";
         averageLegend.style.display = "none";
         extremeLegend.style.display = "none";
-        if(districtButtonValue || (averageButtonValue !== null && averageButtonValue) || (extremeButtonValue !== null && extremeButtonValue)){
+        let count = 0;
+        if(districtButtonValue)
+            count++;
+        if(averageButtonValue !== null && averageButtonValue)
+            count++;
+        if(extremeButtonValue !== null && extremeButtonValue)
+            count++;
+
+        if(count > 1){
             districtingLegend.style.display = 'block';
             if(districtButtonValue)
                 enactedsLegend.style.display = "block";
