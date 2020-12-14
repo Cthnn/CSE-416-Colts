@@ -270,6 +270,7 @@ function addDistrictingLegend(){
     var color = colors[i];
     var item = document.createElement('div');
     var key = document.createElement('span');
+    item.id = layer+"-legend";
     key.className = 'legend-key';
     key.style.backgroundColor = color;
 

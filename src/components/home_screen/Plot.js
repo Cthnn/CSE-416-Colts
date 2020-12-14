@@ -104,7 +104,6 @@ class Plot extends React.Component {
       });
     }
     render() {
-      console.log(this.props.summary);
       if(this.myChart)
         this.myChart.destroy();
       if(this.props.summary != null && this.props.summary.summaryData != undefined && this.props.summary.summaryData.length > 0){

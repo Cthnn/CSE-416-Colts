@@ -305,8 +305,20 @@ class Toolbar {
     }
     determineDistrictingLegendDisplay = (districtButtonValue, averageButtonValue, extremeButtonValue) => {
         let districtingLegend = document.getElementById('districting-legend');
+        let enactedsLegend = document.getElementById('Enacted-legend');
+        let averageLegend = document.getElementById('Average-legend');
+        let extremeLegend = document.getElementById('Extreme-legend');
+        enactedsLegend.style.display = "none";
+        averageLegend.style.display = "none";
+        extremeLegend.style.display = "none";
         if(districtButtonValue || (averageButtonValue !== null && averageButtonValue) || (extremeButtonValue !== null && extremeButtonValue)){
             districtingLegend.style.display = 'block';
+            if(districtButtonValue)
+                enactedsLegend.style.display = "block";
+            if(averageButtonValue !== null && averageButtonValue)
+                averageLegend.style.display = "block";
+            if(extremeButtonValue !== null && extremeButtonValue)
+                extremeLegend.style.display = "block";
         }
         else{
             districtingLegend.style.display = 'none';
