@@ -40,11 +40,22 @@ class HomeScreen extends Component {
             }).catch(error => { console.error('Error:', error); });
     }
     loadJob = (job) => {
-        if(this.state.activeJob !== null && this.state.activeJob.jobId !== job.jobId){
-            let oldAvgButton = document.getElementById("avg"+this.state.activeJob.jobId);
-            let oldExButton = document.getElementById("ex"+this.state.activeJob.jobId);
-            oldAvgButton.checked=false;
-            oldExButton.checked=false;
+        if(this.state.activeJob === null || (this.state.activeJob !== null && this.state.activeJob.jobId !== job.jobId)){
+            if(this.state.activeJob !== null){
+                let oldAvgButton = document.getElementById("avg"+this.state.activeJob.jobId);
+                let oldExButton = document.getElementById("ex"+this.state.activeJob.jobId);
+                oldAvgButton.checked=false;
+                oldExButton.checked=false;
+            }
+            let state = Constants.StateIdKeys[job.state.stateId];
+            this.state.map._controls[2].setState(state, this.state.map);
+            document.getElementById('state-selection').value = Constants.States[state];
+            document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state);
+
+            this.state.map.flyTo({
+                center: Constants.StateCenters[state],
+                zoom: 6
+            })
             this.state.map._controls[2].changeLayer(this.state.map);
             this.state.map._controls[2].removeAllDistrictingLayers();
         }

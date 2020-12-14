@@ -24,17 +24,10 @@ class JobCard extends React.Component {
     }
 
     handleDistrictingClick = (e) => {
-        // this.props.map._controls[2].setJob(this.props, () => {
-        //     console.log('testing');
-        //     this.props.map._controls[2].changeLayer(this.props.map);
-        // })
-        // this.setToolbarJob(this.props.map, )        
-        // this.props.handleDistrictingClick(e.target.checked, e.target.value);
-        // this.setToolbarJob(this.props.map, this.props.job, ()=>{
-        // })
         let job = this.props.job;
-        this.props.map._controls[2].changeState(this.props.job, this.props.map);
-        // this.props.map._controls[2].changeLayer(this.props.map);
+        // this.props.map._controls[2].changeState(this.props.job, this.props.map);
+        this.props.map._controls[2].changeLayer(this.props.map);
+
     }
     setToolbarJob(map, job){
 

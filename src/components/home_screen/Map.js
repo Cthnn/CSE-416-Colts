@@ -97,11 +97,7 @@ class MapHelper {
       document.getElementById('state-selection').value = Constants.States[state];
       document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state);
 
-      map.flyTo({
-        center: Constants.StateCenters[state],
-        zoom: 6
-      })
-      console.log("in map.js")
+      // console.log("in map.js")
       // console.log(map);
       toolbar.setState(state, map);
     });

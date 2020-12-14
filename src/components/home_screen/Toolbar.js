@@ -28,7 +28,12 @@ class Toolbar {
                     console.log('Success:', result);
                 }).catch(error => { console.error('Error:', error); });
         }
-        // console.log(map);
+        map.flyTo({
+            center: Constants.StateCenters[state],
+            zoom: 6
+        })
+        let elem = document.getElementById('district-checkbox');
+        elem.checked = true;
         this.changeLayer(this.map);
     }
     async getJobDistrictingGeoJson(map, jobId, districtingType) {
@@ -113,7 +118,6 @@ class Toolbar {
                 .then(response => response.text())
                 .then(result => {
                     console.log("recieved jobGeo districting geojson");
-                    console.log(JSON.parse(result));
                     this.addDistrictingSource(map, key, JSON.parse(result));
                     this.addDistrictingLayer(map, key);
                     
@@ -424,8 +428,6 @@ class Toolbar {
         let map = this.map;
         // console.log("Removing all layers and sources");
         for(let type in Constants.DistrictingTypeLayers){
-            // console.log(map.getLayer(Constants.DistrictingTypeLayers[type]))
-            // console.log(map.getSource(Constants.DistrictingSource[type]))
             if(map.getLayer(Constants.DistrictingTypeLayers[type]) !== undefined){
                 map.removeLayer(Constants.DistrictingTypeLayers[type]);
                 map.removeLayer(Constants.DistrictingLineLayers[type]);
@@ -441,6 +443,11 @@ class Toolbar {
         let state = Constants.StateIdKeys[job.state.stateId];
         document.getElementById('state-selection').value = Constants.States[state];
         document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state);
+        // map.flyTo({
+        //     center: Constants.StateCenters[state],
+        //     zoom: 6
+        // })
+        // this.setState(state, map);
         map.flyTo({
             center: Constants.StateCenters[state],
             zoom: 6
@@ -579,7 +586,7 @@ class Toolbar {
                 })
             }
             elem.selectedIndex = Object.keys(Constants.States).indexOf(state);
-            this.setState(state);
+            this.setState(state, map);
 
 
         })
