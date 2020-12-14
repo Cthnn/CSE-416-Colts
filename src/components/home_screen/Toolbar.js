@@ -208,9 +208,12 @@ class Toolbar {
                 map.setPaintProperty(stateLayerName, 'fill-color', Constants.DefaultColor);
             }
             if (selectedState !== Constants.States.NONE) {
-                this.determinePrecinctLayerProperty(precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map);
+                if(heatmapButtonValue && districtButtonValue && !precinctButtonValue){
+                    this.displayHeatMap(districtButtonValue, heatmapButtonValue, districtLayerName, stateLayerName, selectedState, state, map, Constants.DistrictAmounts);
+                }else{
+                    this.displayHeatMap(precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map, Constants.PrecinctAmounts);
+                }
                 this.determineDistrictLayerProperty(districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map);
-                this.determineHeatMapLegendDisplay(precinctButtonValue, heatmapButtonValue, selectedState);
                 this.determineDistrictingLegendDisplay(districtButtonValue, averageButtonValue, extremeButtonValue);
                 if (!districtButtonValue && !precinctButtonValue && !(averageButtonValue || extremeButtonValue)) { //All states visible
                     this.determineStateLayerProperty(stateLayerName, selectedState, state, map);
@@ -313,11 +316,15 @@ class Toolbar {
             districtingLegend.style.display = 'none';
         }
     }
-    determineHeatMapLegendDisplay = (precinctButtonValue, heatmapButtonValue, selectedState) => {
+    displayHeatMap(button, heatmapButton, layer, stateLayer, selectedState, state, map, amounts){
+        this.determinePrecinctLayerProperty(button, heatmapButton, layer, stateLayer, selectedState, state, map, amounts);
+        this.determineHeatMapLegendDisplay(button, heatmapButton, selectedState, amounts);
+    }
+    determineHeatMapLegendDisplay = (precinctButtonValue, heatmapButtonValue, selectedState, amounts) => {
         let race = document.getElementById("heatmap-select").value;
         let legend = document.getElementById('heatmap-legend');
         let total = this.total_VAP[selectedState][race];
-        let precinct_amount = Constants.PrecinctAmounts[selectedState];
+        let precinct_amount = amounts[selectedState];
         let percentages = [.5, .7, .9, 1, 1.5, 2, 2.5];
         let average = total/precinct_amount;
         // console.log(legend.childNodes[0]);
@@ -328,16 +335,16 @@ class Toolbar {
                 var current_percentage = percentages[i-1];
                 var calculation = Math.trunc(current_percentage*average);
                 if(i == 1){
-                    legend.childNodes[i].childNodes[1].innerText = '< ' + calculation.toString();
+                    legend.childNodes[i].childNodes[1].innerText = '< ' + calculation.toLocaleString();
                 }
                 else if(i == legend.childNodes.length-1){
                     var previous = Math.trunc(percentages[i-2]*average);
-                    legend.childNodes[i].childNodes[1].innerText = '> ' + previous.toString();
+                    legend.childNodes[i].childNodes[1].innerText = '> ' + previous.toLocaleString();
                 }
                 else{
                     // console.log(current_percentage[i-2]);
                     var previous = Math.trunc(percentages[i-2]*average);
-                    legend.childNodes[i].childNodes[1].innerText = previous.toString() + '-' + calculation.toString();
+                    legend.childNodes[i].childNodes[1].innerText = previous.toLocaleString() + ' - ' + calculation.toLocaleString();
                 }
                 
             }
@@ -347,20 +354,20 @@ class Toolbar {
             legend.style.display = 'none';
         }
     }
-    determinePrecinctLayerProperty = (precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map) => {
+    determinePrecinctLayerProperty = (precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map, amounts) => {
         if (precinctButtonValue && selectedState === state && map.getLayer(precinctLayerName) !== undefined) {
             map.setLayoutProperty(precinctLayerName, 'visibility', 'visible');
             map.setLayoutProperty(stateLayerName, 'visibility', 'none');
 
             let race = document.getElementById("heatmap-select").value;
-            this.setHeatMapColor(heatmapButtonValue, precinctLayerName, selectedState, race, map);
+            this.setHeatMapColor(heatmapButtonValue, precinctLayerName, selectedState, race, map, amounts);
         } else {
             if (map.getLayer(precinctLayerName) !== undefined){
                 map.setLayoutProperty(precinctLayerName, 'visibility', 'none');
             }
         }
     }
-    setHeatMapColor = (heatButtonValue, precinctLayerName, selectedState, race, map) => {
+    setHeatMapColor = (heatButtonValue, precinctLayerName, selectedState, race, map, amounts) => {
         if(!heatButtonValue){
             map.setPaintProperty(precinctLayerName, 'fill-color', Constants.DefaultColor);
         }
@@ -369,7 +376,7 @@ class Toolbar {
             // console.log(map.getStyle());
             let total = this.total_VAP[selectedState][race];
             map.setPaintProperty(precinctLayerName, 'fill-color', ['let','percentage',
-            ['/', ['to-number',['get', race], 0], ['to-number', total/Constants.PrecinctAmounts[selectedState], 1]],
+            ['/', ['to-number',['get', race], 0], ['to-number', total/amounts[selectedState], 1]],
                     [
                     'interpolate',
                     ['linear'],

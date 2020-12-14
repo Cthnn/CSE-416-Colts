@@ -43,3 +43,4 @@ export const CompactValues = {NONE: "0", SLIGHT: ".75", MODERATE: ".5", VERY: ".
 export const CompactNames = {.25: "Slightly Compact", .5: "Moderately Compact", .75: "Very Compact"};
 export const BoxPlotLabels = {ENACTED: "Enacted", AVG: "Average", EX: "Extreme"};
 export const PrecinctAmounts = {AL: 1975, FL: 9435, VA: 2373};
+export const DistrictAmounts = {AL: 7, FL: 25, VA: 11}
