@@ -5,6 +5,7 @@ import * as Constants from './MapConstants.js';
 import Toolbar from './Toolbar.js';
 import MapPopUp from './MapPopUp';
 import ReactDOM from 'react-dom';
+import ReactTestUtils from 'react-dom/test-utils';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -96,9 +97,10 @@ class MapHelper {
     map.on('click', layer, function (e) {
       document.getElementById('state-selection').value = Constants.States[state];
       document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state);
-
-      // console.log("in map.js")
-      // console.log(map);
+      var elem = document.getElementById('select-state-generation')
+      var event = new Event('change', {bubbles: true})
+      event.simulated = true;
+      elem.dispatchEvent(event);
       toolbar.setState(state, map);
     });
   }

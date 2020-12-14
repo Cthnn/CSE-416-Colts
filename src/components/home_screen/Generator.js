@@ -57,10 +57,12 @@ class Generate extends React.Component {
     updateState(e) {
         let input = { state: e.target.value }
         this.setState(input)
-
         var element = document.getElementById('state-selection');
-        element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
-        element.dispatchEvent(new Event('change'));
+        if(element.selectedIndex !== Object.keys(Constants.States).indexOf(e.target.value)){
+            element.selectedIndex = Object.keys(Constants.States).indexOf(e.target.value);
+            element.dispatchEvent(new Event('change'));
+        }
+        
     }
 
     enableGeneration() {
