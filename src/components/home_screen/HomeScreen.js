@@ -20,9 +20,43 @@ class HomeScreen extends Component {
         jobs: [],
         map: null,
         average: false,
-        extreme: false
+        extreme: false,
+        interval: null
     }
-
+    componentDidMount(){
+        if(this.state.interval === null){
+            console.log("Interval Created...");
+            let statusInterval = setInterval(this.getStatuses, 30000);
+            this.setState({interval: statusInterval})
+        }
+    }
+    componentWillUnmount(){
+        if(this.interval !== null){
+            console.log("Interval Cleared...");
+            clearInterval(this.interval)
+        }
+    }
+    getStatuses = () => {
+        if(this.state.jobs.length !== 0){
+            let temp = [];
+            for(var i = 0; i < this.state.jobs.length; i++){
+                temp.push(this.state.jobs[i].jobId);
+            }
+            
+            let params = JSON.stringify(temp);
+            fetch('http://localhost:8080/statuses', {
+                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                body: params
+            })
+            .then(response => response.text())
+            .then(res => {
+                // console.log('New Statuses:', JSON.parse(res));
+                this.setState({jobs: JSON.parse(res)})
+            }).catch(error => { console.error('Error:', error); });
+        }
+        
+    }
     handleGetBoxPlot = (job) => {
         console.log('Loading...')
         var params = JSON.stringify(job.jobId)
@@ -39,6 +73,7 @@ class HomeScreen extends Component {
                 
             }).catch(error => { console.error('Error:', error); });
     }
+    
     loadJob = (job) => {
         if(this.state.activeJob === null || (this.state.activeJob !== null && this.state.activeJob.jobId !== job.jobId)){
             if(this.state.activeJob !== null){
@@ -101,7 +136,11 @@ class HomeScreen extends Component {
             .then(result => {
                 // console.log('History:', JSON.parse(result));
                 // console.log(this.state.jobs);
-                this.setState({ jobs: JSON.parse(result) })
+                
+                this.setState({ jobs: JSON.parse(result) }, () => {
+                    // console.log('History: ');
+                    // console.log(JSON.parse(result));
+                })
 
 
             }).catch(error => { console.error('Error:', error); });

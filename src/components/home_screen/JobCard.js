@@ -85,7 +85,7 @@ class JobCard extends React.Component {
                             </tr>
                             <tr>
                                 <th>Population Deviation:</th>
-                                <td>{job.populationDeviation}</td>
+                                <td>{job.populationDeviation*100}%</td>
                             </tr>
                         </tbody></table>
                         <div style={job.status === "COMPLETED" ? { display: "block" } : { display: "none" }}>
