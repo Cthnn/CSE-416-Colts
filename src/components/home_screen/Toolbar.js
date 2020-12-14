@@ -208,11 +208,7 @@ class Toolbar {
                 map.setPaintProperty(stateLayerName, 'fill-color', Constants.DefaultColor);
             }
             if (selectedState !== Constants.States.NONE) {
-                if(heatmapButtonValue && districtButtonValue && !precinctButtonValue){
-                    this.displayHeatMap(districtButtonValue, heatmapButtonValue, districtLayerName, stateLayerName, selectedState, state, map, Constants.DistrictAmounts);
-                }else{
-                    this.displayHeatMap(precinctButtonValue, heatmapButtonValue, precinctLayerName, stateLayerName, selectedState, state, map, Constants.PrecinctAmounts);
-                }
+                this.displayHeatMap(precinctButtonValue, districtButtonValue, heatmapButtonValue, selectedState, state, map);
                 this.determineDistrictLayerProperty(districtButtonValue, districtLayerName, districtLayerLineName, stateLayerName, selectedState, state, map);
                 this.determineDistrictingLegendDisplay(districtButtonValue, averageButtonValue, extremeButtonValue);
                 if (!districtButtonValue && !precinctButtonValue && !(averageButtonValue || extremeButtonValue)) { //All states visible
@@ -316,9 +312,13 @@ class Toolbar {
             districtingLegend.style.display = 'none';
         }
     }
-    displayHeatMap(button, heatmapButton, layer, stateLayer, selectedState, state, map, amounts){
-        this.determinePrecinctLayerProperty(button, heatmapButton, layer, stateLayer, selectedState, state, map, amounts);
-        this.determineHeatMapLegendDisplay(button, heatmapButton, selectedState, amounts);
+    displayHeatMap(precinctButton, districtingButton, heatmapButton, selectedState, state, map){
+        this.determinePrecinctLayerProperty(districtingButton, heatmapButton, Constants.DistrictLayers[state], Constants.StateLayers[state], selectedState, state, map, Constants.DistrictAmounts);
+        this.determinePrecinctLayerProperty(precinctButton, heatmapButton, Constants.PrecinctLayers[state], Constants.StateLayers[state], selectedState, state, map, Constants.PrecinctAmounts);
+        let amounts = Constants.DistrictAmounts;
+        if(precinctButton)
+            amounts = Constants.PrecinctAmounts;
+        this.determineHeatMapLegendDisplay(precinctButton || districtingButton, heatmapButton, selectedState, amounts);
     }
     determineHeatMapLegendDisplay = (precinctButtonValue, heatmapButtonValue, selectedState, amounts) => {
         let race = document.getElementById("heatmap-select").value;
