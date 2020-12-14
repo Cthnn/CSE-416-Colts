@@ -33,7 +33,9 @@ class HomeScreen extends Component {
         })
             .then(response => response.text())
             .then(result => {
-                this.setState({ 'summary': JSON.parse(result) });
+                let boxPlotData = JSON.parse(result);
+                //console.log(boxPlotData);
+                this.setState({ 'summary': boxPlotData });
                 
             }).catch(error => { console.error('Error:', error); });
     }

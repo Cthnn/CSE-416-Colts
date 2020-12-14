@@ -9,65 +9,38 @@ class Plot extends React.Component {
         this.chartRef = React.createRef();
     }
     generateDistrictNames(){
-      let districtAmount = this.props.summary.length; //If just enacted districting
+      let districtAmount = this.props.summary.summaryData.length; //If just enacted districting
       let names = [];
       for(let i = 1; i <= districtAmount; i++){
         names[i-1]='District ' + i;
       }
       return names;
     }
-    generateScatter() {
-      var dataset = []
-      var averageData = []
-      var extremeMinData = []
-      var enactedData = []
-      for(var i = 0; i < this.props.summary.length; i++){
-        let point = {
-          x: i*10,
-          y: this.props.summary[i][2]
-        }
-        let minPoint = {
-          x: i*10,
-          y:this.props.summary[i][0]
-        }
-        let enactedPoint = {
-          x: i*10,
-          y:this.props.summary[i][4]
-        }
-        averageData.push(point);
-        extremeMinData.push(minPoint);
-        enactedData.push(enactedPoint);
-      }
-      dataset.push(averageData);
-      dataset.push(extremeMinData);
-      dataset.push(enactedData);
-      return dataset;
-    }
 
     createChart() {
       let districtNames = this.generateDistrictNames();
-      let tempScatter = this.generateScatter();
+
       this.myChart = new Chart(this.chartRef.current, {
         data:{
           datasets:[ {
               type:'scatter',
               label: Constants.BoxPlotLabels.AVG,
-              data: tempScatter[0],
+              data: this.props.summary.averageData,
               backgroundColor: '#df9554',
             },{
               type:'scatter',
               label: Constants.BoxPlotLabels.EX,
-              data: tempScatter[1],
+              data: this.props.summary.extremeData,
               backgroundColor: '#dfda54',
             },{
               type:'scatter',
               label: Constants.BoxPlotLabels.ENACTED,
-              data: tempScatter[2],
+              data: this.props.summary.enactedData,
               backgroundColor: '#d354df',
             },{
               type:'boxplot',
               label: 'Generated Districtings',
-              data: this.props.summary,
+              data: this.props.summary.summaryData,
               outlierColor: '#999999',
               backgroundColor: '#5469DF',
               borderColor: 'black',
@@ -128,10 +101,10 @@ class Plot extends React.Component {
       });
     }
     render() {
-      //console.log(this.props.summary);
+      console.log(this.props.summary);
       if(this.myChart)
         this.myChart.destroy();
-      if(this.props.summary != null && this.props.summary.length > 0)
+      if(this.props.summary != null && this.props.summary.summaryData != undefined && this.props.summary.summaryData.length > 0)
         this.createChart();
       return <canvas style = {{height: "500px"}}id = "chartCanvas" ref={this.chartRef}/>
 
