@@ -309,6 +309,7 @@ class Toolbar {
     }
     determineDistrictingLegendDisplay = (districtButtonValue, averageButtonValue, extremeButtonValue) => {
         let districtingLegend = document.getElementById('districting-legend');
+        
         let enactedLegend = document.getElementById('Enacted-legend');
         let averageLegend = document.getElementById('Average-legend');
         let extremeLegend = document.getElementById('Extreme-legend');
@@ -474,6 +475,7 @@ class Toolbar {
         let state = Constants.StateIdKeys[job.state.stateId];
         document.getElementById('state-selection').value = Constants.States[state];
         document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state);
+        document.getElementById('select-state-generation').dispatchEvent(new Event('change'));
         // map.flyTo({
         //     center: Constants.StateCenters[state],
         //     zoom: 6
@@ -618,6 +620,9 @@ class Toolbar {
                 })
             }
             elem.selectedIndex = Object.keys(Constants.States).indexOf(state);
+            var event = new Event('change', {bubbles: true})
+            event.simulated = true;
+            elem.dispatchEvent(event);
             this.setState(state, map);
 
 
