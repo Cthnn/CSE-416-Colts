@@ -305,10 +305,10 @@ class Toolbar {
     }
     determineDistrictingLegendDisplay = (districtButtonValue, averageButtonValue, extremeButtonValue) => {
         let districtingLegend = document.getElementById('districting-legend');
-        let enactedsLegend = document.getElementById('Enacted-legend');
+        let enactedLegend = document.getElementById('Enacted-legend');
         let averageLegend = document.getElementById('Average-legend');
         let extremeLegend = document.getElementById('Extreme-legend');
-        enactedsLegend.style.display = "none";
+        enactedLegend.style.display = "none";
         averageLegend.style.display = "none";
         extremeLegend.style.display = "none";
         let count = 0;
@@ -322,7 +322,7 @@ class Toolbar {
         if(count > 1){
             districtingLegend.style.display = 'block';
             if(districtButtonValue)
-                enactedsLegend.style.display = "block";
+                enactedLegend.style.display = "block";
             if(averageButtonValue !== null && averageButtonValue)
                 averageLegend.style.display = "block";
             if(extremeButtonValue !== null && extremeButtonValue)

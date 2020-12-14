@@ -26,23 +26,23 @@ class Plot extends React.Component {
               type:'scatter',
               label: Constants.BoxPlotLabels.AVG,
               data: this.props.summary.averageData,
-              backgroundColor: '#df9554',
+              backgroundColor: '#0000ff',
             },{
               type:'scatter',
               label: Constants.BoxPlotLabels.EX,
               data: this.props.summary.extremeData,
-              backgroundColor: '#dfda54',
+              backgroundColor: '#ff0000',
             },{
               type:'scatter',
               label: Constants.BoxPlotLabels.ENACTED,
               data: this.props.summary.enactedData,
-              backgroundColor: '#d354df',
+              backgroundColor: '#000000',
             },{
               type:'boxplot',
               label: 'Generated Districtings',
               data: this.props.summary.summaryData,
               outlierColor: '#999999',
-              backgroundColor: '#5469DF',
+              backgroundColor: '#f2f2f2',
               borderColor: 'black',
               borderWidth: 1
             }
@@ -51,6 +51,7 @@ class Plot extends React.Component {
         },
         
         options:{
+          animation: false,
           maintainAspectRatio: false,
           legend:{
             labels: {

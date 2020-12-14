@@ -15,6 +15,7 @@ import MapPopUp from './MapPopUp';
 class HomeScreen extends Component {
     state = {
         activeJob: null,
+        summaryJob: null,
         summary: [],
         showSummary: false,
         jobs: [],
@@ -36,23 +37,38 @@ class HomeScreen extends Component {
             clearInterval(this.interval)
         }
     }
+    getJob(id){
+        for(let job in this.state.jobs){
+            if(this.state.jobs[job].jobId == id)
+                return this.state.jobs[job];
+        }
+        return null;
+    }
     getStatuses = () => {
         if(this.state.jobs.length !== 0){
-            let temp = [];
-            for(var i = 0; i < this.state.jobs.length; i++){
-                temp.push(this.state.jobs[i].jobId);
-            }
+            // let temp = [];
+            // for(var i = 0; i < this.state.jobs.length; i++){
+            //     temp.push(this.state.jobs[i].jobId);
+            // }
             
-            let params = JSON.stringify(temp);
-            fetch('http://localhost:8080/statuses', {
+            // let params = JSON.stringify(temp);
+            fetch('http://localhost:8080/History', {
                 headers: { "Content-Type": "application/json" },
-                method: 'POST',
-                body: params
+                method: 'GET'
             })
             .then(response => response.text())
             .then(res => {
                 // console.log('New Statuses:', JSON.parse(res));
-                this.setState({jobs: JSON.parse(res)})
+                let newJobs = JSON.parse(res);
+                for(let newJobId in newJobs){
+                    let newJob = newJobs[newJobId]
+                    let oldJob = this.getJob(newJob.jobId);
+                    console.log(oldJob);
+                    if(oldJob == null || oldJob.status != newJob.status){
+                        this.setState({jobs: JSON.parse(res)});
+                        break;
+                    }
+                }
             }).catch(error => { console.error('Error:', error); });
         }
         
@@ -100,8 +116,6 @@ class HomeScreen extends Component {
         this.setState({ activeJob: job }, () => {
             this.state.map._controls[2].setJob(this.state.activeJob);
         });
-        if(this.state.showSummary && job.status == "COMPLETED")
-            this.handleGetBoxPlot(job);
     }
 
     unloadJob = () => {
@@ -152,13 +166,13 @@ class HomeScreen extends Component {
         document.getElementById("summaryToggle").style.visibility = "visible";
     }
     
-    toggleSummary = () => {
-        if(!this.state.showSummary){
-            this.handleGetBoxPlot(this.state.activeJob);
-            this.setState({ showSummary: true });
+    toggleSummary = (job) => {
+        if(job != this.state.summaryJob){
+            this.handleGetBoxPlot(job);
+            this.setState({ showSummary: true, summaryJob: job });
             document.getElementById("summaryDiv").style.display = "block";
         }else{
-            this.setState({summary: [], showSummary: false});
+            this.setState({summary: [], showSummary: false, summaryJob: null});
             document.getElementById("summaryDiv").style.display = "none";
         }
         this.state.map.resize();
@@ -210,8 +224,8 @@ class HomeScreen extends Component {
 
                         <Tabs>
                             <TabList>
-                                <Tab onClick={this.unloadJob}>Generate</Tab>
-                                <Tab onClick={this.getHistory}>Results</Tab>
+                                <Tab style={{width: "50%"}} onClick={this.unloadJob}>Generate</Tab>
+                                <Tab style={{width: "50%"}} onClick={this.getHistory}>Results</Tab>
                             </TabList>
 
                             <TabPanel forceRender>
@@ -224,7 +238,7 @@ class HomeScreen extends Component {
                     </div>
                     <div>
                         <div id="summaryDiv" style={{display:"none"}}>
-                            <Summary avg={this.state.average} ex={this.state.extreme} unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary}/>
+                            <Summary avg={this.state.average} ex={this.state.extreme} unloadJob={this.unloadJob} job={this.state.summaryJob} summary={this.state.summary} toggle={this.toggleSummary}/>
                         </div>
                         <Map forceRender passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>
                     </div>

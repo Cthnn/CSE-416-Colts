@@ -33,7 +33,7 @@ class JobCard extends React.Component {
 
     }
     handleToggle = (e) => {
-        this.props.toggle();
+        this.props.toggle(this.props.job);
     }
     setTitlecase(string){
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();

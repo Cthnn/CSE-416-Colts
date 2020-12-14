@@ -8,8 +8,8 @@ class Links extends React.Component {
         //console.log(this.props)
         return (
             <ul className="right">
-                <li><NavLink to="/sources">Sources</NavLink></li> {/* I left NavLink instead of anchor tag because I'm using airbnb eslint rules */}
-                <li><NavLink to="/about">About</NavLink></li>
+                {/* <li><NavLink to="/sources">Sources</NavLink></li> 
+                <li><NavLink to="/about">About</NavLink></li> */}
             </ul>
         );
     };
