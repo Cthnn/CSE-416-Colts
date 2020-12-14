@@ -51,8 +51,8 @@ class Plot extends React.Component {
         },
         
         options:{
+          maintainAspectRatio: false,
           legend:{
-            
             labels: {
               usePointStyle: true
             }
@@ -64,17 +64,20 @@ class Plot extends React.Component {
                 let averageScatterData = data.datasets[0].data
                 let extremeMinData = data.datasets[1].data
                 let enactedData = data.datasets[2].data
-                let boxPlotData = data.datasets[3].data[index];
+                let boxPlotData = data.datasets[3].data[index].sort();
 
-                let string = ['Min: '+ boxPlotData[0].toString()]
-                string.push('Q1:  '+ boxPlotData[1].toString());
-                string.push('Median:  '+ boxPlotData[2].toString());
-                string.push('Q3:  '+ boxPlotData[3].toString());
-                string.push('Max: '+ boxPlotData[4].toString());
-                string.push('Generated Average: ' + enactedData[index].y)
-                string.push('Generated Average: ' + averageScatterData[index].y)
-                string.push('Generated Extreme Min: ' + extremeMinData[index].y)
+
+
+                let string = ['Min: '+ boxPlotData[0]]
+                string.push('Q1:  '+ boxPlotData[Math.floor(0.25 * boxPlotData.length)]);
+                string.push('Median:  '+ boxPlotData[Math.floor(0.5 * boxPlotData.length)]);
+                string.push('Q3:  '+ boxPlotData[Math.floor(0.75 * boxPlotData.length)]);
+                string.push('Max: '+ boxPlotData[boxPlotData.length-1]);
+                string.push('Enacted: ' + enactedData[index])
+                string.push('Average: ' + averageScatterData[index])
+                string.push('Extreme: ' + extremeMinData[index])
                 return string;
+                return [];
               }
             }
           },
@@ -104,9 +107,10 @@ class Plot extends React.Component {
       console.log(this.props.summary);
       if(this.myChart)
         this.myChart.destroy();
-      if(this.props.summary != null && this.props.summary.summaryData != undefined && this.props.summary.summaryData.length > 0)
+      if(this.props.summary != null && this.props.summary.summaryData != undefined && this.props.summary.summaryData.length > 0){
         this.createChart();
-      return <canvas style = {{height: "500px"}}id = "chartCanvas" ref={this.chartRef}/>
+      }
+      return <canvas style = {{height: "600px"}}id = "chartCanvas" ref={this.chartRef}/>
 
     }
 }

@@ -52,8 +52,11 @@ class HomeScreen extends Component {
             document.getElementById('state-selection').value = Constants.States[state];
             document.getElementById('select-state-generation').selectedIndex = Object.keys(Constants.States).indexOf(state);
 
+            let center  = Constants.StateCenters[state];
+            // if(this.state.showSummary)
+            //     center[0] += 4;
             this.state.map.flyTo({
-                center: Constants.StateCenters[state],
+                center: center,
                 zoom: 6
             })
             this.state.map._controls[2].changeLayer(this.state.map);
@@ -114,9 +117,16 @@ class HomeScreen extends Component {
         if(!this.state.showSummary){
             this.handleGetBoxPlot(this.state.activeJob);
             this.setState({ showSummary: true });
+            document.getElementById("summaryDiv").style.display = "block";
         }else{
             this.setState({summary: [], showSummary: false});
+            document.getElementById("summaryDiv").style.display = "none";
         }
+        this.state.map.resize();
+        // if(document.getElementById("summaryDiv").style.display == "block"){
+        //     console.log(document.getElementById("summaryDiv").style.display );
+        //     this.state.map.resize();
+        // }
     }
 
     unshowMap = () => {
@@ -174,7 +184,7 @@ class HomeScreen extends Component {
                         </Tabs>
                     </div>
                     <div>
-                        <div style={{display:(this.state.showSummary)?'block':'none'}}>
+                        <div id="summaryDiv" style={{display:"none"}}>
                             <Summary avg={this.state.average} ex={this.state.extreme} unloadJob={this.unloadJob} job={this.state.activeJob} summary={this.state.summary}/>
                         </div>
                         <Map forceRender passMap={this.getMapObject} className="col s6 m9 offset-s6 offset-m3"></Map>

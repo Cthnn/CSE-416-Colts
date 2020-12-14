@@ -1,12 +1,3 @@
-#summaryToggle{
-    visibility: hidden;
-    background-color: transparent;
-    position: absolute;
-    top:10%;
-    right:2%;
-    z-index: 10;
-}
-
 .card{
     margin: .5rem 0px .5rem 0px;
 }
@@ -40,7 +31,7 @@ label{
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     line-height: 18px;
     height: 185px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     width: 150px;
     display:none;
 }
@@ -58,6 +49,6 @@ label{
     height: 100px;
     margin-top: 20px;
     width: 150px;
-    top: 7%;
+    top: 11%;
     display:none;
 }

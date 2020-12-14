@@ -31,7 +31,7 @@ select{
 }
 
 .state-select{
-    width: 90px;
+    width: 80px;
     margin-left:4px;
     display: inline-block !important;
 }
@@ -41,6 +41,6 @@ select{
     margin:0px;
 }
 .heatmap-select{
-    width: 270px;
+    width: 265px;
     display: none;
 }

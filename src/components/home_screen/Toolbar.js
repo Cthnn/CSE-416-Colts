@@ -490,7 +490,7 @@ class Toolbar {
     }
 
     setHeatMap(heatCheckbox, heatSelect, heatText, map) {
-        heatText.textContent = 'Heatmap View'
+        heatText.textContent = 'Heatmap'
         heatText.className = 'text';
         heatText.id = 'heat-text';
         heatSelect.className = 'heatmap-select';

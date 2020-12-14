@@ -12,7 +12,7 @@ class Summary extends React.Component {
         }
 
         return (
-            <div className="col s4 m6" style={contentStyle}>
+            <div className="col s4 m5" style={contentStyle}>
                 <h2 className="center">{job?"Job " + job.jobId:""} VAP Box Plot Per District</h2>
                 <div><Plot avg={this.props.avg} ex={this.props.ex} summary={this.props.summary}></Plot></div>
             </div>
