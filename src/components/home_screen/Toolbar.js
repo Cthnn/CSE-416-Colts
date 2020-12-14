@@ -175,6 +175,10 @@ class Toolbar {
         let heatmapButtonValue = document.getElementById('heat-checkbox').checked;
         let averageButtonValue = false;
         let extremeButtonValue = false;
+        if(heatmapButtonValue)
+            document.getElementById("heatmap-select").style.display = "inline-block";
+        else document.getElementById("heatmap-select").style.display = "none";
+
         if(job !== null && Constants.StateIdKeys[job.state.stateId]){
             let averageButton = document.getElementById('avg'+job.jobId);
             let extremeButton = document.getElementById('ex'+job.jobId);
@@ -522,6 +526,7 @@ class Toolbar {
         heatText.id = 'heat-text';
         heatSelect.className = 'heatmap-select';
         heatSelect.id = 'heatmap-select';
+        heatSelect.style.display = "none";
         heatCheckbox.type = 'checkbox';
         heatCheckbox.className = 'view-button';
 
