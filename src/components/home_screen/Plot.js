@@ -91,8 +91,7 @@ class Plot extends React.Component {
               scaleLabel:{
                 display:true,
                 labelString: 'Voting Age Population %'
-              },
-              offset:true
+              }
             }],
             xAxes:[{
               scaleLabel:{
