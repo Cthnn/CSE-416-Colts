@@ -63,7 +63,7 @@ class HomeScreen extends Component {
                 for(let newJobId in newJobs){
                     let newJob = newJobs[newJobId]
                     let oldJob = this.getJob(newJob.jobId);
-                    console.log(oldJob);
+                    //console.log(oldJob);
                     if(oldJob == null || oldJob.status != newJob.status){
                         this.setState({jobs: JSON.parse(res)});
                         break;

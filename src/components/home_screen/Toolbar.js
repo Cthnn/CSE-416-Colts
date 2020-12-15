@@ -313,11 +313,15 @@ class Toolbar {
         let enactedLegend = document.getElementById('Enacted-legend');
         let averageLegend = document.getElementById('Average-legend');
         let extremeLegend = document.getElementById('Extreme-legend');
-        enactedLegend.style.display = "none";
-        averageLegend.style.display = "none";
-        extremeLegend.style.display = "none";
+
+        if(enactedLegend != null)
+            enactedLegend.style.display = "none";
+        if(averageLegend != null)
+            averageLegend.style.display = "none";
+        if(extremeLegend != null)    
+            extremeLegend.style.display = "none";
         let count = 0;
-        if(districtButtonValue)
+        if(districtButtonValue !== null && districtButtonValue)
             count++;
         if(averageButtonValue !== null && averageButtonValue)
             count++;
@@ -326,11 +330,11 @@ class Toolbar {
 
         if(count > 1){
             districtingLegend.style.display = 'block';
-            if(districtButtonValue)
+            if(enactedLegend != null && districtButtonValue != null && districtButtonValue)
                 enactedLegend.style.display = "block";
-            if(averageButtonValue !== null && averageButtonValue)
+            if(averageLegend != null && averageButtonValue !== null && averageButtonValue)
                 averageLegend.style.display = "block";
-            if(extremeButtonValue !== null && extremeButtonValue)
+            if(extremeLegend != null && extremeButtonValue !== null && extremeButtonValue)
                 extremeLegend.style.display = "block";
         }
         else{
