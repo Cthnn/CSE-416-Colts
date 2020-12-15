@@ -95,8 +95,10 @@ class HomeScreen extends Component {
             if(this.state.activeJob !== null){
                 let oldAvgButton = document.getElementById("avg"+this.state.activeJob.jobId);
                 let oldExButton = document.getElementById("ex"+this.state.activeJob.jobId);
-                oldAvgButton.checked=false;
-                oldExButton.checked=false;
+                if(oldAvgButton !== null && oldExButton !== null){
+                    oldAvgButton.checked=false;
+                    oldExButton.checked=false;
+                }
             }
             let state = Constants.StateIdKeys[job.state.stateId];
             this.state.map._controls[2].setState(state, this.state.map);
