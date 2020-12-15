@@ -88,7 +88,7 @@ class JobCard extends React.Component {
                                 <td>{job.populationDeviation*100}%</td>
                             </tr>
                             <tr>
-                                <th>Ran On:</th>
+                                <th>Run Location:</th>
                                 <td>{(job.slurmId == 0)?"Server":"Seawulf"}</td>
                             </tr>
                         </tbody></table>
