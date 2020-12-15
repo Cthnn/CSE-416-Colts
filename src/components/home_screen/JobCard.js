@@ -87,6 +87,10 @@ class JobCard extends React.Component {
                                 <th>Population Deviation:</th>
                                 <td>{job.populationDeviation*100}%</td>
                             </tr>
+                            <tr>
+                                <th>Ran On:</th>
+                                <td>{(job.slurmId == 0)?"Server":"Seawulf"}</td>
+                            </tr>
                         </tbody></table>
                         <div style={job.status === "COMPLETED" ? { display: "block" } : { display: "none" }}>
                             <a className="blue lighten-2 waves-effect waves-light btn-small" style={{ position: 'absolute', right: '20px', padding: "0px 14px"}} onClick={this.handleToggle}>
