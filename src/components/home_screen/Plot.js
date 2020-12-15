@@ -31,7 +31,7 @@ class Plot extends React.Component {
               type:'scatter',
               label: Constants.BoxPlotLabels.EX,
               data: this.props.summary.extremeData,
-              backgroundColor: '#ff0000',
+              backgroundColor: '#248f24',
             },{
               type:'scatter',
               label: Constants.BoxPlotLabels.ENACTED,

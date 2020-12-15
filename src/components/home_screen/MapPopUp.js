@@ -7,9 +7,14 @@ class MapPopUp extends React.Component {
     }
 
     render() {
+        let id = ""+this.props.features.ID;
+        let isDistrict = false;
+        if(id != null && id != "" && id.charAt(0) != "G")
+            isDistrict = true;
+
         return (
             <div>
-                <div >{this.props.features.ID + " Demographics"}</div>
+                <div >{(isDistrict?"District ":"") + this.props.features.ID + " Demographics"}</div>
                 <table>
                     <tbody>
                         <tr>

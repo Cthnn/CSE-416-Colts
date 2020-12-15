@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Constants from './MapConstants.js';
 import { Row } from 'react-materialize';
 
 import Plot from './Plot'
@@ -20,7 +21,7 @@ class Summary extends React.Component {
                 <a className="red lighten-2 waves-effect waves-light btn-small" style={{marginLeft: "auto", right: '0px', width:"fit-content", padding: "0px 8px"}} onClick = {this.handleToggle.bind(this)}>
                     <i className="material-icons" >cancel</i>
                 </a>
-                <h2 className="center" style={{marginTop: "0px"}}>{job?"Job " + job.jobId:""} VAP Box Plot Per District</h2>
+                <h2 className="center" style={{marginTop: "0px"}}>{job?"Job " + job.jobId:""} {job?Constants.EthnicGroupNicknames[job.ethnicGroup]:""} VAP Per District</h2>
                 <div><Plot avg={this.props.avg} ex={this.props.ex} summary={this.props.summary}></Plot></div>
             </div>
         );

@@ -20,8 +20,8 @@ export const DistrictingKey = {AVG: 'AVG', EX: 'EX'};
 export const DistrictingSource = {AVG: "Average-Source", EX: "Extreme-Source"};
 export const DistrictingTypeLayers = {AVG: "Average-Districting", EX: "Extreme-Districting"};
 export const DistrictingLineLayers = {AVG: "Average-Line-Layer", EX: "Extreme-Line-Layer"};
-export const DistrictingTypeColors = {AVG: 'rgba(33, 156, 84, .15)', EX: 'rgba(100, 100, 214, .15)'};
-export const DistrictingOutlineColors = {AVG: 'rgba(33, 156, 84, 1)', EX: 'rgba(34, 55, 214, 1)'};
+export const DistrictingTypeColors = {AVG: 'rgba(50, 50, 255, .05)', EX: 'rgba(92, 214, 92, .05)'};
+export const DistrictingOutlineColors = {AVG: 'rgba(50, 50, 255, 1)', EX: 'rgba(36, 143, 36, 1)'};
 export const StateCenters = {AL: [-86.68075561523438, 32.57631501316452], FL: [-82.87845611572266, 28.40022856730028], VA: [-79.42291259765625, 38.00321033702472]};
 export const CountryCenter = [-82.994041442871, 32.99325130583]
 
@@ -32,7 +32,7 @@ export const OutlineDistrictColor = 'rgba(0, 0, 0, 1)';
 export const OutlinePrecinctColor = 'rgba(200, 100, 255, 1)';
 export const SelectedFeatureColor = 'rgba(50, 50, 210, 0.4)';
 export const OutlineSelectedFeatureColor = 'rgba(50, 50, 210, 1)';
-export const DistrictingLegendColor = {ENACTED: 'rgb(200, 100, 255)', AVG: 'rgba(33, 156, 84)', EX: 'rgba(100, 100, 214)'}
+export const DistrictingLegendColor = {ENACTED: 'rgb(200, 100, 255)', AVG: 'rgba(0, 0, 255)', EX: 'rgba(36, 143, 36)'}
 
 export const EthnicGroups = {NONE: "NONE", WHITE: "WHITE", BLACK: "BLACK", NATIVE_AMERICAN: "NATIVE_AMERICAN", ASIAN: "ASIAN", PACIFIC_ISLANDER: "PACIFIC_ISLANDER",  HISPANIC: "HISPANIC"};
 export const EthnicGroupNames = {NONE: "None", WHITE: "White American", BLACK: "Black or African American", NATIVE_AMERICAN: "Native American and Alaska Native", ASIAN: "Asian", PACIFIC_ISLANDER: "Native Hawaiian and Other Pacific Islander", HISPANIC: "Hispanic or Latino"};
